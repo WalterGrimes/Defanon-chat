@@ -1,0 +1,2 @@
+    const [messages, setMessages] = useState<Message[]>([]);
+    const [inputText, setInputText] = useState("")
