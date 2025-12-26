@@ -4,8 +4,6 @@ import { addMessage } from "../features/chatSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
 import Signup from "./ChatSign";
  
-
-
 type Message = {
     id: string;
     text: string;

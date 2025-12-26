@@ -5,7 +5,9 @@ import { store } from './app/store'
 import { useEffect } from 'react';
 import { CometChat } from '@cometchat-pro/chat';
 
-const APP_ID = import.meta.env.REACT_APP_COMETCHAT_APPID as string;
+console.log("Все переменные окружения:", import.meta.env);
+const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
+console.log("Мой APP_ID:", APP_ID);
 
 if (!APP_ID) {
   throw new Error("VITE_COMETCHAT_APP is missing")
