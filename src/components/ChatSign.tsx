@@ -20,7 +20,7 @@ class Signup extends React.Component<{}, SignupState> {
         redirect: false,
         isLoading: false
     };
-//sdlvksalkv
+
 
     handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name as keyof SignupState;
