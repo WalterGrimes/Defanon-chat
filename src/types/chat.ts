@@ -9,7 +9,7 @@ interface BaseState {
 
 export interface SignupState extends BaseState {
     uid: string;
-    email: string;
+    name: string;
     UIDError: string | null;
     errors: Record<string, string[]> | null;
 }
