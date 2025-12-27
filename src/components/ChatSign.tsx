@@ -6,15 +6,15 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
-import { Link } from 'react-router-dom'
+import { Link, redirect } from 'react-router-dom'
 import type { SignupState } from '../types/chat';
+import { CometChat } from '@cometchat-pro/chat';
 
 
 class Signup extends React.Component<{}, SignupState> {
     state: SignupState= {
         uid: '',
         name: '',
-        email: '',
         UIDError: null,
         errors: null,
         redirect: false,
@@ -41,40 +41,28 @@ class Signup extends React.Component<{}, SignupState> {
 
     handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        const { uid, name, email } = this.state;
-        this.setState({ uid: '', name: '', email: '', isLoading: true });
-        fetch('https://api.cometchat.com/v1/users', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                 APP_ID: import.meta.env.VITE_CONFIG_APP_ID,
-                 API_KEY:  import.meta.env.VITE_COMETCHAT_APIKEY
-            },
-            body: JSON.stringify({
-                uid,
-                name,
-                email
-            })
-        }).then(response => response.json())
-            .then(data => {
-                const error = data.error;
-                if (error) {
-                    this.setState(
-                        {
-                            isLoading: false,
-                            errors: { ...error.details }
-                        },
-                        () => {
-                            this.showErrors();
-                        }
-                    );
-                    return;
-                }
-                this.setState({
-                    isLoading: false,
-                    redirect: true
-                })
-            })
+        const { uid, name } = this.state;
+        this.setState({ isLoading: true})
+        const apiKey = import.meta.env.VITE_COMETCHAT_APIKEY;
+
+        const user = new CometChat.User(uid);
+        user.setName(name)
+
+       CometChat.createUser(user,apiKey).then(
+        () => {
+            this.setState({
+                uid: '',name: '',
+                isLoading: false,
+                redirect: true,
+            });
+        },
+        (error) => {
+            this.setState({
+                isLoading: false,
+                errors: {message: [error.message || "Что-то пошло не так"] }
+            });
+        }
+       )
     }
 
     showErrors = () => {
@@ -136,17 +124,6 @@ class Signup extends React.Component<{}, SignupState> {
                                     name='name'
                                     value={this.state.name}
                                     placeholder='What is your name?'
-                                    onChange={this.handleChange}
-                                />
-                            </Form.Group>
-                            <Form.Group controlId='email'>
-                                <Form.Label>Email Address</Form.Label>
-                                <Form.Control
-                                    required
-                                    type='email'
-                                    name='email'
-                                    value={this.state.email}
-                                    placeholder='Your email address'
                                     onChange={this.handleChange}
                                 />
                             </Form.Group>
