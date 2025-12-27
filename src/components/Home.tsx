@@ -24,15 +24,14 @@ class Home extends React.Component<{}, HomeState> {
   }
 
   handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    const { user } = this.state;
     const apiKey = import.meta.env.VITE_COMETCHAT_APIKEY;
     e.preventDefault();
-    const name = this.state.name
+    const name = this.state.name 
     this.setState({ name: '', isLoading: true })
     CometChat.login(name, apiKey)
-      .then(() => {
-        this.setState({ redirect: true, user, isLoading: false })
-        localStorage.setItem('cometchat: authToken', user.authToken)
+      .then(loggedInUser => {
+        this.setState({ redirect: true, user: loggedInUser, isLoading: false })
+        localStorage.setItem('cometchat: authToken', loggedInUser.getAuthToken());
       }).catch(err => {
         this.setState({ error: err.message, isLoading: false })
       })

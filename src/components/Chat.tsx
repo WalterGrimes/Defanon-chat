@@ -82,6 +82,7 @@ class Chat extends React.Component<any, ChatState> {
         const page = document.querySelector('.page');
         if(page){
             page.scrollTop = page.scrollHeight;
+            //браузере говоришь перемести верхнюю границу видимой области в самую нижнюю якобы приравнивая
         }
     }
 
@@ -112,10 +113,13 @@ class Chat extends React.Component<any, ChatState> {
                     this.reAuthenticateUserWithToken();
                 }
             },
-            error => {
+            () => {
                 const authToken = localStorage.getItem('cometchat: authToken');
                 if(authToken){
                     this.reAuthenticateUserWithToken(authToken);
+                    //если пользователь зареган его пускает,если нет 
+                    // попытается помочь ему войти с помощью ключа токена 
+                    // а если ничего нет то перенаправляет с помощью навигейт на страницу с регистрацией
                 } else {
                     this.setState({ redirect: true})
                 }
