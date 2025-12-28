@@ -10,7 +10,7 @@ const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
 console.log("Мой APP_ID:", APP_ID);
 
 if (!APP_ID) {
-  throw new Error("VITE_COMETCHAT_APP is missing")
+  console.error("КРИТИЧЕСКАЯ ОШИБКА: APP_ID не найден в переменных окружения!");
 }
 
 const appSettings = new CometChat.AppSettingsBuilder()
