@@ -1,4 +1,4 @@
-import Chat from './components/Message'
+import Chat from './components/Chat';
 import './App.css'
 import { Provider } from 'react-redux'
 import { store } from './app/store'
