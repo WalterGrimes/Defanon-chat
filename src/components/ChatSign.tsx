@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
-import { Link, redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import type { SignupState } from '../types/chat';
 import { CometChat } from '@cometchat-pro/chat';
 
