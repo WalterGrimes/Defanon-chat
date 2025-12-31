@@ -36,19 +36,17 @@ class Home extends React.Component<{}, HomeState> {
         this.setState({ error: err.message, isLoading: false })
       })
   }
+  
   render() {
-    if (this.state.redirect) return <Navigate to='/' />;
-
+    // Исправлено: перенаправляем на /chat с передачей пользователя
+    if (this.state.redirect) {
+      return <Navigate to='/chat' state={{ user: this.state.user }} />;
+    }
 
     return (
-      <React.Fragment>
-        <Row
-          className='d-flex justify-content-center align-items-center w-100 mt-5'
-          style={{
-            minHeight: '100%'
-          }}
-        >
-          <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <Row className='w-100'>
+          <Col xs={10} sm={10} md={4} lg={4} className='mx-auto'>
             {this.state.error !== null && (
               <Alert variant='danger'>{this.state.error}</Alert>
             )}
@@ -90,7 +88,7 @@ class Home extends React.Component<{}, HomeState> {
             </Form>
           </Col>
         </Row>
-      </React.Fragment>
+      </div>
     );
   }
 }

@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col'
 import Form from 'react-bootstrap/Form'
 import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
-import { Link } from 'react-router-dom'
+import { Link, Navigate } from 'react-router-dom'
 import type { SignupState } from '../types/chat';
 import { CometChat } from '@cometchat-pro/chat';
 
@@ -20,7 +20,6 @@ class Signup extends React.Component<{}, SignupState> {
         redirect: false,
         isLoading: false
     };
-
 
     handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const name = e.target.name as keyof SignupState;
@@ -51,7 +50,8 @@ class Signup extends React.Component<{}, SignupState> {
        CometChat.createUser(user,apiKey).then(
         () => {
             this.setState({
-                uid: '',name: '',
+                uid: '',
+                name: '',
                 isLoading: false,
                 redirect: true,
             });
@@ -77,7 +77,8 @@ class Signup extends React.Component<{}, SignupState> {
     }
 
     render() {
-        if (this.state.redirect) return null;
+        if (this.state.redirect) return <Navigate to='/' />;
+        
         return (
             <React.Fragment>
                 <Row
@@ -86,7 +87,7 @@ class Signup extends React.Component<{}, SignupState> {
                         minHeight: '100%'
                     }}
                 >
-                    <Col>
+                    <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
                         {this.state.errors !== null && (
                             <Alert variant='danger'>
                                 <ul>
@@ -158,7 +159,5 @@ class Signup extends React.Component<{}, SignupState> {
         );
     }
 }
-
-
 
 export default Signup;

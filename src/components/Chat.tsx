@@ -21,9 +21,9 @@ class Chat extends React.Component<any, ChatState> {
      joinGroup = () => {
         const GUID = this.state.receiverID;
         const password = '';
-        const groupType = 'public';
-        CometChat.joinGroup(GUID,groupType as any,password).then(
-            () => this.fetchMessages(),
+        const groupType = CometChat.GROUP_TYPE.PUBLIC;
+        CometChat.createGroup(GUID,groupType as any,password).then(
+            () => this.createGroup(),
             error => {
                 if(error.code === 'ERR_ALREADY_JOINED'){
                     this.fetchMessages();
