@@ -1,42 +1,43 @@
-import Chat from './components/Chat';
-import './App.css'
-import { Provider } from 'react-redux'
-import { store } from './app/store'
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import { store } from './app/store';
 import { CometChat } from '@cometchat-pro/chat';
 
-console.log("Все переменные окружения:", import.meta.env);
+import Home from './components/Home';
+import Signup from './components/ChatSign';
+import Chat from './components/Chat';
+import './App.css';
+
 const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
-console.log("Мой APP_ID:", APP_ID);
-
-if (!APP_ID) {
-  console.error("КРИТИЧЕСКАЯ ОШИБКА: APP_ID не найден в переменных окружения!");
-}
-
 const appSettings = new CometChat.AppSettingsBuilder()
   .subscribePresenceForAllUsers()
   .setRegion("us")
-  .build()
+  .build();
 
 function App() {
+  const [isInitialized, setIsInitialized] = useState(false);
+
   useEffect(() => {
-    CometChat.init(APP_ID, appSettings)
-      .then(() => {
-        console.log("CometChat initialized");
-      })
-      .catch((error) => {
-        console.error("CometChat init failed", error);
-      });
-  }, [])
+    if (APP_ID) {
+      CometChat.init(APP_ID, appSettings)
+        .then(() => setIsInitialized(true))
+        .catch(() => setIsInitialized(true)); 
+    }
+  }, []);
+
+  if (!isInitialized) return null;
 
   return (
     <Provider store={store}>
-      <Chat />
-      <link rel='stylesheet'
-      href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'
-      crossOrigin='anonymous'/>
+      <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/chat" element={<Chat />} />
+      </Routes>
     </Provider>
-  )
+  );
 }
 
-export default App
+export default App;
