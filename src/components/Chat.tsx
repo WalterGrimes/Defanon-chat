@@ -1,9 +1,9 @@
 import React from "react";
 import type { ChatState } from "../types/chat";
-import { CometChat } from "@cometchat-pro/chat";
 import { v4 as uuid } from 'uuid';
 import { Navigate } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
+import { CometChat } from "@cometchat/chat-sdk-javascript"; 
 
 class Chat extends React.Component<any, ChatState> {
     state: ChatState = {
@@ -22,11 +22,12 @@ class Chat extends React.Component<any, ChatState> {
         const GUID = this.state.receiverID;
         const password = '';
         const groupType = CometChat.GROUP_TYPE.PUBLIC;
-        CometChat.createGroup(GUID,groupType as any,password).then(
-            () => this.createGroup(),
+        const group = new CometChat.Group(GUID,groupType as any, password)
+        CometChat.createGroup(group).then(
+            () => this.joinGroup(),
             error => {
                 if(error.code === 'ERR_ALREADY_JOINED'){
-                    this.fetchMessages();
+                    this.joinGroup();
                 }
             }
         )
