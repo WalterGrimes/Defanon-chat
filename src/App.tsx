@@ -2,31 +2,39 @@ import { useState, useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
-import { CometChat } from '@cometchat-pro/chat';
-
 import Home from './components/Home';
 import Signup from './components/ChatSign';
 import Chat from './components/Chat';
 import './App.css';
+import { CometChat } from '@cometchat/chat-sdk-javascript';
 
 const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
-const appSettings = new CometChat.AppSettingsBuilder()
-  .subscribePresenceForAllUsers()
-  .setRegion("us")
-  .build();
+const REGION = "us";
 
 function App() {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
     if (APP_ID) {
-      CometChat.init(APP_ID, appSettings)
-        .then(() => setIsInitialized(true))
-        .catch(() => setIsInitialized(true)); 
+      const appSetting = new CometChat.AppSettingsBuilder()
+        .subscribePresenceForAllUsers()
+        .setRegion(REGION)
+        .autoEstablishSocketConnection(true)
+        .build();
+
+      CometChat.init(APP_ID, appSetting)
+        .then(() => {
+          console.log("CometChat initialized successfully");
+          setIsInitialized(true);
+        })
+        .catch((error) => {
+          console.log("CometChat init failed:", error);
+          setIsInitialized(true);
+        });
     }
   }, []);
 
-  if (!isInitialized) return null;
+  if (!isInitialized) return <div>Loading...</div>;
 
   return (
     <Provider store={store}>
@@ -39,5 +47,6 @@ function App() {
     </Provider>
   );
 }
+
 
 export default App;

@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Form from 'react-bootstrap/Form';
 import Alert from 'react-bootstrap/Alert';
 import { Spinner } from 'react-bootstrap';
-import { CometChat } from '@cometchat-pro/chat';
+import { CometChat } from "@cometchat/chat-sdk-javascript"; 
 import { Link, Navigate } from 'react-router-dom';
 import type { HomeState } from '../types/chat';
 
@@ -44,9 +44,14 @@ class Home extends React.Component<{}, HomeState> {
     }
 
     return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <Row className='w-100'>
-          <Col xs={10} sm={10} md={4} lg={4} className='mx-auto'>
+      <React.Fragment>
+        <Row
+          className='d-flex justify-content-center align-items-center w-100 mt-5'
+          style={{
+            minHeight: '100%'
+          }}
+        >
+          <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
             {this.state.error !== null && (
               <Alert variant='danger'>{this.state.error}</Alert>
             )}
@@ -88,7 +93,7 @@ class Home extends React.Component<{}, HomeState> {
             </Form>
           </Col>
         </Row>
-      </div>
+      </React.Fragment>
     );
   }
 }

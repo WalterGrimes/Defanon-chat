@@ -8,7 +8,7 @@ import Alert from 'react-bootstrap/Alert'
 import Spinner from 'react-bootstrap/Spinner'
 import { Link, Navigate } from 'react-router-dom'
 import type { SignupState } from '../types/chat';
-import { CometChat } from '@cometchat-pro/chat';
+import { CometChat } from "@cometchat/chat-sdk-javascript"; 
 
 
 class Signup extends React.Component<{}, SignupState> {
@@ -77,6 +77,7 @@ class Signup extends React.Component<{}, SignupState> {
     }
 
     render() {
+        // Исправлено: после регистрации перенаправляем на главную (login)
         if (this.state.redirect) return <Navigate to='/' />;
         
         return (
@@ -87,7 +88,7 @@ class Signup extends React.Component<{}, SignupState> {
                         minHeight: '100%'
                     }}
                 >
-                    <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
+                    <Col>
                         {this.state.errors !== null && (
                             <Alert variant='danger'>
                                 <ul>
