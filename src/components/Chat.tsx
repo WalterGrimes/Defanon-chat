@@ -15,19 +15,54 @@ class Chat extends React.Component<any, ChatState> {
         authToken: null,
         messageType: CometChat.MESSAGE_TYPE.TEXT,
         receiverType: CometChat.RECEIVER_TYPE.GROUP,
-        groupType: 'public',
+        groupType: CometChat.GROUP_TYPE.PUBLIC,
         
     }
      joinGroup = () => {
         const GUID = this.state.receiverID;
-        const password = '';
         const groupType = CometChat.GROUP_TYPE.PUBLIC;
-        const group = new CometChat.Group(GUID,groupType as any, password)
+        const password = "";
+        const groupName = "Super Group";
+        const group = new CometChat.Group(GUID,groupName,groupType);
+
         CometChat.createGroup(group).then(
-            () => this.joinGroup(),
-            error => {
-                if(error.code === 'ERR_ALREADY_JOINED'){
-                    this.joinGroup();
+            (createdGroup) => {
+                console.log("группа создана", createdGroup);
+
+                CometChat.joinGroup(GUID).then(
+                    () => {
+                        console.log("Присоединились к группе");
+                        this.fetchMessages();
+                    },
+                    (error) => {
+                        if(error.code === 'ERR_ALREADY_JOINED'){
+                            console.log("Уже в группе");
+                            this.fetchMessages();
+                        }
+                    }
+                );
+            },
+            (error) => {
+                if(error.code === "ERR_GUID_ALREADY_EXISTS"){
+                    console.log("Группа уже существует, присоединяемся");
+
+                    CometChat.joinGroup(GUID).then(
+                        () => {
+                            console.log("Присоединились к существующей группе");
+
+                            this.fetchMessages();
+                        },
+                        (joinError) => {
+                            if(joinError.code === "ERR_ALREADY_JOINED"){
+                                console.log("Уже в группе находиься");
+                                this.fetchMessages();
+                            } else {
+                                console.log("Ошибка присоединения:", joinError)
+                            }
+                        }
+                    );
+                } else {
+                    console.log("Ошибка создания группы:", error)
                 }
             }
         )
@@ -47,8 +82,9 @@ class Chat extends React.Component<any, ChatState> {
 
         CometChat.login(authToken).then(
             user => {
+                console.log("Пользователь залогинен:", user)
                 this.setState({ user });
-                this.fetchMessages();
+                this.joinGroup();
             },
             error => console.log("login failed", error)
         )
