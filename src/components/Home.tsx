@@ -31,7 +31,7 @@ class Home extends React.Component<{}, HomeState> {
     CometChat.login(name, apiKey)
       .then(loggedInUser => {
         this.setState({ redirect: true, user: loggedInUser, isLoading: false })
-        localStorage.setItem('cometchat: authToken', loggedInUser.getAuthToken());
+        localStorage.setItem('cometchat:authToken', loggedInUser.getAuthToken());
       }).catch(err => {
         this.setState({ error: err.message, isLoading: false })
       })
