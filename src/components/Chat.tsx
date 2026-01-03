@@ -57,7 +57,6 @@ function Chat () {
     const joinGroup = () => {
         const GUID = receiverID;
         const groupType = CometChat.GROUP_TYPE.PUBLIC;
-        const password = "";
         const groupName = "Super Group";
         const group = new CometChat.Group(GUID, groupName, groupType);
 
