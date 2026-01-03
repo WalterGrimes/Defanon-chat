@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import type { ChatState } from "../types/chat";
 import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
@@ -7,12 +6,32 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 function Chat () {
     const [redirect, setRedirect] = useState(false);
-    const [user, setUser] = useState(null);
+    const [user, setUser] = useState<CometChat.User | null>(null);
     const [receiverID, setReceiverID] = useState('supergroup');
-    const [messageText, setMessageText] = useState([]);
-    const [messages, setMessages] = useState([]);
+    const [messageText, setMessageText] = useState<string>('');
+    const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
+    const receiverType = CometChat.RECEIVER_TYPE.GROUP;
 
     const location = useLocation();
+
+     const sendMessage = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const textMessage = new CometChat.TextMessage(
+            receiverID,
+            messageText,
+            receiverType
+        );
+
+        CometChat.sendMessage(textMessage).then(
+            message => {
+                setMessageText('');
+                setMessages(prev => [...prev, message]);
+                setTimeout(scrollToBottom, 100)
+            },
+            error => console.log('Message sending failed:', error)
+        )
+    }
 
     useEffect(() => {
         const locationState = location.state as { user?: any };
@@ -162,24 +181,7 @@ function Chat () {
     }
 
 
-    const sendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        const textMessage = new CometChat.TextMessage(
-            receiverID,
-            messageText,
-            receiverType
-        );
-
-        CometChat.sendMessage(textMessage).then(
-            message => {
-                setMessageText('');
-                setMessages(prev => [...prev, message]);
-                setTimeout(scrollToBottom, 100)
-            },
-            error => console.log('Message sending failed:', error)
-        )
-    }
+   
         if (redirect) return <Navigate to='/' />;
 
         return (

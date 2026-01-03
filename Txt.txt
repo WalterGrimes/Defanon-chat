@@ -1,3 +1,13 @@
-any (Props): Это первый параметр. Он отвечает за входящие свойства (props). Указав any, вы разрешаете передавать в этот компонент любые пропсы без проверки типов.
+// БЫЛО:
+state = {
+    messageText: '',
+    messages: [],
+    redirect: false,
+    user: null
+}
 
-ChatState (State): Это второй параметр. Он строго определяет внутреннее состояние (state) компонента.
+// СТАЛО:
+const [messageText, setMessageText] = useState('');
+const [messages, setMessages] = useState([]);
+const [redirect, setRedirect] = useState(false);
+const [user, setUser] = useState(null);
