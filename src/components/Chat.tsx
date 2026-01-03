@@ -27,7 +27,6 @@ function Chat () {
             message => {
                 setMessageText('');
                 setMessages(prev => [...prev, message]);
-                setTimeout(scrollToBottom, 100)
             },
             error => console.log('Message sending failed:', error)
         )
@@ -52,6 +51,9 @@ function Chat () {
             })
         )
     }, [])
+    useEffect(() => {
+        scrollToBottom();
+    },[messages]);
 
     const joinGroup = () => {
         const GUID = receiverID;
