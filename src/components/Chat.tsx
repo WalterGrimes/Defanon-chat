@@ -190,7 +190,7 @@ function Chat () {
                     <Row>
                         <Col>
                             <div className='d-flex align-items-center justify-content-between'>
-                                <h3 className='py-3'>React Anonymous Chat {user && `- ${user.getName()}`}</h3>
+                                <h3 className='py-3'>React Anonymous Chat {user && `- ${user}`}</h3>
                                 <Button onClick={logout} variant='outline-primary'>Logout</Button>
                             </div>
 
