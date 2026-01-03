@@ -7,7 +7,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 function Chat () {
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
-    const [receiverID, setReceiverID] = useState('supergroup');
+    const [receiverID] = useState('supergroup');
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
     const receiverType = CometChat.RECEIVER_TYPE.GROUP;
@@ -46,14 +46,13 @@ function Chat () {
             new CometChat.MessageListener({
                 onTextMessageReceived: (textMessage: any) => {
                    setMessages(prev => [...prev, textMessage]);
-                   setTimeout(scrollToBottom, 100);
                 }
             })
         )
     }, [])
     useEffect(() => {
         scrollToBottom();
-    },[messages]);
+    },[messages])
 
     const joinGroup = () => {
         const GUID = receiverID;
@@ -192,7 +191,7 @@ function Chat () {
                     <Row>
                         <Col>
                             <div className='d-flex align-items-center justify-content-between'>
-                                <h3 className='py-3'>React Anonymous Chat</h3>
+                                <h3 className='py-3'>React Anonymous Chat {user && `- ${user.getName()}`}</h3>
                                 <Button onClick={logout} variant='outline-primary'>Logout</Button>
                             </div>
 
