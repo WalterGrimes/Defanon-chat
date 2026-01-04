@@ -93,6 +93,7 @@ function Chat () {
                                 fetchMessages();
                             } else {
                                 console.log("Ошибка присоединения:", joinError)
+                                alert("Ошибка входа в группу: " + joinError.message);
                             }
                         }
                     );
@@ -151,7 +152,10 @@ function Chat () {
                 setMessages([...messages]);
                 setTimeout(scrollToBottom, 100)
             },
-            error => console.log('Message fetching failed', error)
+            error => {
+               console.log('Message fetching failed', error)
+               alert("Ошибка входа: " + error.message);
+            }
         )
     }
 
@@ -190,7 +194,7 @@ function Chat () {
                     <Row>
                         <Col>
                             <div className='d-flex align-items-center justify-content-between'>
-                                <h3 className='py-3'>React Anonymous Chat {user && `- ${user}`}</h3>
+                                <h3 className='py-3'>React Anonymous Chat {user && `- ${(user as any).name}`}</h3>
                                 <Button onClick={logout} variant='outline-primary'>Logout</Button>
                             </div>
 
