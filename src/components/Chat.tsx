@@ -4,7 +4,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
-function Chat () {
+function Chat() {
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
     const [receiverID] = useState('supergroup');
@@ -14,8 +14,9 @@ function Chat () {
 
     const location = useLocation();
 
-     const sendMessage = (e: React.FormEvent) => {
+    const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
+        if(!messageText.trim() || !receiverID) return;
 
         const textMessage = new CometChat.TextMessage(
             receiverID,
@@ -33,6 +34,7 @@ function Chat () {
     }
 
     useEffect(() => {
+        alert("ЗАпустилось")
         const locationState = location.state as { user?: any };
         if (locationState?.user) {
             setUser(locationState.user);
@@ -45,14 +47,14 @@ function Chat () {
             listenerID,
             new CometChat.MessageListener({
                 onTextMessageReceived: (textMessage: any) => {
-                   setMessages(prev => [...prev, textMessage]);
+                    setMessages(prev => [...prev, textMessage]);
                 }
             })
         )
     }, [])
     useEffect(() => {
         scrollToBottom();
-    },[messages])
+    }, [messages])
 
     const joinGroup = () => {
         const GUID = receiverID;
@@ -153,8 +155,8 @@ function Chat () {
                 setTimeout(scrollToBottom, 100)
             },
             error => {
-               console.log('Message fetching failed', error)
-               alert("Ошибка входа: " + error.message);
+                console.log('Message fetching failed', error)
+                alert("Ошибка входа: " + error.message);
             }
         )
     }
@@ -185,53 +187,53 @@ function Chat () {
     }
 
 
-   
-        if (redirect) return <Navigate to='/' />;
 
-        return (
-            <div className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
+    if (redirect) return <Navigate to='/' />;
+
+    return (
+        <div className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
+            <Container>
+                <Row>
+                    <Col>
+                        <div className='d-flex align-items-center justify-content-between'>
+                            React Anonymous Chat {user ? `- ${((user as any).name || (user as any).uid || 'User')}` : ''}                                
+                            <Button onClick={logout} variant='outline-primary'>Logout</Button>
+                        </div>
+
+                        <ul className='list-group' style={{ marginBottom: '80px' }}>
+                            {messages.length > 0 ? (
+                                messages.map((msg: any) => (
+                                    <li className='list-group-item' key={msg.id || uuid()}>
+                                        <strong>{msg.sender?.name || 'Unknown'}: </strong>
+                                        <span>{msg.text}</span>
+                                    </li>
+                                ))
+                            ) : (
+                                <div className='text-center mt-5'>
+                                    <p className='lead'>Fetching Messages...</p>
+                                </div>
+                            )}
+                        </ul>
+                    </Col>
+                </Row>
+            </Container>
+
+            <Navbar fixed='bottom' className="bg-white border-top">
                 <Container>
-                    <Row>
-                        <Col>
-                            <div className='d-flex align-items-center justify-content-between'>
-                                <h3 className='py-3'>React Anonymous Chat {user && `- ${(user as any).name}`}</h3>
-                                <Button onClick={logout} variant='outline-primary'>Logout</Button>
-                            </div>
-
-                            <ul className='list-group' style={{ marginBottom: '80px' }}>
-                                {messages.length > 0 ? (
-                                    messages.map((msg: any) => (
-                                        <li className='list-group-item' key={msg.id || uuid()}>
-                                            <strong>{msg.sender?.name || 'Unknown'}: </strong>
-                                            <span>{msg.text}</span>
-                                        </li>
-                                    ))
-                                ) : (
-                                    <div className='text-center mt-5'>
-                                        <p className='lead'>Fetching Messages...</p>
-                                    </div>
-                                )}
-                            </ul>
-                        </Col>
-                    </Row>
+                    <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
+                        <Form.Control
+                            value={messageText}
+                            required
+                            placeholder='Type Message here...'
+                            onChange={handleChange}
+                        />
+                        <Button variant='primary' type='submit'>Send</Button>
+                    </Form>
                 </Container>
-
-                <Navbar fixed='bottom' className="bg-white border-top">
-                    <Container>
-                        <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
-                            <Form.Control
-                                value={messageText}
-                                required
-                                placeholder='Type Message here...'
-                                onChange={handleChange}
-                            />
-                            <Button variant='primary' type='submit'>Send</Button>
-                        </Form>
-                    </Container>
-                </Navbar>
-            </div>
-        );
-    }
+            </Navbar>
+        </div>
+    );
+}
 
 
 export default Chat;
