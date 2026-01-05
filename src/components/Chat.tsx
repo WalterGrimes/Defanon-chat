@@ -16,7 +16,7 @@ function Chat() {
 
     const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
-        if(!messageText.trim() || !receiverID) return;
+        if (!messageText.trim() || !receiverID) return;
 
         const textMessage = new CometChat.TextMessage(
             receiverID,
@@ -189,6 +189,9 @@ function Chat() {
 
 
     if (redirect) return <Navigate to='/' />;
+    if(!user && !localStorage.getItem('cometchat: authToken')){
+        console.log("No user found")//Проверка на нового пользователя
+    }
 
     return (
         <div className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
@@ -196,7 +199,9 @@ function Chat() {
                 <Row>
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
-                            React Anonymous Chat {user ? `- ${((user as any).name || (user as any).uid || 'User')}` : ''}                                
+                            <h3 className='py-3'>
+                                React Anonymous Chat {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
+                            </h3>
                             <Button onClick={logout} variant='outline-primary'>Logout</Button>
                         </div>
 
