@@ -11,3 +11,16 @@ const [messageText, setMessageText] = useState('');
 const [messages, setMessages] = useState([]);
 const [redirect, setRedirect] = useState(false);
 const [user, setUser] = useState(null);
+
+
+// Ты сам пишешь этот ID, он может быть любым (без пробелов)
+let GUID = "gaming_box_2024"; 
+let groupName = "Комната Геймеров";
+let groupType = CometChat.GROUP_TYPE.PUBLIC;
+
+let group = new CometChat.Group(GUID, groupName, groupType);
+
+CometChat.createGroup(group).then(
+  group => console.log("Группа создана:", group),
+  error => console.log("Ошибка:", error)
+);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
@@ -10,7 +10,9 @@ function Chat() {
     const [receiverID] = useState('supergroup');
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
+    const [currentGuid, setCurrentGuid] = useState<string | null>(null)
     const receiverType = CometChat.RECEIVER_TYPE.GROUP;
+    const navigate = useNavigate();
 
     const location = useLocation();
 
@@ -186,6 +188,25 @@ function Chat() {
         )
     }
 
+    const leaveRoom = () => {
+        const GUID = 'supergroup'
+
+        CometChat.leaveGroup(GUID).then(
+            () => {
+                console.log("Успешно покинуто")
+
+                setMessages([])
+                setCurrentGuid("")
+                setMessageText("");
+                navigate('/chatboxes')
+            },
+            error => {
+                console.log("Ошибка", error)
+                
+            }
+        )
+    }
+
 
 
     if (redirect) return <Navigate to='/' />;
@@ -204,6 +225,10 @@ function Chat() {
                             </h3>
                             <Button onClick={logout} variant='outline-primary'>Logout</Button>
                         </div>
+                          <div className='d-flex align-items-center justify-content-between'>
+                            <Button onClick={leaveRoom} variant='outline-primary'>Leave basic group</Button>
+                        </div>
+
 
                         <ul className='list-group' style={{ marginBottom: '80px' }}>
                             {messages.length > 0 ? (
