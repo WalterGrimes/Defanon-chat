@@ -7,6 +7,7 @@ import Signup from './components/ChatSign';
 import Chat from './components/Chat';
 import './App.css';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
+import ChatBoxes from './components/ChatBoxes';
 
 const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
 const REGION = "us";
@@ -43,6 +44,8 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/chat" element={<Chat />} />
+        <Route path="/chatboxes" element={<ChatBoxes />} />
+
       </Routes>
     </Provider>
   );
