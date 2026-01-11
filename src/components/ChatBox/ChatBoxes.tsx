@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner,Row,Card,Col,Button } from "react-bootstrap";
+import CreateBox from "./CreateChatBox";
 
 const ChatBoxes = () => {
     const [groups, setGroups] = useState<CometChat.Group[]>([]);
@@ -57,7 +58,8 @@ const ChatBoxes = () => {
                                     className="mt-auto"
                                     onClick={() => enterChat(group.getGuid())}
                                 >
-                                    Войти в коробку
+                                    Войти в коробку или...
+                                  
                                 </Button>
                             </Card.Body>
                         </Card>
