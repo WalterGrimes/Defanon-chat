@@ -36,7 +36,7 @@ function Chat() {
     }
 
     useEffect(() => {
-        alert("ЗАпустилось")
+        
         const locationState = location.state as { user?: any };
         if (locationState?.user) {
             setUser(locationState.user);
@@ -202,7 +202,7 @@ function Chat() {
             },
             error => {
                 console.log("Ошибка", error)
-                
+                navigate('/chatboxes')
             }
         )
     }
