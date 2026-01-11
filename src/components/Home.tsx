@@ -38,7 +38,7 @@ class Home extends React.Component<{}, HomeState> {
   }
   
   render() {
-    // Исправлено: перенаправляем на /chat с передачей пользователя
+    // перенаправляем на /chat с передачей пользователя
     if (this.state.redirect) {
       return <Navigate to='/chat' state={{ user: this.state.user }} />;
     }
