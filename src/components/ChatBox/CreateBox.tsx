@@ -1,8 +1,11 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
 
+interface CreateBoxProps {
+    onGroupCreate: (newGroup: CometChat.Group) => void;
+}
 
-const CreateBox = () => {
+const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
 
     const handleCreateGroup = () => {
@@ -13,8 +16,13 @@ const CreateBox = () => {
         const group = new CometChat.Group(GUID, boxName, boxType, password);
 
         CometChat.createGroup(group).then(
-            group => console.log("Group created:", group),
-            error => console.log("Error:", error)
+            () => {
+                console.log("Group created:", group),
+                onGroupCreate(group)
+            },
+            (error) => {
+                console.log("Ошибка",error)
+            }
         )
     }
 

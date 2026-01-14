@@ -29,3 +29,4 @@ export interface ChatState extends BaseState {
     groupType: string;
     receiverType: typeof CometChat.RECEIVER_TYPE.GROUP,
 }
+
