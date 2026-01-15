@@ -10,7 +10,7 @@ export interface handleNewGroupProps {
 
 
 const ChatBoxes = () => {
-    const [group,setGroup] = useState<CometChat.Group[]>([])
+    const [group, setGroup] = useState<CometChat.Group[]>([])
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
@@ -22,7 +22,9 @@ const ChatBoxes = () => {
 
         groupRequest.fetchNext().then(//Пагинатор
             (groupList: any) => {
-                setGroup(groupList);
+               const sortedList = [...groupList].sort((a, b) => b.getCreatedAt() - a.getCreatedAt())
+
+                setGroup(sortedList);
                 setIsLoading(false)
             },
             (error: any) => {
@@ -46,18 +48,18 @@ const ChatBoxes = () => {
         )
         return () => CometChat.removeGroupListener(listenerId);
     }, [])
-    
+
 
     const enterChat = (guid: string) => {
         navigate(`/chat/${guid}`);
     }
 
     const handleNewGroup = (newGroup: CometChat.Group) => {
-        setGroup(prev =>{
-            const updateList =  [newGroup, ...prev];
-
-            updateList.sort((a,b) => b.getCreatedAt() - a.getCreatedAt())
+        setGroup(prev => {
+            const updateList = [newGroup, ...prev];
+            updateList.sort((a,b) => b.getCreatedAt() - a.getCreatedAt());
             //особенность сорта,если положительное число,то ставит б на первое место
+            
             return updateList;
         })
     }
@@ -94,8 +96,8 @@ const ChatBoxes = () => {
                                 >
                                     Войти в коробку
 
-                                </Button>                   
-                             </Card.Body>
+                                </Button>
+                            </Card.Body>
                         </Card>
                     </Col>
                 ))}
