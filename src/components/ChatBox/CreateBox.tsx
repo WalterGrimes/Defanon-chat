@@ -26,6 +26,8 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         )
     }
 
+   
+
     return (
         <div>
             <input
@@ -39,5 +41,6 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     )
 
 }
+
 
 export default CreateBox;

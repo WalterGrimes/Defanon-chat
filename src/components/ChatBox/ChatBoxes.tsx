@@ -22,7 +22,7 @@ const ChatBoxes = () => {
 
         groupRequest.fetchNext().then(//Пагинатор
             (groupList: any) => {
-               const sortedList = [...groupList].sort((a, b) => b.getCreatedAt() - a.getCreatedAt())
+                const sortedList = [...groupList].sort((a, b) => b.getCreatedAt() - a.getCreatedAt())
 
                 setGroup(sortedList);
                 setIsLoading(false)
@@ -57,11 +57,25 @@ const ChatBoxes = () => {
     const handleNewGroup = (newGroup: CometChat.Group) => {
         setGroup(prev => {
             const updateList = [newGroup, ...prev];
-            updateList.sort((a,b) => b.getCreatedAt() - a.getCreatedAt());
+            updateList.sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
             //особенность сорта,если положительное число,то ставит б на первое место
-            
+
             return updateList;
         })
+    }
+    const handleDeleteGroup = (GUID: string) => {
+        if(!window.confirm("Уверен что хочешь удалить коробку?")) return;
+
+        CometChat.deleteGroup(GUID).then(
+            (response: boolean) => {
+                console.log("Группа удалена:", response);
+
+                setGroup(prev => prev.filter(item => item.getGuid() !== GUID))
+            },
+            (error: CometChat.CometChatException) => {
+                console.log("Группа не смогла удалиться:", error)
+            }
+        )
     }
 
     if (isLoading) {
@@ -72,6 +86,7 @@ const ChatBoxes = () => {
             </Container>
         )
     }
+
 
     return (
         <Container className="mt-4">
@@ -89,13 +104,15 @@ const ChatBoxes = () => {
                                     ID: {group.getGuid()} <br />
                                     Участников: {group.getMembersCount()}
                                 </Card.Text>
-                                <Button
-                                    variant="outline-light"
-                                    className="mt-auto"
-                                    onClick={() => enterChat(group.getGuid())}
-                                >
+                                <Button variant="outline-light" className="mt-auto"
+                                    onClick={() => enterChat(group.getGuid())}>
+
                                     Войти в коробку
 
+                                </Button>
+                                <Button variant="danger" className="mt-2"
+                                    onClick={() => handleDeleteGroup(group.getGuid())}>
+                                    Удалить коробку
                                 </Button>
                             </Card.Body>
                         </Card>
