@@ -5,10 +5,10 @@ import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 function Chat() {
-    const { guid} = useParams() //Достать айди группы
+    const { guid } = useParams() //Достать айди группы
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
-    const [password, setPassword] = useState<string | number>
+    const [password, setPassword] = useState<string>('');
     const receiverID = guid || 'supergroup';
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
@@ -37,10 +37,10 @@ function Chat() {
         )
     }
     useEffect(() => {
-        if(guid){
+        if (guid) {
             CometChat.getGroup(guid).then(
                 (group) => {
-                   console.log("Зашло,данные группы:", group)
+                    console.log("Зашло,данные группы:", group)
                 },
                 (error) => {
                     console.log("Ошибка при получении данных группы", error)
@@ -64,10 +64,10 @@ function Chat() {
             listenerID,
             new CometChat.MessageListener({
                 onTextMessageReceived: (textMessage: any) => {
-                    if(textMessage.getReceiverGuid() === receiverID){
-                         setMessages(prev => [...prev, textMessage]);
+                    if (textMessage.getReceiverGuid() === receiverID) {
+                        setMessages(prev => [...prev, textMessage]);
                     }
-                   
+
                 }
             })
         )
@@ -83,8 +83,8 @@ function Chat() {
         const GUID = receiverID;
         const groupType = CometChat.GROUP_TYPE.PUBLIC;
         const groupName = "Super Group";
-        const group = new CometChat.Group(GUID, groupName, groupType);
-        const password = ""
+        const group = new CometChat.Group(GUID, groupName, groupType,password);
+        
 
         CometChat.createGroup(group).then(
             (createdGroup) => {
