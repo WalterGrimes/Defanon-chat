@@ -8,6 +8,7 @@ function Chat() {
     const { guid} = useParams() //Достать айди группы
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
+    const [password, setPassword] = useState<string | number>
     const receiverID = guid || 'supergroup';
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
@@ -83,6 +84,7 @@ function Chat() {
         const groupType = CometChat.GROUP_TYPE.PUBLIC;
         const groupName = "Super Group";
         const group = new CometChat.Group(GUID, groupName, groupType);
+        const password = ""
 
         CometChat.createGroup(group).then(
             (createdGroup) => {
