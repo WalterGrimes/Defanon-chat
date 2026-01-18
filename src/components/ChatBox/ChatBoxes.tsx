@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
-import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { CometChat, GroupType } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner, Row, Card, Col, Button } from "react-bootstrap";
 import CreateBox from "./CreateBox";
 
@@ -51,6 +51,15 @@ const ChatBoxes = () => {
 
 
     const enterChat = (guid: string) => {
+
+        CometChat.joinGroup(guid).then(
+            (group) => {
+                console.log("Зaшло:",group)
+            },
+            (error) => {
+                console.log("Group joining failed:",error)
+            }
+        )
         navigate(`/chat/${guid}`);
     }
 
@@ -73,7 +82,8 @@ const ChatBoxes = () => {
                 setGroup(prev => prev.filter(item => item.getGuid() !== GUID))
             },
             (error: CometChat.CometChatException) => {
-                console.log("Группа не смогла удалиться:", error)
+                console.log("Ошибка:",error)
+                alert("Группа не смогла удалиться,так как вы не являетесь владельцем!")
             }
         )
     }
@@ -102,7 +112,8 @@ const ChatBoxes = () => {
                                 <Card.Title className="mb-3">{group.getName()}</Card.Title>
                                 <Card.Text className="small text-muted mb-4">
                                     ID: {group.getGuid()} <br />
-                                    Участников: {group.getMembersCount()}
+                                    Участников: {group.getMembersCount()} <br />
+                                    Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                 </Card.Text>
                                 <Button variant="outline-light" className="mt-auto"
                                     onClick={() => enterChat(group.getGuid())}>

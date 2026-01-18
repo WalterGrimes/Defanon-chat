@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 function Chat() {
+    const { guid} = useParams() //Достать айди группы
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
-    const [receiverID] = useState('supergroup');
+    const receiverID = guid || 'supergroup';
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
     const [currentGuid, setCurrentGuid] = useState<string | null>(null)
@@ -34,9 +35,22 @@ function Chat() {
             error => console.log('Message sending failed:', error)
         )
     }
+    useEffect(() => {
+        if(guid){
+            CometChat.getGroup(guid).then(
+                (group) => {
+                   console.log("Зашло,данные группы:", group)
+                },
+                (error) => {
+                    console.log("Ошибка при получении данных группы", error)
+                }
+            )
+        }
+    }, [guid])
 
     useEffect(() => {
-        
+        setMessages([]);
+
         const locationState = location.state as { user?: any };
         if (locationState?.user) {
             setUser(locationState.user);
@@ -49,11 +63,17 @@ function Chat() {
             listenerID,
             new CometChat.MessageListener({
                 onTextMessageReceived: (textMessage: any) => {
-                    setMessages(prev => [...prev, textMessage]);
+                    if(textMessage.getReceiverGuid() === receiverID){
+                         setMessages(prev => [...prev, textMessage]);
+                    }
+                   
                 }
             })
         )
-    }, [])
+
+        return () => CometChat.removeMessageListener(listenerID);
+    }, [guid])
+
     useEffect(() => {
         scrollToBottom();
     }, [messages])
@@ -126,10 +146,32 @@ function Chat() {
 
     const logout = () => {
         CometChat.logout().then(() => {
+            navigate('/')
             localStorage.removeItem('cometchat: authToken');
             setRedirect(true)
         });
     }
+
+    const leaveRoom = () => {
+        const GUID = 'supergroup'
+
+        CometChat.leaveGroup(GUID).then(
+            () => {
+                console.log("Успешно покинуто")
+
+                setMessages([])
+                setCurrentGuid("")
+                setMessageText("");
+                navigate('/chatboxes')
+            },
+            error => {
+                console.log("Ошибка", error)
+                navigate('/chatboxes')
+            }
+        )
+    }
+
+
 
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,29 +230,10 @@ function Chat() {
         )
     }
 
-    const leaveRoom = () => {
-        const GUID = 'supergroup'
-
-        CometChat.leaveGroup(GUID).then(
-            () => {
-                console.log("Успешно покинуто")
-
-                setMessages([])
-                setCurrentGuid("")
-                setMessageText("");
-                navigate('/chatboxes')
-            },
-            error => {
-                console.log("Ошибка", error)
-                navigate('/chatboxes')
-            }
-        )
-    }
-
 
 
     if (redirect) return <Navigate to='/' />;
-    if(!user && !localStorage.getItem('cometchat: authToken')){
+    if (!user && !localStorage.getItem('cometchat: authToken')) {
         console.log("No user found")//Проверка на нового пользователя
     }
 
@@ -225,7 +248,7 @@ function Chat() {
                             </h3>
                             <Button onClick={logout} variant='outline-primary'>Logout</Button>
                         </div>
-                          <div className='d-flex align-items-center justify-content-between'>
+                        <div className='d-flex align-items-center justify-content-between'>
                             <Button onClick={leaveRoom} variant='outline-primary'>Leave basic group</Button>
                         </div>
 
