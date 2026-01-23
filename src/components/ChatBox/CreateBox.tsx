@@ -1,6 +1,7 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
 import { Button, Modal } from "react-bootstrap";
+import PasswordField from "../PasswordField";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
@@ -9,6 +10,8 @@ interface CreateBoxProps {
 const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
     const [showWindow, setShowWindow] = useState(false);
+    const [password, setPassword] = useState<string>('');
+
 
     const handleClose = () => setShowWindow(false);
     const handleShow = () => setShowWindow(true);
@@ -24,8 +27,8 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             () => {
                 console.log("Group created:", group),
                     onGroupCreate(group)
-                    handleClose();
-                    setBoxName("")
+                handleClose();
+                setBoxName("")
             },
             (error) => {
                 console.log("Ошибка", error)
@@ -46,6 +49,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                 </Modal.Header>
 
                 <Modal.Body>
+                    <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                     <p>Здесь скоро будет настройки коробки</p>
                 </Modal.Body>
 
