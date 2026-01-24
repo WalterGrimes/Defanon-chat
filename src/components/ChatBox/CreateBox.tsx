@@ -1,6 +1,6 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
 
 interface CreateBoxProps {
@@ -12,70 +12,80 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [showWindow, setShowWindow] = useState(false);
     const [password, setPassword] = useState<string>('');
 
+    const handleClose = () => {
+        setShowWindow(false);
+        setBoxName("");
+        setPassword("");
+    };
 
-    const handleClose = () => setShowWindow(false);
     const handleShow = () => setShowWindow(true);
 
     const handleCreateGroup = () => {
         const GUID = `group_${Date.now()}`;
-        const boxType = CometChat.GROUP_TYPE.PUBLIC;
-        const password = "";
+        const trimmedPassword = password.trim();
 
-        const group = new CometChat.Group(GUID, boxName, boxType, password);
+        const boxType = trimmedPassword !== ""
+            ? CometChat.GROUP_TYPE.PASSWORD 
+            : CometChat.GROUP_TYPE.PUBLIC;
+
+        // Используем trimmedPassword для создания группы
+        const group = new CometChat.Group(GUID, boxName, boxType, trimmedPassword);
 
         CometChat.createGroup(group).then(
-            () => {
-                console.log("Group created:", group),
-                    onGroupCreate(group)
+            (createdGroup) => {
+                console.log("Group created successfully:", createdGroup);
+                onGroupCreate(createdGroup);
                 handleClose();
-                setBoxName("")
             },
             (error) => {
-                console.log("Ошибка", error)
+                console.error("Group creation failed:", error);
             }
-        )
-    }
-
+        );
+    };
 
     return (
         <div>
             <Button variant="success" onClick={handleShow}>
-                CreateGroup
+                Create Box
             </Button>
 
             <Modal show={showWindow} onHide={handleClose} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Настройка коробки</Modal.Title>
+                    <Modal.Title>Create New Box</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
-                    <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
-                    <p>Здесь скоро будет настройки коробки</p>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Box Name</Form.Label>
+                        <Form.Control
+                            type="text"
+                            placeholder="Enter a name for your box"
+                            value={boxName}
+                            onChange={(e) => setBoxName(e.target.value)}
+                        />
+                    </Form.Group>
+
+                    <Form.Group className="mb-3">
+                        <Form.Label>Password</Form.Label>
+                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)}/>
+                    </Form.Group>
                 </Modal.Body>
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
-                        Отмена
+                        Cancel
                     </Button>
-                    <input
-                        type="text"
-                        placeholder="Название группы"
-                        value={boxName}
-                        onChange={(e) => setBoxName(e.target.value)}
-                    />
-                    <button onClick={handleCreateGroup} disabled={!boxName.trim}>Create Group</button>
-                    <Button onClick={() => {
-                        handleClose();
-                    }}>
+                    <Button 
+                        variant="primary"
+                        onClick={handleCreateGroup}
+                        disabled={!boxName.trim()}
+                    >
+                        Create
                     </Button>
                 </Modal.Footer>
             </Modal>
-
-
         </div>
-    )
-
-}
-
+    );
+};
 
 export default CreateBox;
