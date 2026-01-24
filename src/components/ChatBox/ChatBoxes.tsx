@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner, Row, Card, Col, Button } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
-import CreateBox from "./CreateBox"; 
+import CreateBox from "./CreateBox";
 
 const ChatBoxes = () => {
     const [groups, setGroups] = useState<CometChat.Group[]>([]);
@@ -96,7 +96,7 @@ const ChatBoxes = () => {
             <div className="d-flex justify-content-end mb-4">
                 <CreateBox onGroupCreate={handleNewGroup} />
             </div>
-            
+
             <h2 className="mb-4 text-center text-uppercase" style={{ letterSpacing: '2px' }}>
                 Select a Box
             </h2>
@@ -106,31 +106,23 @@ const ChatBoxes = () => {
                     <Col key={group.getGuid()}>
                         <Card className="h-100 shadow-sm border-0 bg-dark text-white">
                             <Card.Body className="d-flex flex-column text-center">
-                                <Card.Title className="mb-3 text-truncate">{group.getName()}</Card.Title>
-                                
+                                <Card.Title className="mb-3">{group.getName()}</Card.Title>
                                 <Card.Text className="small text-muted mb-4">
                                     ID: {group.getGuid()} <br />
-                                    Members: {group.getMembersCount()} <br />
-                                    Created: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
+                                    Участников: {group.getMembersCount()} <br />
+                                    Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                 </Card.Text>
 
-                                <div className="mt-auto">
+                                <Button variant="outline-light" className="mt-auto" onClick={() => enterChat(group.getGuid())}>
+                                    Войти в коробку
+                                </Button>
+
+                                <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
+                                    Удалить коробку
+                                </Button>
+
+                                <div className="mt-2 d-flex justify-content-center">
                                     <BoxStatus type={group.getType()} />
-                                    <Button 
-                                        variant="outline-light" 
-                                        className="w-100 mt-3 mb-2"
-                                        onClick={() => enterChat(group.getGuid())}
-                                    >
-                                        Enter Box
-                                    </Button>
-                                    <Button 
-                                        variant="outline-danger" 
-                                        size="sm"
-                                        className="w-100"
-                                        onClick={() => handleDeleteGroup(group.getGuid())}
-                                    >
-                                        Delete Box
-                                    </Button>
                                 </div>
                             </Card.Body>
                         </Card>

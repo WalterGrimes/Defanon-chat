@@ -1,6 +1,5 @@
-import { CometChat, GROUP_TYPE } from "@cometchat/chat-sdk-javascript";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
-import { Button, Modal, Form } from "react-bootstrap";
 import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
 import BoxStatus from "./BoxStatus";
@@ -36,17 +35,11 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             (createdGroup) => {
                 console.log("Group created successfully:", createdGroup);
                 onGroupCreate(createdGroup);
-            (createdGroup) => {
-                console.log("Group created successfully:", createdGroup);
-                onGroupCreate(createdGroup);
                 handleClose();
             },
             (error) => {
                 console.error("Group creation failed:", error);
-                console.error("Group creation failed:", error);
             }
-        );
-    };
         );
     };
 
@@ -54,12 +47,10 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         <div>
             <Button variant="success" onClick={handleShow}>
                 Create Box
-                Create Box
             </Button>
 
             <Modal show={showWindow} onHide={handleClose} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Create New Box</Modal.Title>
                     <Modal.Title>Create New Box</Modal.Title>
                 </Modal.Header>
 
@@ -86,7 +77,6 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Cancel
-                        Cancel
                     </Button>
                     <Button
                         variant="primary"
@@ -100,17 +90,5 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         </div>
     );
 };
-    );
-};
 
 export default CreateBox;
-
-
-
-
-
-
-
-
-
-
