@@ -1,137 +1,144 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CometChat, GroupType } from "@cometchat/chat-sdk-javascript";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner, Row, Card, Col, Button } from "react-bootstrap";
-import CreateBox from "./CreateBox";
-
-export interface handleNewGroupProps {
-    onGroupCreate: (newGroup: CometChat.Group) => void;
-}
-
+import BoxStatus from "./BoxStatus";
+import CreateBox from "./CreateBox"; 
 
 const ChatBoxes = () => {
-    const [group, setGroup] = useState<CometChat.Group[]>([])
+    const [groups, setGroups] = useState<CometChat.Group[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
         const limit = 30;
-        const groupRequest = new CometChat.GroupsRequestBuilder()
+        const groupsRequest = new CometChat.GroupsRequestBuilder()
             .setLimit(limit)
             .build();
 
-        groupRequest.fetchNext().then(//Пагинатор
-            (groupList: any) => {
-                const sortedList = [...groupList].sort((a, b) => b.getCreatedAt() - a.getCreatedAt())
-
-                setGroup(sortedList);
-                setIsLoading(false)
+        groupsRequest.fetchNext().then(
+            (groupList: CometChat.Group[]) => {
+                const sortedList = [...groupList].sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
+                setGroups(sortedList);
+                setIsLoading(false);
             },
-            (error: any) => {
-                console.error("Ошибка", error)
+            (error: CometChat.CometChatException) => {
+                console.error("Groups fetching failed:", error);
                 setIsLoading(false);
             }
-        )
-    }, [])
+        );
 
-    useEffect(() => {
-        const listenerId = "listenerOfGroups"
-
+        const listenerId = "listenerOfGroups";
         CometChat.addGroupListener(
             listenerId,
             new CometChat.GroupListener({
                 onGroupCreated: (group: CometChat.Group) => {
-                    console.log("Человек создал комнату", group);
-                    handleNewGroup(group)
+                    handleNewGroup(group);
+                },
+                onGroupDeleted: (group: CometChat.Group) => {
+                    setGroups(prev => prev.filter(item => item.getGuid() !== group.getGuid()));
                 }
             })
-        )
+        );
+
         return () => CometChat.removeGroupListener(listenerId);
-    }, [])
-
-
-    const enterChat = (guid: string) => {
-
-        CometChat.joinGroup(guid).then(
-            (group) => {
-                console.log("Зaшло:",group)
-            },
-            (error) => {
-                console.log("Group joining failed:",error)
-            }
-        )
-        navigate(`/chat/${guid}`);
-    }
+    }, []);
 
     const handleNewGroup = (newGroup: CometChat.Group) => {
-        setGroup(prev => {
-            const updateList = [newGroup, ...prev];
-            updateList.sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
-            //особенность сорта,если положительное число,то ставит б на первое место
+        setGroups(prev => {
+            const updatedList = [newGroup, ...prev];
+            return updatedList.sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
+        });
+    };
 
-            return updateList;
-        })
-    }
+    const enterChat = (guid: string) => {
+        CometChat.joinGroup(guid).then(
+            (group) => {
+                console.log("Joined successfully:", group);
+                navigate(`/chat/${guid}`);
+            },
+            (error) => {
+                if (error.code === "ERR_ALREADY_JOINED") {
+                    navigate(`/chat/${guid}`);
+                } else {
+                    console.error("Join failed:", error);
+                    alert("Failed to join the box. Maybe it's private?");
+                }
+            }
+        );
+    };
+
     const handleDeleteGroup = (GUID: string) => {
-        if(!window.confirm("Уверен что хочешь удалить коробку?")) return;
+        if (!window.confirm("Are you sure you want to delete this box?")) return;
 
         CometChat.deleteGroup(GUID).then(
-            (response: boolean) => {
-                console.log("Группа удалена:", response);
-
-                setGroup(prev => prev.filter(item => item.getGuid() !== GUID))
+            () => {
+                setGroups(prev => prev.filter(item => item.getGuid() !== GUID));
             },
             (error: CometChat.CometChatException) => {
-                console.log("Ошибка:",error)
-                alert("Группа не смогла удалиться,так как вы не являетесь владельцем!")
+                console.error("Delete failed:", error);
+                alert("Only the owner can delete this box!");
             }
-        )
-    }
+        );
+    };
 
     if (isLoading) {
         return (
             <Container className="text-center mt-5">
-                <Spinner animation="border" />
-                <p>Загрузка коробок</p>
+                <Spinner animation="border" variant="success" />
+                <p className="mt-3">Loading boxes, please wait...</p>
             </Container>
-        )
+        );
     }
-
 
     return (
         <Container className="mt-4">
             <div className="d-flex justify-content-end mb-4">
                 <CreateBox onGroupCreate={handleNewGroup} />
             </div>
-            <h2 className="mb-4 text-center text-uppercase" style={{ letterSpacing: '2px' }}>Выберите коробку</h2>
-            <Row>
-                {group.map((group) => (
-                    <Col key={group.getGuid()} className="mb-4">
+            
+            <h2 className="mb-4 text-center text-uppercase" style={{ letterSpacing: '2px' }}>
+                Select a Box
+            </h2>
+
+            <Row xs={1} md={2} lg={3} className="g-4">
+                {groups.map((group) => (
+                    <Col key={group.getGuid()}>
                         <Card className="h-100 shadow-sm border-0 bg-dark text-white">
                             <Card.Body className="d-flex flex-column text-center">
-                                <Card.Title className="mb-3">{group.getName()}</Card.Title>
+                                <Card.Title className="mb-3 text-truncate">{group.getName()}</Card.Title>
+                                
                                 <Card.Text className="small text-muted mb-4">
                                     ID: {group.getGuid()} <br />
-                                    Участников: {group.getMembersCount()} <br />
-                                    Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
+                                    Members: {group.getMembersCount()} <br />
+                                    Created: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                 </Card.Text>
-                                <Button variant="outline-light" className="mt-auto"
-                                    onClick={() => enterChat(group.getGuid())}>
 
-                                    Войти в коробку
-
-                                </Button>
-                                <Button variant="danger" className="mt-2"
-                                    onClick={() => handleDeleteGroup(group.getGuid())}>
-                                    Удалить коробку
-                                </Button>
+                                <div className="mt-auto">
+                                    <BoxStatus type={group.getType()} />
+                                    <Button 
+                                        variant="outline-light" 
+                                        className="w-100 mt-3 mb-2"
+                                        onClick={() => enterChat(group.getGuid())}
+                                    >
+                                        Enter Box
+                                    </Button>
+                                    <Button 
+                                        variant="outline-danger" 
+                                        size="sm"
+                                        className="w-100"
+                                        onClick={() => handleDeleteGroup(group.getGuid())}
+                                    >
+                                        Delete Box
+                                    </Button>
+                                </div>
                             </Card.Body>
                         </Card>
                     </Col>
                 ))}
             </Row>
         </Container>
-    )
-}
+    );
+};
 
 export default ChatBoxes;

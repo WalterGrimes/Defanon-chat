@@ -1,7 +1,9 @@
-import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { CometChat, GROUP_TYPE } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
+import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
+import BoxStatus from "./BoxStatus";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
@@ -25,13 +27,15 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         const trimmedPassword = password.trim();
 
         const boxType = trimmedPassword !== ""
-            ? CometChat.GROUP_TYPE.PASSWORD 
+            ? CometChat.GROUP_TYPE.PASSWORD
             : CometChat.GROUP_TYPE.PUBLIC;
 
-        // Используем trimmedPassword для создания группы
         const group = new CometChat.Group(GUID, boxName, boxType, trimmedPassword);
 
         CometChat.createGroup(group).then(
+            (createdGroup) => {
+                console.log("Group created successfully:", createdGroup);
+                onGroupCreate(createdGroup);
             (createdGroup) => {
                 console.log("Group created successfully:", createdGroup);
                 onGroupCreate(createdGroup);
@@ -39,7 +43,10 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             },
             (error) => {
                 console.error("Group creation failed:", error);
+                console.error("Group creation failed:", error);
             }
+        );
+    };
         );
     };
 
@@ -47,14 +54,19 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         <div>
             <Button variant="success" onClick={handleShow}>
                 Create Box
+                Create Box
             </Button>
 
             <Modal show={showWindow} onHide={handleClose} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Create New Box</Modal.Title>
+                    <Modal.Title>Create New Box</Modal.Title>
                 </Modal.Header>
 
                 <Modal.Body>
+                    <div className="mb-3">
+                        <BoxStatus type={password.trim() ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC} />
+                    </div>
                     <Form.Group className="mb-3">
                         <Form.Label>Box Name</Form.Label>
                         <Form.Control
@@ -67,15 +79,16 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
 
                     <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
-                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)}/>
+                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                     </Form.Group>
                 </Modal.Body>
 
                 <Modal.Footer>
                     <Button variant="secondary" onClick={handleClose}>
                         Cancel
+                        Cancel
                     </Button>
-                    <Button 
+                    <Button
                         variant="primary"
                         onClick={handleCreateGroup}
                         disabled={!boxName.trim()}
@@ -87,5 +100,17 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         </div>
     );
 };
+    );
+};
 
 export default CreateBox;
+
+
+
+
+
+
+
+
+
+
