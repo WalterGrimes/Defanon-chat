@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
 import BoxStatus from "./BoxStatus";
+import { useModal } from "../../hooks/useModal";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
@@ -10,16 +11,14 @@ interface CreateBoxProps {
 
 const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
-    const [showWindow, setShowWindow] = useState(false);
     const [password, setPassword] = useState<string>('');
+    const {isVisible , show, hide} = useModal();
 
     const handleClose = () => {
-        setShowWindow(false);
         setBoxName("");
         setPassword("");
+        hide();
     };
-
-    const handleShow = () => setShowWindow(true);
 
     const handleCreateGroup = () => {
         const GUID = `group_${Date.now()}`;
@@ -45,11 +44,11 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
 
     return (
         <div>
-            <Button variant="success" onClick={handleShow}>
+            <Button variant="success" onClick={show}>
                 Create Box
             </Button>
 
-            <Modal show={showWindow} onHide={handleClose} centered>
+            <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Create New Box</Modal.Title>
                 </Modal.Header>
