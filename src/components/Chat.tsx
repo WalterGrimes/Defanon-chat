@@ -243,7 +243,7 @@ function Chat() {
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3'>
-                                React Anonymous Chat {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
+                                Welcome to default chat,you can leave if you want to {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
                             </h3>
                             <Button onClick={logout} variant='outline-primary'>Logout</Button>
                         </div>

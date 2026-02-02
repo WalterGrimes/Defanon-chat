@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { Button, InputGroup, Form } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { usePasswordToggle } from "../hooks/usePasswordToggle";
 
 interface PasswordFieldProps {
     value: string;
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    placeholder?: string;
 }
 
-const PasswordField = ({ value, onChange }: PasswordFieldProps) => {
-    const [showPassword, setShowPassword] = useState(false);
+const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => {
+    const { type, isVisiblePassword, toggle } = usePasswordToggle();
 
     return (
         <InputGroup>
-            <Form.Control 
-                type={showPassword ? "text" : "password"}
-                placeholder="Password for private mode (optional)"
-                value={value}
-                onChange={onChange} 
+            <Form.Control
+                type={type}
+                placeholder={placeholder || "Password for private mode (optional)"} value={value}
+                onChange={onChange}
             />
-            <Button variant="outline-secondary" onClick={() => setShowPassword(!showPassword)}>
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
+            <Button variant="outline-secondary" onClick={toggle}>
+                {isVisiblePassword ? <FaEyeSlash /> : <FaEye />}
             </Button>
         </InputGroup>
     );
