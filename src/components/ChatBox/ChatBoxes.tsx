@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { CometChat, GroupType } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
@@ -12,9 +12,8 @@ const ChatBoxes = () => {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { isVisible, show, hide } = useModal();
+    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
     const [password, setPassword] = useState<string>('');
-
-
 
     useEffect(() => {
         const limit = 30;
@@ -57,25 +56,35 @@ const ChatBoxes = () => {
         });
     };
 
-    const enterChat = (guid: string) => {
-        const trimmedPassword = password.trim();
-        show();
+    const handleJoin = (guid: string, pass: string = "") => {
+        const groupType = (pass ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC) as CometChat.GroupType;
 
-        CometChat.joinGroup(guid).then(
-            (group) => {
-                console.log("Joined successfully:", group);
+        CometChat.joinGroup(guid, groupType, pass).then(
+            () => {
+                hide();
                 navigate(`/chat/${guid}`);
             },
-            (error) => {
-                if (error.code === "ERR_ALREADY_JOINED") {
-                    navigate(`/chat/${guid}`);
-                } else {
-                    console.error("Join failed:", error);
-                    // alert("Failed to join the box. Maybe it's private?");
-                }
+            (error) =>{
+                console.error('Failed something', error)
+                alert(`maybe password is wrong`)
             }
-        );
+        )
+    }
+
+    const enterChat = (group: CometChat.Group) => {
+        const guid = group.getGuid();
+        const type = group.getType();
+        show();
+
+        if (type === CometChat.GROUP_TYPE.PASSWORD) {
+            setSelectedGroupId(guid);
+            setPassword('')
+            show();
+        } else {
+            handleJoin(guid);
+        }
     };
+
 
     const handleDeleteGroup = (GUID: string) => {
         if (!window.confirm("Are you sure you want to delete this box?")) return;
@@ -98,10 +107,6 @@ const ChatBoxes = () => {
                 <p className="mt-3">Loading boxes, please wait...</p>
             </Container>
         );
-    }
-
-    const handleClose = () => {
-        hide();
     }
 
     return (
@@ -127,11 +132,11 @@ const ChatBoxes = () => {
                                         Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                     </Card.Text>
 
-                                    <Button variant="outline-light" className="mt-auto" onClick={() => enterChat(group.getGuid())}>
+                                    <Button variant="outline-light"
+                                        className="mt-auto"
+                                        onClick={() => enterChat(group)}>
                                         Войти в коробку
                                     </Button>
-
-
 
                                     <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
                                         Удалить коробку
@@ -149,13 +154,23 @@ const ChatBoxes = () => {
 
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Write a password</Modal.Title>
+                    <Modal.Title>Write a password </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
-                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Введите пароль"/>
+                        <PasswordField value={password} 
+                        onChange={(e) => setPassword(e.target.value)} 
+                        placeholder="Введите пароль" />
                     </Form.Group>
+
+                    <Button
+                    variant="primary"
+                    className="w-100"
+                    onClick={() => selectedGroupId && handleJoin(selectedGroupId,password)}>
+                        Enter
+                    </Button>
+
                 </Modal.Body>
 
             </Modal>

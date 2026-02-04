@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Button, InputGroup, Form } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { usePasswordToggle } from "../hooks/usePasswordToggle";
@@ -25,5 +25,6 @@ const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => 
         </InputGroup>
     );
 };
+
 
 export default PasswordField;
