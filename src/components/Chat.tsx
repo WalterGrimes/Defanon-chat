@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -6,24 +5,26 @@ import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 function Chat() {
-    const { guid } = useParams() //Достать айди группы
+    const { guid } = useParams<{ guid: string }>(); //Достать айди группы
     const [redirect, setRedirect] = useState(false);
     const [user, setUser] = useState<CometChat.User | null>(null);
-    const receiverID = guid || 'supergroup';
     const [messageText, setMessageText] = useState<string>('');
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
-    const [currentGuid, setCurrentGuid] = useState<string | null>(null)
     const receiverType = CometChat.RECEIVER_TYPE.GROUP;
     const navigate = useNavigate();
 
     const location = useLocation();
 
+    if (!guid) {
+        return <Navigate to='/chatboxes' />
+    }
+
     const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!messageText.trim() || !receiverID) return;
+        if (!messageText.trim() || !guid) return;
 
         const textMessage = new CometChat.TextMessage(
-            receiverID,
+            guid,
             messageText,
             receiverType
         );
@@ -51,6 +52,7 @@ function Chat() {
 
     useEffect(() => {
         setMessages([]);
+        setMessageText('');
 
         const locationState = location.state as { user?: any };
         if (locationState?.user) {
@@ -64,7 +66,7 @@ function Chat() {
             listenerID,
             new CometChat.MessageListener({
                 onTextMessageReceived: (textMessage: any) => {
-                    if (textMessage.getReceiverGuid() === receiverID) {
+                    if (textMessage.getReceiverGuid() === guid) {
                         setMessages(prev => [...prev, textMessage]);
                     }
 
@@ -80,17 +82,15 @@ function Chat() {
     }, [messages])
 
     const joinGroup = () => {
-        const GUID = receiverID;
-        const groupType = CometChat.GROUP_TYPE.PUBLIC;
-        const groupName = "Super Group";
-        const group = new CometChat.Group(GUID, groupName, groupType);
-        
+        const GUID = guid;
 
-        CometChat.createGroup(group).then(
-            (createdGroup) => {
-                console.log("группа создана", createdGroup);
+        CometChat.getGroup(GUID).then(
+            (existingGroup) => {
+                console.log("группа создана", existingGroup);
 
-                CometChat.joinGroup(GUID).then(
+                const groupType = existingGroup.getType() as CometChat.GroupType;
+
+                CometChat.joinGroup(GUID, groupType).then(
                     () => {
                         console.log("Присоединились к группе");
                         fetchMessages();
@@ -104,28 +104,9 @@ function Chat() {
                 );
             },
             (error) => {
-                if (error.code === "ERR_GUID_ALREADY_EXISTS") {
-                    console.log("Группа уже существует, присоединяемся");
-
-                    CometChat.joinGroup(GUID).then(
-                        () => {
-                            console.log("Присоединились к существующей группе");
-
-                            fetchMessages();
-                        },
-                        (joinError) => {
-                            if (joinError.code === "ERR_ALREADY_JOINED") {
-                                console.log("Уже в группе находиься");
-                                fetchMessages();
-                            } else {
-                                console.log("Ошибка присоединения:", joinError)
-                                alert("Ошибка входа в группу: " + joinError.message);
-                            }
-                        }
-                    );
-                } else {
-                    console.log("Ошибка создания группы:", error)
-                }
+                console.error('ГРуппа не нашлась', error);
+                alert('Группа не существует')
+                navigate('/chatboxes');
             }
         )
     }
@@ -133,7 +114,7 @@ function Chat() {
 
 
     const reAuthenticateUserWithToken = (token?: string) => {
-        const authToken = token || localStorage.getItem('cometchat: authToken');
+        const authToken = token || localStorage.getItem('cometchat:authToken');
         if (!authToken) return;
 
         CometChat.login(authToken).then(
@@ -155,14 +136,13 @@ function Chat() {
     }
 
     const leaveRoom = () => {
-        const GUID = 'supergroup'
+        const GUID = guid;
 
         CometChat.leaveGroup(GUID).then(
             () => {
                 console.log("Успешно покинуто")
 
                 setMessages([])
-                setCurrentGuid("")
                 setMessageText("");
                 navigate('/chatboxes')
             },
@@ -188,12 +168,13 @@ function Chat() {
     const fetchMessages = () => {
         const limit = 20;
         const messageRequest = new CometChat.MessagesRequestBuilder()
-            .setGUID(receiverID)
+            .setGUID(guid)
             .setLimit(limit)
             .build();
 
         messageRequest.fetchPrevious().then(
             messages => {
+                console.log(`Кол-во сообщении ${messages.length}`);
                 setMessages([...messages]);
                 setTimeout(scrollToBottom, 100)
             },
@@ -229,10 +210,8 @@ function Chat() {
         )
     }
 
-
-
     if (redirect) return <Navigate to='/' />;
-    if (!user && !localStorage.getItem('cometchat: authToken')) {
+    if (!user && !localStorage.getItem('cometchat:authToken')) {
         console.log("No user found")//Проверка на нового пользователя
     }
 
@@ -243,7 +222,7 @@ function Chat() {
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3'>
-                                Welcome to default chat,you can leave if you want to {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
+                                Welcome to default chat dear {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
                             </h3>
                             <Button onClick={logout} variant='outline-primary'>Logout</Button>
                         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CometChat, GroupType } from "@cometchat/chat-sdk-javascript";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
@@ -64,9 +64,13 @@ const ChatBoxes = () => {
                 hide();
                 navigate(`/chat/${guid}`);
             },
-            (error) =>{
-                console.error('Failed something', error)
-                alert(`maybe password is wrong`)
+            (error) => {
+                if (error.code === "ERR_ALREADY_JOINED") {
+                    hide()
+                    navigate(`/chat/${guid}`);
+                } else {
+                    console.error("Failed some", error)
+                }
             }
         )
     }
@@ -74,7 +78,12 @@ const ChatBoxes = () => {
     const enterChat = (group: CometChat.Group) => {
         const guid = group.getGuid();
         const type = group.getType();
-        show();
+
+
+        if (group.getHasJoined()) {
+            navigate(`/chat/${guid}`);
+            return
+        }
 
         if (type === CometChat.GROUP_TYPE.PASSWORD) {
             setSelectedGroupId(guid);
@@ -115,11 +124,6 @@ const ChatBoxes = () => {
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>
-
-                <h2 className="mb-4 text-center text-uppercase" style={{ letterSpacing: '2px' }}>
-                    Select a Box
-                </h2>
-
                 <Row xs={1} md={2} lg={3} className="g-4">
                     {groups.map((group) => (
                         <Col key={group.getGuid()}>
@@ -142,8 +146,7 @@ const ChatBoxes = () => {
                                         Удалить коробку
                                     </Button>
 
-                                    <div className="mt-2 d- flex justify-content-center">
-                                        <BoxStatus type={group.getType()} />
+                                    <div className="mt-2 d-flex justify-content-center">                                        <BoxStatus type={group.getType()} />
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -159,15 +162,15 @@ const ChatBoxes = () => {
                 <Modal.Body>
                     <Form.Group className="mb-3">
                         <Form.Label>Password</Form.Label>
-                        <PasswordField value={password} 
-                        onChange={(e) => setPassword(e.target.value)} 
-                        placeholder="Введите пароль" />
+                        <PasswordField value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            placeholder="Введите пароль" />
                     </Form.Group>
 
                     <Button
-                    variant="primary"
-                    className="w-100"
-                    onClick={() => selectedGroupId && handleJoin(selectedGroupId,password)}>
+                        variant="primary"
+                        className="w-100"
+                        onClick={() => selectedGroupId && handleJoin(selectedGroupId, password)}>
                         Enter
                     </Button>
 
