@@ -154,28 +154,36 @@ const ChatBoxes = () => {
                     ))}
                 </Row>
             </Container>
-
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>
-                    <Modal.Title>Write a password </Modal.Title>
+                    <Modal.Title>Write a password</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Password</Form.Label>
-                        <PasswordField value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="Введите пароль" />
-                    </Form.Group>
 
-                    <Button
-                        variant="primary"
-                        className="w-100"
-                        onClick={() => selectedGroupId && handleJoin(selectedGroupId, password)}>
-                        Enter
-                    </Button>
+                <Form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (selectedGroupId) {
+                        handleJoin(selectedGroupId, password);
+                    }
+                }}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Password</Form.Label>
+                            <PasswordField
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Введите пароль"
+                            />
+                        </Form.Group>
 
-                </Modal.Body>
-
+                        <Button
+                            variant="primary"
+                            className="w-100"
+                            type="submit"
+                        >
+                            Enter
+                        </Button>
+                    </Modal.Body>
+                </Form>
             </Modal>
         </>
     );
