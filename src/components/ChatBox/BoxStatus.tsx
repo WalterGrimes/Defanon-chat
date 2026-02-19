@@ -1,5 +1,5 @@
 import { Badge } from "react-bootstrap";
-import { CometChat } from "@cometchat-pro/chat";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { FaLock, FaGlobe } from "react-icons/fa"; 
 
 interface BoxStatusProps {

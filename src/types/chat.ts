@@ -1,4 +1,4 @@
-import type { CometChat } from "@cometchat-pro/chat";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 
 interface BaseState {

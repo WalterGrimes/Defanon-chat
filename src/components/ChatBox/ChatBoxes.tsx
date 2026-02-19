@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
+import { CometChat } from "@cometchat/chat-sdk-javascript";import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
-import { useModal } from "../../hooks/useModal";
 import PasswordField from "../PasswordField";
+import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
 
 const ChatBoxes = () => {
-    const [groups, setGroups] = useState<CometChat.Group[]>([]);
+    const {  groups,setGroups,
+        selectedGroupId,
+        password,setPassword,
+        isVisible,hide,show,
+        enterChat,handleDeleteGroup,handleJoin, handleNewGroup} = useChatActionsForChatBoxes();
+
     const [isLoading, setIsLoading] = useState(true);
-    const navigate = useNavigate();
-    const { isVisible, show, hide } = useModal();
-    const [selectedGroupId, setSelectedGroupId] = useState<string | null>(null);
-    const [password, setPassword] = useState<string>('');
+    
 
     useEffect(() => {
         const limit = 30;
@@ -48,66 +48,6 @@ const ChatBoxes = () => {
 
         return () => CometChat.removeGroupListener(listenerId);
     }, []);
-
-    const handleNewGroup = (newGroup: CometChat.Group) => {
-        setGroups(prev => {
-            const updatedList = [newGroup, ...prev];
-            return updatedList.sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
-        });
-    };
-
-    const handleJoin = (guid: string, pass: string = "") => {
-        const groupType = (pass ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC) as CometChat.GroupType;
-
-        CometChat.joinGroup(guid, groupType, pass).then(
-            () => {
-                hide();
-                navigate(`/chat/${guid}`);
-            },
-            (error) => {
-                if (error.code === "ERR_ALREADY_JOINED") {
-                    hide()
-                    navigate(`/chat/${guid}`);
-                } else {
-                    console.error("Failed some", error)
-                }
-            }
-        )
-    }
-
-    const enterChat = (group: CometChat.Group) => {
-        const guid = group.getGuid();
-        const type = group.getType();
-
-
-        if (group.getHasJoined()) {
-            navigate(`/chat/${guid}`);
-            return
-        }
-
-        if (type === CometChat.GROUP_TYPE.PASSWORD) {
-            setSelectedGroupId(guid);
-            setPassword('')
-            show();
-        } else {
-            handleJoin(guid);
-        }
-    };
-
-
-    const handleDeleteGroup = (GUID: string) => {
-        if (!window.confirm("Are you sure you want to delete this box?")) return;
-
-        CometChat.deleteGroup(GUID).then(
-            () => {
-                setGroups(prev => prev.filter(item => item.getGuid() !== GUID));
-            },
-            (error: CometChat.CometChatException) => {
-                console.error("Delete failed:", error);
-                alert("Only the owner can delete this box!");
-            }
-        );
-    };
 
     if (isLoading) {
         return (
@@ -146,7 +86,8 @@ const ChatBoxes = () => {
                                         Удалить коробку
                                     </Button>
 
-                                    <div className="mt-2 d-flex justify-content-center">                                        <BoxStatus type={group.getType()} />
+                                    <div className="mt-2 d-flex justify-content-center">
+                                        <BoxStatus type={group.getType()} />
                                     </div>
                                 </Card.Body>
                             </Card>
@@ -178,8 +119,7 @@ const ChatBoxes = () => {
                         <Button
                             variant="primary"
                             className="w-100"
-                            type="submit"
-                        >
+                            type="submit">
                             Enter
                         </Button>
                     </Modal.Body>

@@ -3,41 +3,25 @@ import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
+import { useChatACtionsForSignChat } from "../hooks/useChatActionsForSignChat";
+
 
 function Chat() {
-    const { guid } = useParams<{ guid: string }>(); //Достать айди группы
-    const [redirect, setRedirect] = useState(false);
-    const [user, setUser] = useState<CometChat.User | null>(null);
-    const [messageText, setMessageText] = useState<string>('');
-    const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
-    const receiverType = CometChat.RECEIVER_TYPE.GROUP;
-    const navigate = useNavigate();
-
     const location = useLocation();
+
+    const {messages, setMessages,
+         messageText, setMessageText, 
+        sendMessage, leaveRoom,handleChange,scrollToBottom,
+        guid } = useChatActionsForChat();
+
+    const {getUser,setUser, logout, user, redirect} = useChatACtionsForSignChat();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
     }
 
-    const sendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!messageText.trim() || !guid) return;
-
-        const textMessage = new CometChat.TextMessage(
-            guid,
-            messageText,
-            receiverType
-        );
-
-        CometChat.sendMessage(textMessage).then(
-            message => {
-                setMessageText('');
-                setMessages(prev => [...prev, message]);
-            },
-            error => console.log('Message sending failed:', error)
-        )
-    }
-    useEffect(() => {
+          useEffect(() => {
         if (guid) {
             CometChat.getGroup(guid).then(
                 (group) => {
@@ -59,7 +43,7 @@ function Chat() {
             setUser(locationState.user);
         }
 
-        getUser();
+        getUser(() =>{});
 
         const listenerID = 'listener_id_' + uuid();
         CometChat.addMessageListener(
@@ -81,134 +65,6 @@ function Chat() {
         scrollToBottom();
     }, [messages])
 
-    const joinGroup = () => {
-        const GUID = guid;
-
-        CometChat.getGroup(GUID).then(
-            (existingGroup) => {
-                console.log("группа создана", existingGroup);
-
-                const groupType = existingGroup.getType() as CometChat.GroupType;
-
-                CometChat.joinGroup(GUID, groupType).then(
-                    () => {
-                        console.log("Присоединились к группе");
-                        fetchMessages();
-                    },
-                    (error) => {
-                        if (error.code === 'ERR_ALREADY_JOINED') {
-                            console.log("Уже в группе");
-                            fetchMessages();
-                        }
-                    }
-                );
-            },
-            (error) => {
-                console.error('ГРуппа не нашлась', error);
-                alert('Группа не существует')
-                navigate('/chatboxes');
-            }
-        )
-    }
-
-
-
-    const reAuthenticateUserWithToken = (token?: string) => {
-        const authToken = token || localStorage.getItem('cometchat:authToken');
-        if (!authToken) return;
-
-        CometChat.login(authToken).then(
-            user => {
-                console.log("Пользователь залогинен:", user)
-                setUser(user)
-                joinGroup();
-            },
-            error => console.log("login failed", error)
-        )
-    }
-
-    const logout = () => {
-        CometChat.logout().then(() => {
-            navigate('/')
-            localStorage.removeItem('cometchat: authToken');
-            setRedirect(true)
-        });
-    }
-
-    const leaveRoom = () => {
-        const GUID = guid;
-
-        CometChat.leaveGroup(GUID).then(
-            () => {
-                console.log("Успешно покинуто")
-
-                setMessages([])
-                setMessageText("");
-                navigate('/chatboxes')
-            },
-            error => {
-                console.log("Ошибка", error)
-                navigate('/chatboxes')
-            }
-        )
-    }
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMessageText(e.target.value);
-    }
-
-    const scrollToBottom = () => {
-        const page = document.querySelector('.page');
-        if (page) {
-            page.scrollTop = page.scrollHeight;
-            //браузере говоришь перемести верхнюю границу видимой области в самую нижнюю якобы приравнивая
-        }
-    }
-
-    const fetchMessages = () => {
-        const limit = 20;
-        const messageRequest = new CometChat.MessagesRequestBuilder()
-            .setGUID(guid)
-            .setLimit(limit)
-            .build();
-
-        messageRequest.fetchPrevious().then(
-            messages => {
-                console.log(`Кол-во сообщении ${messages.length}`);
-                setMessages([...messages]);
-                setTimeout(scrollToBottom, 100)
-            },
-            error => {
-                console.log('Message fetching failed', error)
-                alert("Ошибка входа: " + error.message);
-            }
-        )
-    }
-
-
-
-    const getUser = () => {
-        CometChat.getLoggedinUser().then(
-            user => {
-                if (user) {
-                    joinGroup();
-                } else {
-                    reAuthenticateUserWithToken();
-                }
-            },
-            () => {
-                const authToken = localStorage.getItem('cometchat: authToken');
-                if (authToken) {
-                    reAuthenticateUserWithToken(authToken);
-                    //если пользователь зареган его пускает,если нет 
-                    // попытается помочь ему войти с помощью ключа токена 
-                    // а если ничего нет то перенаправляет с помощью навигейт на страницу с регистрацией
-                } else {
-                    setRedirect(true);
-                }
-            }
-        )
-    }
 
     if (redirect) return <Navigate to='/' />;
     if (!user && !localStorage.getItem('cometchat:authToken')) {
@@ -265,6 +121,8 @@ function Chat() {
         </div>
     );
 }
+    
+
 
 
 export default Chat;
