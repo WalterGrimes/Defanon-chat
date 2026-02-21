@@ -41,17 +41,19 @@ export const useChatActionsForChat = () => {
         if (!guid) return;
         CometChat.getGroup(guid).then(
             (existingGroup) => {
+                console.log("niggers",existingGroup)
                 const groupType = existingGroup.getType() as CometChat.GroupType;
                 CometChat.joinGroup(guid, groupType).then(
                     () => fetchMessages(),
                     (error) => {
+                        console.log("niggers", error)
                         if (error.code === 'ERR_ALREADY_JOINED') fetchMessages();
                     }
                 );
             },
             (error) => {
                 if (error.code === 'ERR_ALREADY_JOINED') {
-                    fetchMessages
+                    fetchMessages();
                 }
                 navigate('/chatboxes');
             }

@@ -3,7 +3,6 @@ import { useModal } from "./useModal";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-
 export const useChatActionsForChatBoxes = () => {
     const navigate = useNavigate();
     const { hide, show, isVisible } = useModal();
@@ -20,6 +19,7 @@ export const useChatActionsForChatBoxes = () => {
                 navigate(`/chat/${guid}`);
             },
             (error) => {
+                console.log(error)
                 if (error.code === "ERR_ALREADY_JOINED") {
                     hide()
                     navigate(`/chat/${guid}`);

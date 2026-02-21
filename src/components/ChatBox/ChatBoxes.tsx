@@ -9,7 +9,7 @@ const ChatBoxes = () => {
     const {  groups,setGroups,
         selectedGroupId,
         password,setPassword,
-        isVisible,hide,show,
+        isVisible,hide,
         enterChat,handleDeleteGroup,handleJoin, handleNewGroup} = useChatActionsForChatBoxes();
 
     const [isLoading, setIsLoading] = useState(true);
