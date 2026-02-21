@@ -1,27 +1,26 @@
-import React, { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { v4 as uuid } from 'uuid';
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
-import { useChatACtionsForSignChat } from "../hooks/useChatActionsForSignChat";
-
+import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
 
 function Chat() {
     const location = useLocation();
 
-    const {messages, setMessages,
-         messageText, setMessageText, 
-        sendMessage, leaveRoom,handleChange,scrollToBottom,
+    const { messages, setMessages,
+        messageText, setMessageText,
+        sendMessage, leaveRoom, handleChange, chatContainerRef,joinGroup,
         guid } = useChatActionsForChat();
 
-    const {getUser,setUser, logout, user, redirect} = useChatACtionsForSignChat();
+    const { getUser, setUser, logout, user, redirect } = useChatActionsForSignChat();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
     }
 
-          useEffect(() => {
+    useEffect(() => {
         if (guid) {
             CometChat.getGroup(guid).then(
                 (group) => {
@@ -43,7 +42,7 @@ function Chat() {
             setUser(locationState.user);
         }
 
-        getUser(() =>{});
+        getUser(() => joinGroup());
 
         const listenerID = 'listener_id_' + uuid();
         CometChat.addMessageListener(
@@ -61,9 +60,7 @@ function Chat() {
         return () => CometChat.removeMessageListener(listenerID);
     }, [guid])
 
-    useEffect(() => {
-        scrollToBottom();
-    }, [messages])
+   
 
 
     if (redirect) return <Navigate to='/' />;
@@ -72,7 +69,7 @@ function Chat() {
     }
 
     return (
-        <div className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
+        <div ref={chatContainerRef} className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
             <Container>
                 <Row>
                     <Col>
@@ -121,7 +118,7 @@ function Chat() {
         </div>
     );
 }
-    
+
 
 
 

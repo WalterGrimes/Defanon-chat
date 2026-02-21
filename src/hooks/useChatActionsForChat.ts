@@ -1,19 +1,25 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
+
 
 export const useChatActionsForChat = () => {
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
     const [messageText, setMessageText] = useState<string>('');
     const { guid } = useParams<{ guid: string }>();
     const navigate = useNavigate();
+    const chatContainerRef = useRef<HTMLDivElement>(null);
 
-    const scrollToBottom = () => {
-        const page = document.querySelector('.page');
-        if (page) {
-            page.scrollTop = page.scrollHeight;
+    useEffect(() => {
+        const el = chatContainerRef.current;
+        if (el){
+            el.scrollTo({
+            top:  el.scrollHeight,
+            behavior: 'smooth'
+            })
         }
-    };
+    }, [messages])
+    
 
     const fetchMessages = () => {
         const limit = 20;
@@ -24,8 +30,8 @@ export const useChatActionsForChat = () => {
 
         messageRequest.fetchPrevious().then(
             msgs => {
+                console.log("Сообщ загружен", msgs)
                 setMessages([...msgs]);
-                setTimeout(scrollToBottom, 100);
             },
             error => console.log('Message fetching failed', error)
         );
@@ -44,6 +50,9 @@ export const useChatActionsForChat = () => {
                 );
             },
             (error) => {
+                if (error.code === 'ERR_ALREADY_JOINED') {
+                    fetchMessages
+                }
                 navigate('/chatboxes');
             }
         );
@@ -59,7 +68,6 @@ export const useChatActionsForChat = () => {
             message => {
                 setMessageText('');
                 setMessages(prev => [...prev, message]);
-                setTimeout(scrollToBottom, 50);
             },
             error => console.log('Message sending failed:', error)
         );
@@ -84,7 +92,7 @@ export const useChatActionsForChat = () => {
     return {
         messages, setMessages,
         messageText, setMessageText,
-        sendMessage, joinGroup, leaveRoom, fetchMessages,handleChange,scrollToBottom,
+        sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
         guid
     };
 };

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
-export const useChatACtionsForSignChat = () => {
+export const useChatActionsForSignChat = () => {
     const [user, setUser] = useState<CometChat.User | null>(null);
     const [redirect, setRedirect] = useState(false);
     const navigate = useNavigate();
