@@ -1,19 +1,26 @@
 import { useEffect, useState } from "react";
-import { CometChat } from "@cometchat/chat-sdk-javascript";import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
+import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
 import PasswordField from "../PasswordField";
 import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
 
 const ChatBoxes = () => {
-    const {  groups,setGroups,
+    const { groups, setGroups,
         selectedGroupId,
-        password,setPassword,
-        isVisible,hide,
-        enterChat,handleDeleteGroup,handleJoin, handleNewGroup} = useChatActionsForChatBoxes();
+        password, setPassword,
+        isVisible, hide,
+        enterChat, handleDeleteGroup, handleJoin, handleNewGroup } = useChatActionsForChatBoxes();
 
     const [isLoading, setIsLoading] = useState(true);
-    
+    const [loggedInUid, setLoggedInUid] = useState<string>("");
+
+    useEffect(() => {
+        CometChat.getLoggedinUser().then((user) => {    
+            if (user) setLoggedInUid(user.getUid());
+        });
+    }, []);
+
 
     useEffect(() => {
         const limit = 30;
@@ -81,6 +88,10 @@ const ChatBoxes = () => {
                                         onClick={() => enterChat(group)}>
                                         Войти в коробку
                                     </Button>
+                                    <Card.Text className="small text-muted mb-4">
+                                        {group.getOwner() === loggedInUid &&(
+                                        <p>Вы создатель этой коробки</p>)}
+                                    </Card.Text>
 
                                     <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
                                         Удалить коробку

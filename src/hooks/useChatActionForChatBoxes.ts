@@ -59,10 +59,6 @@ export const useChatActionsForChatBoxes = () => {
         const type = group.getType();
 
 
-        if (group.getHasJoined()) {
-            navigate(`/chat/${guid}`);
-            return
-        }
 
         if (type === CometChat.GROUP_TYPE.PASSWORD) {
             setSelectedGroupId(guid);
@@ -70,6 +66,11 @@ export const useChatActionsForChatBoxes = () => {
             show();
         } else {
             handleJoin(guid);
+        }
+
+        if (group.getHasJoined()) {
+            navigate(`/chat/${guid}`);
+            return
         }
     };
 
