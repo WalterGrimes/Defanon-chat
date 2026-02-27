@@ -10,16 +10,36 @@ export const useChatActionsForChat = () => {
     const navigate = useNavigate();
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
+    const [isLeaving, setIsLeaving] = useState(false);
+
+
+  
+    
+    const leaveRoom = () => {
+        if (!guid) return;
+
+        setIsLeaving(true);
+        CometChat.leaveGroup(guid).then(
+            () => {
+                setMessages([]);
+                setMessageText("");
+                navigate('/chatboxes');
+            },
+            () => navigate('/chatboxes')
+        );
+    };
+
+
     useEffect(() => {
         const el = chatContainerRef.current;
-        if (el){
+        if (el) {
             el.scrollTo({
-            top:  el.scrollHeight,
-            behavior: 'smooth'
+                top: el.scrollHeight,
+                behavior: 'smooth'
             })
         }
     }, [messages])
-    
+
 
     const fetchMessages = () => {
         const limit = 20;
@@ -41,7 +61,7 @@ export const useChatActionsForChat = () => {
         if (!guid) return;
         CometChat.getGroup(guid).then(
             (existingGroup) => {
-                console.log("niggers",existingGroup)
+                console.log("niggers", existingGroup)
                 const groupType = existingGroup.getType() as CometChat.GroupType;
                 CometChat.joinGroup(guid, groupType).then(
                     () => fetchMessages(),
@@ -75,18 +95,6 @@ export const useChatActionsForChat = () => {
         );
     };
 
-    const leaveRoom = () => {
-        if (!guid) return;
-        CometChat.leaveGroup(guid).then(
-            () => {
-                setMessages([]);
-                setMessageText("");
-                navigate('/chatboxes');
-            },
-            () => navigate('/chatboxes')
-        );
-    };
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(e.target.value);
     }
@@ -95,6 +103,6 @@ export const useChatActionsForChat = () => {
         messages, setMessages,
         messageText, setMessageText,
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
-        guid
+        guid,isLeaving
     };
 };

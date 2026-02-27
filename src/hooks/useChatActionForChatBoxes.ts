@@ -10,8 +10,12 @@ export const useChatActionsForChatBoxes = () => {
     const [password, setPassword] = useState<string>('');
     const [groups, setGroups] = useState<CometChat.Group[]>([]);
 
+    const [isJoining, setIsJoining] = useState(false);
+
     const handleJoin = (guid: string, pass: string = "") => {
         const groupType = (pass ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC) as CometChat.GroupType;
+
+        setIsJoining(true);
 
         CometChat.joinGroup(guid, groupType, pass).then(
             () => {
@@ -80,7 +84,8 @@ export const useChatActionsForChatBoxes = () => {
         selectedGroupId,
         password, setPassword,
         isVisible, hide, show,
-        enterChat, handleDeleteGroup, handleJoin, handleNewGroup
+        enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
+        isJoining
     }
 
 }
