@@ -12,8 +12,6 @@ export const useChatActionsForChat = () => {
 
     const [isLeaving, setIsLeaving] = useState(false);
 
-
-  
     
     const leaveRoom = () => {
         if (!guid) return;

@@ -7,6 +7,7 @@ interface BaseState {
     redirect: boolean;
 }
 
+
 export interface SignupState extends BaseState {
     uid: string;
     name: string;

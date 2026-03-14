@@ -2,7 +2,7 @@ import { useState } from "react";
 import { MessageInput } from "./MessageInput";
 import { addMessage } from "../features/chatSlice";
 import { useAppDispatch, useAppSelector } from "../app/hooks";
-import Signup from "./ChatSign";
+import Signup from "./EnterChat";
  
 type Message = {
     id: string;

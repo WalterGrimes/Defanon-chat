@@ -15,11 +15,17 @@ function Chat() {
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid, isLeaving } = useChatActionsForChat();
 
-    const { getUser, setUser, logout, user, redirect } = useChatActionsForSignChat();
+    const { getUser, setUser, logout, user, redirect , handleSignUp} = useChatActionsForSignChat();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
     }
+
+    useEffect(() => {
+        getUser(() => {
+            window.location.href = "/chatboxes"
+        })
+    }, []);
 
     useEffect(() => {
         if (guid) {
@@ -62,8 +68,6 @@ function Chat() {
     }, [guid])
 
 
-
-
     if (redirect) return <Navigate to='/' />;
     if (!user && !localStorage.getItem('cometchat:authToken')) {
         console.log("No user found")//Проверка на нового пользователя
@@ -79,15 +83,15 @@ function Chat() {
                 <Row>
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
-                            <h3 className='py-3'>
-                                Welcome to default chat dear {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
+                            <h3 className='py-3 mb-0'>
+                                Welcome to chat dear {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
                             </h3>
-                            <Button onClick={logout} variant='outline-primary'>Logout</Button>
-                        </div>
-                        <div className='d-flex align-items-center justify-content-between'>
-                            <Button onClick={leaveRoom} variant='outline-primary'>Leave basic group</Button>
-                        </div>
+                            <div className='d-flex gap-2 align-items-center ms-3'>
+                                <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px'}}> Logout</Button>
+                                <Button onClick={leaveRoom} variant='outline-primary'>Leave </Button>
 
+                            </div>
+                        </div>
 
                         <ul className='list-group' style={{ marginBottom: '80px' }}>
                             {messages.length > 0 ? (
