@@ -59,7 +59,7 @@ const EnterChat = ({ initialName = '' }:EnterChatProps ) => {
                                 type='text'
                                 name='name'
                                 value={name}
-                                placeholder='What is your name?'
+                                placeholder='Choose a username?'
                                 onChange={handleNameChange}
                             />
                         </Form.Group>

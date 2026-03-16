@@ -22,12 +22,6 @@ function Chat() {
     }
 
     useEffect(() => {
-        getUser(() => {
-            window.location.href = "/chatboxes"
-        })
-    }, []);
-
-    useEffect(() => {
         if (guid) {
             CometChat.getGroup(guid).then(
                 (group) => {

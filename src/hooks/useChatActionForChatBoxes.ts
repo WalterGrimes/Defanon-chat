@@ -61,23 +61,26 @@ export const useChatActionsForChatBoxes = () => {
     const enterChat = (group: CometChat.Group) => {
         const guid = group.getGuid();
         const type = group.getType();
+        const hasJoined = group.getHasJoined();
 
+        console.log(`Пытаемся войти в группу id: ${guid}, тип: ${type} и уже в группе:${hasJoined}`);
 
+        if (hasJoined) {
+            console.log(` пользователь уже участник, переход в чат: ${guid}`);
+            navigate(`/chat/${guid}`);
+            return;
+        }
 
         if (type === CometChat.GROUP_TYPE.PASSWORD) {
+            console.log(`Есть пароль открытие модалки.`);
             setSelectedGroupId(guid);
-            setPassword('')
+            setPassword('');
             show();
         } else {
+            console.log(`публичная/личная группа, запуск handleJoin.`);
             handleJoin(guid);
         }
-
-        if (group.getHasJoined()) {
-            navigate(`/chat/${guid}`);
-            return
-        }
     };
-
 
     return {
         groups, setGroups,
