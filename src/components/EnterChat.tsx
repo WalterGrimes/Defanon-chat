@@ -8,7 +8,7 @@ interface EnterChatProps {
     initialName?: string;
 }
 
-const EnterChat = ({ initialName = '' }:EnterChatProps ) => {
+const EnterChat = ({ initialName = '' }: EnterChatProps) => {
     const [name, setName] = useState(initialName);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -55,6 +55,7 @@ const EnterChat = ({ initialName = '' }:EnterChatProps ) => {
                         <Form.Group controlId='display-name' className="mt-3">
                             <Form.Label>Name</Form.Label>
                             <Form.Control
+                                autoFocus
                                 required
                                 type='text'
                                 name='name'

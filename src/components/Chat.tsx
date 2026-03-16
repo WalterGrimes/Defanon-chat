@@ -72,7 +72,7 @@ function Chat() {
     }
 
     return (
-        <div ref={chatContainerRef} className='bg-light page' style={{ height: '100vh', overflowY: 'auto' }}>
+        <div ref={chatContainerRef} className='bg-light page'>
             <Container>
                 <Row>
                     <Col>

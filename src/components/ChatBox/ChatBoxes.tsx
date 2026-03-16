@@ -5,6 +5,7 @@ import CreateBox from "./CreateBox";
 import PasswordField from "../PasswordField";
 import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
 import { Loader } from "../../features/Loader";
+import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -15,8 +16,10 @@ const ChatBoxes = () => {
         isJoining
     } = useChatActionsForChatBoxes();
 
+    const {logout} = useChatActionsForSignChat();
+
     const [isLoading, setIsLoading] = useState(true);
-  
+
 
     const [loggedInUid, setLoggedInUid] = useState<string>("");
 
@@ -67,80 +70,86 @@ const ChatBoxes = () => {
     if (isJoining) {
         return <Loader message="Loading messages,please wait..." />
     }
-    
-        return (
-            <>
-                <Container className="mt-4">
-                    <div className="d-flex justify-content-end mb-4">
-                        <CreateBox onGroupCreate={handleNewGroup} />
-                    </div>
-                    <Row xs={1} md={2} lg={3} className="g-4">
-                        {groups.map((group) => (
-                            <Col key={group.getGuid()}>
-                                <Card className="h-100 shadow-sm border-0 bg-dark text-white">
-                                    <Card.Body className="d-flex flex-column text-center">
-                                        <Card.Title className="mb-3">{group.getName()}</Card.Title>
-                                        <Card.Text className="small text-muted mb-4">
-                                            ID: {group.getGuid()} <br />
-                                            Участников: {group.getMembersCount()} <br />
-                                            Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
-                                            {group.getOwner() === loggedInUid && (
-                                                <p>Вы являетесь создателем данной комнаты</p>
-                                            )}
 
-                                        </Card.Text>
+    return (
+        <>
+            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
+                <Button  onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
+            </div>
+            <Container className="mt-4">
+                <div className="d-flex justify-content-end mb-4">
+                    <CreateBox onGroupCreate={handleNewGroup} />
+                </div>
+                <Row xs={1} md={2} lg={3} className="g-4">
+                    {groups.map((group) => (
+                        <Col key={group.getGuid()}>
+                            <Card className="h-100 shadow-sm border-0 bg-dark text-white">
+                                <Card.Body className="d-flex flex-column text-center">
+                                    <Card.Title className="mb-3">{group.getName()}</Card.Title>
+                                    <Card.Text className="small text-muted mb-4">
+                                        ID: {group.getGuid()} <br />
+                                        Участников: {group.getMembersCount()} <br />
+                                        Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
+                                        {group.getOwner() === loggedInUid && (
+                                            <p>Вы являетесь создателем данной комнаты</p>
+                                        )}
 
-                                        <Button variant="outline-light"
-                                            className="mt-auto"
-                                            onClick={() => enterChat(group)}>
-                                            Войти в коробку
-                                        </Button>
+                                    </Card.Text>
 
-                                        <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
-                                            Удалить коробку
-                                        </Button>
 
-                                        <div className="mt-2 d-flex justify-content-center">
-                                            <BoxStatus type={group.getType()} />
-                                        </div>
-                                    </Card.Body>
-                                </Card>
-                            </Col>
-                        ))}
-                    </Row>
-                </Container>
-                <Modal show={isVisible} onHide={hide} centered>
-                    <Modal.Header closeButton>
-                        <Modal.Title>Write a password</Modal.Title>
-                    </Modal.Header>
+                                   
 
-                    <Form onSubmit={(e) => {
-                        e.preventDefault();
-                        if (selectedGroupId) {
-                            handleJoin(selectedGroupId, password);
-                        }
-                    }}>
-                        <Modal.Body>
-                            <Form.Group className="mb-3">
-                                <Form.Label>Password</Form.Label>
-                                <PasswordField
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    placeholder="Введите пароль"
-                                />
-                            </Form.Group>
+                                    <Button variant="outline-light"
+                                        className="mt-auto"
+                                        onClick={() => enterChat(group)}>
+                                        Войти в коробку
+                                    </Button>
 
-                            <Button
-                                variant="primary"
-                                className="w-100"
-                                type="submit">
-                                Enter
-                            </Button>
-                        </Modal.Body>
-                    </Form>
-                </Modal>
-            </>
-        );
+                                    <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
+                                        Удалить коробку
+                                    </Button>
+
+                                    <div className="mt-2 d-flex justify-content-center">
+                                        <BoxStatus type={group.getType()} />
+                                    </div>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+                </Row>
+            </Container>
+            <Modal show={isVisible} onHide={hide} centered>
+                <Modal.Header closeButton>
+                    <Modal.Title>Write a password</Modal.Title>
+                </Modal.Header>
+
+                <Form onSubmit={(e) => {
+                    e.preventDefault();
+                    if (selectedGroupId) {
+                        handleJoin(selectedGroupId, password);
+                    }
+                }}>
+                    <Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Password</Form.Label>
+                            <PasswordField
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Введите пароль"
+                            />
+                        </Form.Group>
+
+                        <Button
+                            variant="primary"
+                            className="w-100"
+                            type="submit">
+                            Enter
+                        </Button>
+                    </Modal.Body>
+                </Form>
+            </Modal>
+        </>
+    );
 };
 
 export default ChatBoxes;
