@@ -4,7 +4,7 @@ import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
 import PasswordField from "../PasswordField";
 import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
-import { Loader } from "../../features/Loader";
+import { GreenLoader, RedLoader } from "../../features/Loaders";
 import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
 
 const ChatBoxes = () => {
@@ -13,10 +13,10 @@ const ChatBoxes = () => {
         password, setPassword,
         isVisible, hide,
         enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
-        isJoining
+        isJoining, isDeletingGroup
     } = useChatActionsForChatBoxes();
 
-    const {logout} = useChatActionsForSignChat();
+    const { logout, isLoggingOut } = useChatActionsForSignChat();
 
     const [isLoading, setIsLoading] = useState(true);
 
@@ -63,18 +63,29 @@ const ChatBoxes = () => {
         return () => CometChat.removeGroupListener(listenerId);
     }, []);
 
+
     if (isLoading) {
-        return <Loader message="Loading boxes,please wait..." />
+        return <GreenLoader message="Loading boxes, please wait..." />
+    }
+
+    if (isLoggingOut) {
+        return <RedLoader message="Logging out, please wait..." />
     }
 
     if (isJoining) {
-        return <Loader message="Loading messages,please wait..." />
+        return <GreenLoader message="Joining the chat, please wait..." />
     }
+
+    if (isDeletingGroup) {
+        return <RedLoader message="Deleting the group, please wait..." />
+    }
+
+
 
     return (
         <>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
-                <Button  onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
+                <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
             </div>
             <Container className="mt-4">
                 <div className="d-flex justify-content-end mb-4">
@@ -97,7 +108,7 @@ const ChatBoxes = () => {
                                     </Card.Text>
 
 
-                                   
+
 
                                     <Button variant="outline-light"
                                         className="mt-auto"

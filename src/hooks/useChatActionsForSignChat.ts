@@ -9,7 +9,12 @@ export const useChatActionsForSignChat = () => {
     const navigate = useNavigate();
     const authKey = import.meta.env.VITE_COMETCHAT_AUTH_KEY;
 
+    const [isLoggingOut, setIsloggingOut] = useState(false);
+
     const logout = () => {
+
+        setIsloggingOut(true);
+
         CometChat.logout().then(() => {
             localStorage.removeItem('cometchat:authToken');
             setUser(null);
@@ -72,6 +77,7 @@ export const useChatActionsForSignChat = () => {
 
 
     return {
-        user, setUser, redirect, logout, getUser, reAuthenticateUserWithToken,handleSignUp
+        user, setUser, redirect, logout, getUser, reAuthenticateUserWithToken,handleSignUp,
+        isLoggingOut
     };
 };

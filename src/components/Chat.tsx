@@ -5,7 +5,7 @@ import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
 import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
-import { Loader } from "../features/Loader";
+import { GreenLoader } from "../features/Loaders";
 
 function Chat() {
     const location = useLocation();
@@ -15,7 +15,7 @@ function Chat() {
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid, isLeaving } = useChatActionsForChat();
 
-    const { getUser, setUser, logout, user, redirect , handleSignUp} = useChatActionsForSignChat();
+    const { getUser, setUser, user, redirect , handleSignUp} = useChatActionsForSignChat();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -68,7 +68,7 @@ function Chat() {
     }
 
     if (isLeaving) {
-        return <Loader message="Leaving this box,please wait..." />
+        return <GreenLoader message="Leaving this box,please wait..." />
     }
 
     return (
@@ -81,7 +81,6 @@ function Chat() {
                                 Welcome to chat dear {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
                             </h3>
                             <div className='d-flex gap-2 align-items-center ms-3'>
-                                <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px'}}> Logout</Button>
                                 <Button onClick={leaveRoom} variant='outline-primary'>Leave </Button>
 
                             </div>

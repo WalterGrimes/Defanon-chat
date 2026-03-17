@@ -17,6 +17,7 @@ export const useChatActionsForChat = () => {
         if (!guid) return;
 
         setIsLeaving(true);
+
         CometChat.leaveGroup(guid).then(
             () => {
                 setMessages([]);
@@ -59,12 +60,12 @@ export const useChatActionsForChat = () => {
         if (!guid) return;
         CometChat.getGroup(guid).then(
             (existingGroup) => {
-                console.log("niggers", existingGroup)
+                console.log("data of existing froup:", existingGroup)
                 const groupType = existingGroup.getType() as CometChat.GroupType;
                 CometChat.joinGroup(guid, groupType).then(
                     () => fetchMessages(),
                     (error) => {
-                        console.log("niggers", error)
+                        console.log("error:", error)
                         if (error.code === 'ERR_ALREADY_JOINED') fetchMessages();
                     }
                 );

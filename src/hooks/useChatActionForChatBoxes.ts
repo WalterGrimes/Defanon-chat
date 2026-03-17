@@ -11,6 +11,7 @@ export const useChatActionsForChatBoxes = () => {
     const [groups, setGroups] = useState<CometChat.Group[]>([]);
 
     const [isJoining, setIsJoining] = useState(false);
+    const [isDeletingGroup, setIsDeletingGroup] = useState(false);
 
     const handleJoin = (guid: string, pass: string = "") => {
         const groupType = (pass ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC) as CometChat.GroupType;
@@ -46,15 +47,20 @@ export const useChatActionsForChatBoxes = () => {
     const handleDeleteGroup = (GUID: string) => {
         if (!window.confirm("Are you sure you want to delete this box?")) return;
 
-        CometChat.deleteGroup(GUID).then(
-            () => {
+        setIsDeletingGroup(true);
+
+        CometChat.deleteGroup(GUID)
+            .then(() => {
                 setGroups(prev => prev.filter(item => item.getGuid() !== GUID));
-            },
-            (error: CometChat.CometChatException) => {
+                console.log("Группа успешно удалена");
+            })
+            .catch((error: CometChat.CometChatException) => {
                 console.error("Delete failed:", error);
                 alert("Only the owner can delete this box!");
-            }
-        );
+            })
+            .finally(() => {
+                setIsDeletingGroup(false);
+            });
     };
 
 
@@ -88,7 +94,7 @@ export const useChatActionsForChatBoxes = () => {
         password, setPassword,
         isVisible, hide, show,
         enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
-        isJoining
+        isJoining, isDeletingGroup
     }
 
 }
