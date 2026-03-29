@@ -2,14 +2,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { v4 as uuid } from 'uuid';
+import { useAuth } from "../context/ChatContext";
 
 export const useChatActionsForSignChat = () => {
-    const [user, setUser] = useState<CometChat.User | null>(null);
+    const {user,setUser} = useAuth();
     const [redirect, setRedirect] = useState(false);
     const navigate = useNavigate();
     const authKey = import.meta.env.VITE_COMETCHAT_AUTH_KEY;
 
+
     const [isLoggingOut, setIsloggingOut] = useState(false);
+    const [isNuking, setIsNuking] = useState(false)
+
 
     const logout = () => {
 
@@ -73,11 +77,40 @@ export const useChatActionsForSignChat = () => {
         )
     }
 
+    const nukeEverything = async (guid: string) => {
+        if (!window.confirm('ЭТО УДАЛИТ ВСЕ: твой аккаунт и все что с ним связано изчезнет.Ты уверен?')) return;
 
+        setIsNuking(true);
+
+        try {
+            await CometChat.logout();
+
+            const response = await fetch(`http://localhost:5000/nuke-user/${guid}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                console.log("Аккаунт был стерет");
+
+                localStorage.clear();
+                sessionStorage.clear();
+
+                window.location.href = "/";
+            } else {
+                const errorData = await response.json();
+                alert(`Ошибка сервера: ${errorData.message || 'Не удалось удалить'}`);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        } finally {
+            setIsNuking(false);
+        }
+    }
 
 
     return {
-        user, setUser, redirect, logout, getUser, reAuthenticateUserWithToken,handleSignUp,
-        isLoggingOut
+        user, setUser, redirect, logout, getUser, reAuthenticateUserWithToken, handleSignUp,
+        isLoggingOut,
+        isNuking, nukeEverything
     };
 };

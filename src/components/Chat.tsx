@@ -15,7 +15,7 @@ function Chat() {
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid, isLeaving } = useChatActionsForChat();
 
-    const { getUser, setUser, user, redirect , handleSignUp} = useChatActionsForSignChat();
+    const { getUser, setUser, user, redirect, handleSignUp } = useChatActionsForSignChat();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />

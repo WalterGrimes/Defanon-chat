@@ -98,10 +98,12 @@ export const useChatActionsForChat = () => {
         setMessageText(e.target.value);
     }
 
+    
+
     return {
         messages, setMessages,
         messageText, setMessageText,
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
-        guid,isLeaving
+        guid,isLeaving,
     };
 };

@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Row, Col, Form, Alert, Spinner } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/ChatContext';
 
 interface RegisterChatProps {
   initialName?: string;
@@ -9,10 +10,17 @@ interface RegisterChatProps {
 
 const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
   const [name, setName] = useState(initialName);
-  const [user, setUser] = useState<CometChat.User | null>(null);
+  const { user, setUser } = useAuth();
   const [error, setError] = useState<string | null>(null);
   const [redirect, setRedirect] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    CometChat.getLoggedinUser().then(user => {
+      if (user) navigate('/chatboxes');
+    });
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
@@ -31,7 +39,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
       localStorage.setItem('cometchat:authToken', loggedInUser.getAuthToken());
       setRedirect(true);
     } catch (err: any) {
-      setError(err.message || "An error occurred during login");4
+      setError(err.message || "An error occurred during login"); 4
     } finally {
       setIsLoading(false);
     }

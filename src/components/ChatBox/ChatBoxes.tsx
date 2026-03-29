@@ -6,6 +6,7 @@ import PasswordField from "../PasswordField";
 import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
 import { GreenLoader, RedLoader } from "../../features/Loaders";
 import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
+import { useAuth } from "../../context/ChatContext";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -13,15 +14,17 @@ const ChatBoxes = () => {
         password, setPassword,
         isVisible, hide,
         enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
-        isJoining, isDeletingGroup
+        isJoining, isDeletingGroup,
     } = useChatActionsForChatBoxes();
 
-    const { logout, isLoggingOut } = useChatActionsForSignChat();
+    const { logout, isLoggingOut,
+        nukeEverything } = useChatActionsForSignChat();
+
+    const {user} = useAuth();
 
     const [isLoading, setIsLoading] = useState(true);
-
-
     const [loggedInUid, setLoggedInUid] = useState<string>("");
+
 
     useEffect(() => {
         CometChat.getLoggedInUser().then((user) => {
@@ -85,8 +88,16 @@ const ChatBoxes = () => {
     return (
         <>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
+                {`Welcome,${user?.getName()}`}
+            </div>
+            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
                 <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
             </div>
+            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
+                <Button onClick={() => nukeEverything(loggedInUid)} variant='danger' style={{ marginRight: '12px' }}>Delete</Button>
+            </div>
+
+
             <Container className="mt-4">
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
@@ -102,14 +113,10 @@ const ChatBoxes = () => {
                                         Участников: {group.getMembersCount()} <br />
                                         Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                         {group.getOwner() === loggedInUid && (
-                                            <p>Вы являетесь создателем данной комнаты</p>
+                                            <div>Вы являетесь создателем данной комнаты</div>
                                         )}
 
                                     </Card.Text>
-
-
-
-
                                     <Button variant="outline-light"
                                         className="mt-auto"
                                         onClick={() => enterChat(group)}>

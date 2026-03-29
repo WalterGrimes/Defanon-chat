@@ -8,6 +8,7 @@ import Chat from './components/Chat';
 import './App.css';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
 import ChatBoxes from './components/ChatBox/ChatBoxes';
+import { ChatProvider } from './context/ChatContext';
 
 const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
 const REGION = "us";
@@ -38,16 +39,19 @@ function App() {
   if (!isInitialized) return <div>Loading...</div>;
 
   return (
-    <Provider store={store}>
-      <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/chat/:guid" element={<Chat />} />
-        <Route path="/chat" element={<Chat />} /> 
-        <Route path="/chatboxes" element={<ChatBoxes />} />
-      </Routes>
-    </Provider>
+    <ChatProvider>
+      <Provider store={store}>
+        <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css' />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/chat/:guid" element={<Chat />} />
+          <Route path="/chat" element={<Chat />} />
+          <Route path="/chatboxes" element={<ChatBoxes />} />
+        </Routes>
+      </Provider>
+    </ChatProvider>
+
   );
 }
 
