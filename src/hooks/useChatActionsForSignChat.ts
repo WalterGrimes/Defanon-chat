@@ -87,8 +87,6 @@ export const useChatActionsForSignChat = () => {
         setIsNuking(true);
 
         try {
-            await CometChat.logout();
-
             const response = await fetch(`http://localhost:5000/nuke-user/${guid}`, {
                 method: 'DELETE'
             });
@@ -98,15 +96,20 @@ export const useChatActionsForSignChat = () => {
 
                 localStorage.clear();
                 sessionStorage.clear();
+                setUser(null);
 
                 navigate('/');
 
             } else {
                 const errorData = await response.json();
-                alert(`Ошибка сервера: ${errorData.message || 'Не удалось удалить'}`);
+                alert(`Ошибка от сервера ${errorData.message || 'Не удалось удалить'}`);
+
             }
         } catch (error) {
             console.error('Ошибка:', error);
+            localStorage.clear();
+            setUser(null);
+            navigate('/');
         } finally {
             setIsNuking(false);
         }
