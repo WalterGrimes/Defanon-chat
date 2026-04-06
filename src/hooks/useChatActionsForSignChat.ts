@@ -14,8 +14,6 @@ export const useChatActionsForSignChat = () => {
     const [isLoggingOut, setIsloggingOut] = useState(false);
     const [isNuking, setIsNuking] = useState(false)
 
-
-
     const logout = () => {
 
         setIsloggingOut(true);

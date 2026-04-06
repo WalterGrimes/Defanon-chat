@@ -17,7 +17,8 @@ const ChatBoxes = () => {
         isJoining, isDeletingGroup,
     } = useChatActionsForChatBoxes();
 
-    const { logout, isLoggingOut,
+    const { logout, 
+        isLoggingOut,isNuking,
         nukeEverything } = useChatActionsForSignChat();
 
     const {user} = useAuth();
@@ -81,6 +82,10 @@ const ChatBoxes = () => {
 
     if (isDeletingGroup) {
         return <RedLoader message="Deleting the group, please wait..." />
+    }
+
+    if(isNuking){
+        return <RedLoader message="Pls wait...Deleting your data,messages,everything..."/>
     }
 
 
