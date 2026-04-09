@@ -27,6 +27,7 @@ const ChatBoxes = () => {
     const [loggedInUid, setLoggedInUid] = useState<string>("");
 
 
+
     useEffect(() => {
         CometChat.getLoggedInUser().then((user) => {
             if (user) setLoggedInUid(user.getUid())
@@ -87,7 +88,6 @@ const ChatBoxes = () => {
     if(isNuking){
         return <RedLoader message="Pls wait...Deleting your data,messages,everything..."/>
     }
-
 
 
     return (

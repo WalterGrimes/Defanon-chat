@@ -37,7 +37,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
       const savedUID = localStorage.getItem(`anon_uid_${name.toLowerCase()}`);
 
       if (!savedUID) {
-        throw new Error("Доступ запрещен тк вы не являетесь владельцом данного аккаунта.");
+        throw new Error("Доступ запрещен или такого аккаунта не существует.");
       }
 
       const loggedInUser = await CometChat.login(savedUID, apiKey);

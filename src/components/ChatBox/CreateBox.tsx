@@ -4,6 +4,7 @@ import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
 import BoxStatus from "./BoxStatus";
 import { useModal } from "../../hooks/useModal";
+import { CreatingGroupLoader } from "../../features/Loaders";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
@@ -13,14 +14,18 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
     const [password, setPassword] = useState<string>('');
     const {isVisible , show, hide} = useModal();
+    const [isCreatingGroup,setIsCreatingGroup] = useState(false);
 
     const handleClose = () => {
         setBoxName("");
         setPassword("");
+        setIsCreatingGroup(false);
         hide();
     };
 
     const handleCreateGroup = () => {
+        setIsCreatingGroup(true);
+
         const GUID = `group_${Date.now()}`;
         const trimmedPassword = password.trim();
 
@@ -41,6 +46,10 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             }
         );
     };
+
+    if(isCreatingGroup){
+        return <CreatingGroupLoader message="Создание вашей коробка..."/>
+    }
 
     return (
         <div>
