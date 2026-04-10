@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Spinner, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
+import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
 import PasswordField from "../PasswordField";
@@ -7,21 +7,26 @@ import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxe
 import { GreenLoader, RedLoader } from "../../features/Loaders";
 import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
 import { useAuth } from "../../context/ChatContext";
+import { useModal } from "../../hooks/useModal";
+import EditBox from "./EditBox";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
         selectedGroupId,
         password, setPassword,
         isVisible, hide,
-        enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
+        enterChat, handleDeleteGroup, handleJoin, 
+        handleNewGroup,handleGroupSettingsUpdate,
         isJoining, isDeletingGroup,
     } = useChatActionsForChatBoxes();
 
-    const { logout, 
-        isLoggingOut,isNuking,
+    const { logout,
+        isLoggingOut, isNuking,
         nukeEverything } = useChatActionsForSignChat();
 
-    const {user} = useAuth();
+    const { user } = useAuth();
+    const { show } = useModal();
+
 
     const [isLoading, setIsLoading] = useState(true);
     const [loggedInUid, setLoggedInUid] = useState<string>("");
@@ -85,8 +90,8 @@ const ChatBoxes = () => {
         return <RedLoader message="Deleting the group, please wait..." />
     }
 
-    if(isNuking){
-        return <RedLoader message="Pls wait...Deleting your data,messages,everything..."/>
+    if (isNuking) {
+        return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />
     }
 
 
@@ -118,7 +123,11 @@ const ChatBoxes = () => {
                                         Участников: {group.getMembersCount()} <br />
                                         Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
                                         {group.getOwner() === loggedInUid && (
-                                            <div>Вы являетесь создателем данной комнаты</div>
+                                            <>
+                                                <div>Вы являетесь создателем данной комнаты</div>
+                                                <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
+
+                                            </>
                                         )}
 
                                     </Card.Text>

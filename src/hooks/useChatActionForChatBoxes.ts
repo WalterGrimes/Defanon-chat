@@ -35,12 +35,14 @@ export const useChatActionsForChatBoxes = () => {
         )
     }
 
-
     const handleNewGroup = (newGroup: CometChat.Group) => {
-        setGroups(prev => {
-            const updatedList = [newGroup, ...prev];
-            return updatedList.sort((a, b) => b.getCreatedAt() - a.getCreatedAt());
-        });
+        setGroups(prev => [newGroup, ...prev].sort((a, b) => b.getCreatedAt() - a.getCreatedAt()));
+    };
+
+    const handleGroupSettingsUpdate = (updatedGroup: CometChat.Group) => {
+        setGroups(prev =>
+            prev.map(g => g.getGuid() === updatedGroup.getGuid() ? updatedGroup : g)
+        );
     };
 
 
@@ -93,7 +95,8 @@ export const useChatActionsForChatBoxes = () => {
         selectedGroupId,
         password, setPassword,
         isVisible, hide, show,
-        enterChat, handleDeleteGroup, handleJoin, handleNewGroup,
+        enterChat, handleDeleteGroup, handleJoin,
+        handleNewGroup, handleGroupSettingsUpdate,
         isJoining, isDeletingGroup
     }
 
