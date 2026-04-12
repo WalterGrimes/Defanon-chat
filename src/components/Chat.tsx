@@ -6,6 +6,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
 import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
 import { GreenLoader } from "../features/Loaders";
+import { getUserColor } from "../utilits/ColorHelper";
 
 function Chat() {
     const location = useLocation();
@@ -15,7 +16,12 @@ function Chat() {
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid, isLeaving } = useChatActionsForChat();
 
-    const { getUser, setUser, user, redirect, handleSignUp } = useChatActionsForSignChat();
+    const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
+
+    const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
+
+
+
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -78,7 +84,7 @@ function Chat() {
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3 mb-0'>
-                                Welcome to chat dear {user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...'}
+                                Welcome to chat dear {welcomingUser}
                             </h3>
                             <div className='d-flex gap-2 align-items-center ms-3'>
                                 <Button onClick={leaveRoom} variant='outline-primary'>Leave </Button>
@@ -88,12 +94,20 @@ function Chat() {
 
                         <ul className='list-group' style={{ marginBottom: '80px' }}>
                             {messages.length > 0 ? (
-                                messages.map((msg: any) => (
-                                    <li className='list-group-item' key={msg.id || uuid()}>
-                                        <strong>{msg.sender?.name || 'Unknown'}: </strong>
-                                        <span>{msg.text}</span>
-                                    </li>
-                                ))
+                                messages.map((msg: any) => {
+                                    const senderUid = msg.sender?.uid || 'unknown';
+
+                                    const userColor = getUserColor(senderUid);
+
+                                    return (
+                                        <li className='list-group-item' key={msg.id || uuid()}>
+                                            <strong style={{ color: userColor }}>
+                                                {msg.sender?.name || 'Unknown'}:
+                                            </strong>
+                                            <span className="ms-2">{msg.text}</span>
+                                        </li>
+                                    );
+                                })
                             ) : (
                                 <div className='text-center mt-5'>
                                     <p className='lead'>Fetching Messages...</p>

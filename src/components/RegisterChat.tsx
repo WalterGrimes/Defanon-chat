@@ -14,6 +14,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
   const [error, setError] = useState<string | null>(null);
   const [redirect, setRedirect] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -52,7 +53,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
   };
 
   if (redirect && user) {
-    return <Navigate to="/chat" state={{ user }} />;
+    return <Navigate to="/chatboxes" state={{ user }} />;
   }
 
   return (
