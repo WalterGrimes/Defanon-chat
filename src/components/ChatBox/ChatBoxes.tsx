@@ -7,16 +7,16 @@ import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxe
 import { GreenLoader, RedLoader } from "../../features/Loaders";
 import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
 import { useAuth } from "../../context/ChatContext";
-import { useModal } from "../../hooks/useModal";
 import EditBox from "./EditBox";
+import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
         selectedGroupId,
         password, setPassword,
         isVisible, hide,
-        enterChat, handleDeleteGroup, handleJoin, 
-        handleNewGroup,handleGroupSettingsUpdate,
+        enterChat, handleDeleteGroup, handleJoin,
+        handleNewGroup, handleGroupSettingsUpdate,
         isJoining, isDeletingGroup,
     } = useChatActionsForChatBoxes();
 
@@ -24,14 +24,29 @@ const ChatBoxes = () => {
         isLoggingOut, isNuking,
         nukeEverything } = useChatActionsForSignChat();
 
-    const { user } = useAuth();
-    const { show } = useModal();
+    const { guid, messages } = useChatActionsForChat();
 
 
     const [isLoading, setIsLoading] = useState(true);
     const [loggedInUid, setLoggedInUid] = useState<string>("");
+    const [onlineRightNow, setOnlineRightNow] = useState<number>(0);
 
+    const { user } = useAuth();
 
+    useEffect(() => {
+        if (guid) {
+
+            CometChat.getOnlineGroupMemberCount([guid]).then(
+                (result: any) => {
+                    const count = result[guid];
+                    setOnlineRightNow(count || 0);
+                },
+                (error) => {
+                    console.log('Ошибка', error);
+                }
+            );
+        }
+    }, [guid, messages]);
 
     useEffect(() => {
         CometChat.getLoggedInUser().then((user) => {
@@ -121,7 +136,8 @@ const ChatBoxes = () => {
                                     <Card.Text className="small text-muted mb-4">
                                         ID: {group.getGuid()} <br />
                                         Участников: {group.getMembersCount()} <br />
-                                        Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()}
+                                        Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()} <br />
+                                        Users online: {onlineRightNow} <br />
                                         {group.getOwner() === loggedInUid && (
                                             <>
                                                 <div>Вы являетесь создателем данной комнаты</div>
