@@ -97,8 +97,20 @@ function Chat() {
                         <ul className='list-group' style={{ marginBottom: '80px' }}>
                             {messages.length > 0 ? (
                                 messages.map((msg: any) => {
-                                    const senderUid = msg.sender?.uid || 'unknown';
 
+                                    const isAction = msg instanceof CometChat.Action || msg.type === 'action';
+
+                                    if (isAction) {
+                                        return (
+                                            <li className='list-group-item text-center bg-light italic' key={msg.id || uuid()}>
+                                                <small className="text-muted" style={{ fontStyle: 'italic' }}>
+                                                    user {msg.message} 
+                                                </small>
+                                            </li>
+                                        )
+                                    }
+
+                                    const senderUid = msg.sender?.uid || 'unknown';
                                     const userColor = getUserColor(senderUid);
 
                                     return (
