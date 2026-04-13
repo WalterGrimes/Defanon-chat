@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
@@ -20,7 +20,7 @@ function Chat() {
 
     const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
-
+    const [groupName, setGroupName] = useState<string>();
 
 
     if (!guid) {
@@ -31,6 +31,7 @@ function Chat() {
         if (guid) {
             CometChat.getGroup(guid).then(
                 (group) => {
+                    setGroupName(group.getName());
                     console.log("Зашло,данные группы:", group)
                 },
                 (error) => {
@@ -84,6 +85,7 @@ function Chat() {
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3 mb-0'>
+                                {groupName || <GreenLoader message="загрузка..." />} <br />
                                 Welcome to chat dear {welcomingUser}
                             </h3>
                             <div className='d-flex gap-2 align-items-center ms-3'>
