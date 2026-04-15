@@ -21,7 +21,8 @@ function Chat() {
     const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
     const [groupName, setGroupName] = useState<string>();
-
+    const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(true);
+    const [hasFetched, setHasFetched] = useState(false);
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -42,6 +43,8 @@ function Chat() {
     }, [guid])
 
     useEffect(() => {
+        setIsLoadingMessages(true);
+        setHasFetched(false);
         setMessages([]);
         setMessageText('');
 
@@ -50,7 +53,14 @@ function Chat() {
             setUser(locationState.user);
         }
 
-        getUser(() => fetchMessages());
+        getUser(() => {
+            fetchMessages().finally(() => {
+                setTimeout(() => {
+                    setIsLoadingMessages(false);
+                    setHasFetched(true);
+                }, 10);
+            })
+        })
 
         const listenerID = 'listener_id_' + uuid();
         CometChat.addMessageListener(
@@ -60,7 +70,6 @@ function Chat() {
                     if (textMessage.getReceiverGuid() === guid) {
                         setMessages(prev => [...prev, textMessage]);
                     }
-
                 }
             })
         )
@@ -71,7 +80,7 @@ function Chat() {
 
     if (redirect) return <Navigate to='/' />;
     if (!user && !localStorage.getItem('cometchat:authToken')) {
-        console.log("No user found")//Проверка на нового пользователя
+        console.log("No user found")
     }
 
     if (isLeaving) {
@@ -89,22 +98,24 @@ function Chat() {
                                 Welcome to chat dear {welcomingUser}
                             </h3>
                             <div className='d-flex gap-2 align-items-center ms-3'>
-                                <Button onClick={leaveRoom} variant='outline-primary'>Leave </Button>
-
+                                <Button onClick={leaveRoom} variant='outline-primary'>Leave</Button>
                             </div>
                         </div>
 
                         <ul className='list-group' style={{ marginBottom: '80px' }}>
-                            {messages.length > 0 ? (
+                            {isLoadingMessages ? (
+                                <div className='text-center mt-5'>
+                                    <GreenLoader message="Fetching Messages..." />
+                                </div>
+                            ) : messages.length > 0 ? (
                                 messages.map((msg: any) => {
-
                                     const isAction = msg instanceof CometChat.Action || msg.type === 'action';
 
                                     if (isAction) {
                                         return (
                                             <li className='list-group-item text-center bg-light italic' key={msg.id || uuid()}>
                                                 <small className="text-muted" style={{ fontStyle: 'italic' }}>
-                                                    user {msg.message} 
+                                                    user {msg.message}
                                                 </small>
                                             </li>
                                         )
@@ -122,11 +133,11 @@ function Chat() {
                                         </li>
                                     );
                                 })
-                            ) : (
+                            ) : hasFetched ? (
                                 <div className='text-center mt-5'>
-                                    <p className='lead'>Fetching Messages...</p>
+                                    <p className='lead'>Be first</p>
                                 </div>
-                            )}
+                            ) : null}
                         </ul>
                     </Col>
                 </Row>
@@ -148,8 +159,5 @@ function Chat() {
         </div>
     );
 }
-
-
-
 
 export default Chat;

@@ -40,7 +40,7 @@ export const useChatActionsForChat = () => {
     }, [messages])
 
 
-    const fetchMessages = () => {
+    const fetchMessages = async () => {
         const limit = 20;
         const messageRequest = new CometChat.MessagesRequestBuilder()
             .setGUID(guid!)
