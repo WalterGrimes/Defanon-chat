@@ -145,18 +145,20 @@ const ChatBoxes = () => {
 
                                             </>
                                         )}
-
                                     </Card.Text>
                                     <Button variant="outline-light"
                                         className="mt-auto"
                                         onClick={() => enterChat(group)}>
                                         Войти в коробку
                                     </Button>
+                                    {group.getOwner() === loggedInUid && (
+                                        <>
+                                            <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
+                                                Удалить коробку
+                                            </Button>
 
-                                    <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
-                                        Удалить коробку
-                                    </Button>
-
+                                        </>
+                                    )}
                                     <div className="mt-2 d-flex justify-content-center">
                                         <BoxStatus type={group.getType()} />
                                     </div>
