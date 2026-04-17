@@ -9,6 +9,7 @@ import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat
 import { useAuth } from "../../context/ChatContext";
 import EditBox from "./EditBox";
 import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
+import './ChatBoxes.css';
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -18,6 +19,7 @@ const ChatBoxes = () => {
         enterChat, handleDeleteGroup, handleJoin,
         handleNewGroup, handleGroupSettingsUpdate,
         isJoining, isDeletingGroup,
+        showingOwnerHisGroup
     } = useChatActionsForChatBoxes();
 
     const { logout,
@@ -122,7 +124,6 @@ const ChatBoxes = () => {
                 <Button onClick={() => nukeEverything(loggedInUid)} variant='danger' style={{ marginRight: '12px' }}>Delete</Button>
             </div>
 
-
             <Container className="mt-4">
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
@@ -130,6 +131,11 @@ const ChatBoxes = () => {
                 <Row xs={1} md={2} lg={3} className="g-4">
                     {groups.map((group) => (
                         <Col key={group.getGuid()}>
+                            {group.getGuid() === showingOwnerHisGroup && (
+                                <div className="new-box-pointer-container">
+                                    <div className="new-box-badge">your new box here</div>
+                                </div>
+                            )}
                             <Card className="h-100 shadow-sm border-0 bg-dark text-white">
                                 <Card.Body className="d-flex flex-column text-center">
                                     <Card.Title className="mb-3">{group.getName()}</Card.Title>

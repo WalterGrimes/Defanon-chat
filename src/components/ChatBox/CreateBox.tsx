@@ -23,7 +23,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         hide();
     };
 
-    const handleCreateGroup = () => {
+    const handleCreateGroup = () => {       
         setIsCreatingGroup(true);
 
         const GUID = `group_${Date.now()}`;

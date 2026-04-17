@@ -1,0 +1,36 @@
+@keyframes bounce-arrow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.new-box-pointer-container {
+  position: absolute;
+  top: -90px;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  text-align: center;
+  pointer-events: none;
+  animation: bounce-arrow 0.8s infinite ease-in-out;
+}
+
+.new-box-pointer-container svg {
+  filter: drop-shadow(0 0 8px rgba(255, 193, 7, 0.6));
+}
+
+.new-box-badge {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 5px 12px;
+  font-size: 12px;
+  border-radius: 20px;
+  background-color: #ffc107;
+  color: #212529;
+  font-weight: bold;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  border: 1px solid white;
+}

@@ -12,6 +12,7 @@ export const useChatActionsForChatBoxes = () => {
 
     const [isJoining, setIsJoining] = useState(false);
     const [isDeletingGroup, setIsDeletingGroup] = useState(false);
+    const [showingOwnerHisGroup, setshowingOwnerHisGroup] = useState<string | null>(null);
 
     const handleJoin = (guid: string, pass: string = "") => {
         const groupType = (pass ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC) as CometChat.GroupType;
@@ -36,7 +37,13 @@ export const useChatActionsForChatBoxes = () => {
     }
 
     const handleNewGroup = (newGroup: CometChat.Group) => {
+        const guid = newGroup.getGuid();
+
+        setshowingOwnerHisGroup(guid);
+
         setGroups(prev => [newGroup, ...prev].sort((a, b) => b.getCreatedAt() - a.getCreatedAt()));
+
+        setTimeout(() => setshowingOwnerHisGroup(null), 3000)
     };
 
     const handleGroupSettingsUpdate = (updatedGroup: CometChat.Group) => {
@@ -97,7 +104,8 @@ export const useChatActionsForChatBoxes = () => {
         isVisible, hide, show,
         enterChat, handleDeleteGroup, handleJoin,
         handleNewGroup, handleGroupSettingsUpdate,
-        isJoining, isDeletingGroup
+        isJoining, isDeletingGroup,
+        showingOwnerHisGroup
     }
 
 }
