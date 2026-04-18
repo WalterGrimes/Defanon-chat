@@ -133,7 +133,7 @@ const ChatBoxes = () => {
                         <Col key={group.getGuid()}>
                             {group.getGuid() === showingOwnerHisGroup && (
                                 <div className="new-box-pointer-container">
-                                    <div className="new-box-badge">your new box here</div>
+                                    <div className="new-box-badge">your new box is here (◣_◢)</div>
                                 </div>
                             )}
                             <Card className="h-100 shadow-sm border-0 bg-dark text-white">

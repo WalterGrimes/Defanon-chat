@@ -7,6 +7,7 @@ import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
 import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
 import { GreenLoader } from "../features/Loaders";
 import { getUserColor } from "../utilits/ColorHelper";
+import s from './Chat.module.css';
 
 function Chat() {
     const location = useLocation();
@@ -123,13 +124,27 @@ function Chat() {
 
                                     const senderUid = msg.sender?.uid || 'unknown';
                                     const userColor = getUserColor(senderUid);
+                                    const sentAt = msg.getSentAt();
+                                    const time = new Date(sentAt * 1000).toLocaleDateString([], {
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })
 
                                     return (
-                                        <li className='list-group-item' key={msg.id || uuid()}>
-                                            <strong style={{ color: userColor }}>
-                                                {msg.sender?.name || 'Unknown'}:
-                                            </strong>
-                                            <span className="ms-2">{msg.text}</span>
+                                        <li className={s.messageItem} key={msg.id || uuid()}>
+                                            <span className={s.messageSender} style={{ color: userColor }}>
+                                                {msg.sender?.name || 'Unknown'}
+                                            </span>
+
+                                            <div className={s.messageContent}>
+                                                <span className={s.messageText}>
+                                                    {msg.text}
+                                                </span>
+
+                                                <small className={s.messageTime}>
+                                                    {time}
+                                                </small>
+                                            </div>
                                         </li>
                                     );
                                 })
