@@ -5,7 +5,7 @@ import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
 import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
-import { GreenLoader } from "../features/Loaders";
+import { GreenLoader, GreyLoader } from "../features/Loaders";
 import { getUserColor } from "../utilits/ColorHelper";
 import s from './Chat.module.css';
 
@@ -15,7 +15,8 @@ function Chat() {
     const { messages, setMessages,
         messageText, setMessageText,
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
-        guid, isLeaving } = useChatActionsForChat();
+        guid,
+        isLeaving, isSendingMessage } = useChatActionsForChat();
 
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
 
@@ -87,6 +88,10 @@ function Chat() {
     if (isLeaving) {
         return <GreenLoader message="Leaving this box,please wait..." />
     }
+
+    // if (isSendingMessage) {
+    //     return <GreyLoader message="Sending..." />
+    // }
 
     return (
         <div ref={chatContainerRef} className='bg-light page'>
@@ -164,10 +169,20 @@ function Chat() {
                         <Form.Control
                             value={messageText}
                             required
+                            disabled={isSendingMessage}
                             placeholder='Type Message here...'
                             onChange={handleChange}
                         />
-                        <Button variant='primary' type='submit'>Send</Button>
+                        <Button variant='primary'
+                            type='submit'
+                            disabled={isSendingMessage}
+                        >
+                            {isSendingMessage ? (
+                                <GreyLoader message="отправка..." />
+                            ) : (
+                                'Send'
+                            )}
+                        </Button>
                     </Form>
                 </Container>
             </Navbar>

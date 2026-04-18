@@ -27,3 +27,12 @@ export const CreatingGroupLoader = ({ message = "Загрузка..." }) => {
         </Container>
     )
 }
+
+export const GreyLoader = ({ message = "Загрузка..." }) => {
+    return (
+        <Container className="text-center mt-5">
+            <Spinner animation="border" variant="secondary" />
+            {message && <p className="mt-3 text-secondary">{message}</p>}
+        </Container>
+    )
+}

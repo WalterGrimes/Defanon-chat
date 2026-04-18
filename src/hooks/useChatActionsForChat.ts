@@ -11,8 +11,9 @@ export const useChatActionsForChat = () => {
     const chatContainerRef = useRef<HTMLDivElement>(null);
 
     const [isLeaving, setIsLeaving] = useState(false);
+    const [isSendingMessage, setIsSendingMessage] = useState(false);
 
-    
+
     const leaveRoom = () => {
         if (!guid) return;
 
@@ -80,30 +81,41 @@ export const useChatActionsForChat = () => {
     };
 
     const sendMessage = (e: React.FormEvent) => {
-        e.preventDefault();
+        e.preventDefault(); 
         if (!messageText.trim() || !guid) return;
 
-        const textMessage = new CometChat.TextMessage(guid, messageText, CometChat.RECEIVER_TYPE.GROUP);
+        setIsSendingMessage(true);
 
-        CometChat.sendMessage(textMessage).then(
-            message => {
+        const textMessage = new CometChat.TextMessage(
+            guid,
+            messageText,
+            CometChat.RECEIVER_TYPE.GROUP
+        );
+
+        CometChat.sendMessage(textMessage)
+            .then(message => {
                 setMessageText('');
                 setMessages(prev => [...prev, message]);
-            },
-            error => console.log('Message sending failed:', error)
-        );
+            })
+            .catch(error => {
+                console.log('Message sending failed:', error);
+            })
+            .finally(() => {
+                setIsSendingMessage(false);
+            });
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(e.target.value);
     }
 
-    
+
 
     return {
         messages, setMessages,
         messageText, setMessageText,
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
-        guid,isLeaving,
+        guid, isLeaving,
+        isSendingMessage
     };
 };
