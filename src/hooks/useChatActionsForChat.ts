@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 
@@ -12,6 +12,8 @@ export const useChatActionsForChat = () => {
 
     const [isLeaving, setIsLeaving] = useState(false);
     const [isSendingMessage, setIsSendingMessage] = useState(false);
+
+    const [muteUser, setMuteUser] = useState(false);
 
 
     const leaveRoom = () => {
@@ -81,7 +83,7 @@ export const useChatActionsForChat = () => {
     };
 
     const sendMessage = (e: React.FormEvent) => {
-        e.preventDefault(); 
+        e.preventDefault();
         if (!messageText.trim() || !guid) return;
 
         setIsSendingMessage(true);
@@ -105,6 +107,13 @@ export const useChatActionsForChat = () => {
             });
     };
 
+    const muteUserWithPreloader = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        setTimeout(() => setMuteUser(true), 3000)
+
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(e.target.value);
     }
@@ -116,6 +125,7 @@ export const useChatActionsForChat = () => {
         messageText, setMessageText,
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
         guid, isLeaving,
-        isSendingMessage
+        isSendingMessage,
+        muteUserWithPreloader
     };
 };

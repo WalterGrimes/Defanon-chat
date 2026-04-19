@@ -19,6 +19,8 @@ function Chat() {
         isLeaving, isSendingMessage } = useChatActionsForChat();
 
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
+    const [currentGroup, setCurrentGroup] = useState<CometChat.Group | null>(null);
+
 
     const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
@@ -35,6 +37,7 @@ function Chat() {
             CometChat.getGroup(guid).then(
                 (group) => {
                     setGroupName(group.getName());
+                    setCurrentGroup(group);
                     console.log("Зашло,данные группы:", group)
                 },
                 (error) => {
@@ -89,10 +92,6 @@ function Chat() {
         return <GreenLoader message="Leaving this box,please wait..." />
     }
 
-    // if (isSendingMessage) {
-    //     return <GreyLoader message="Sending..." />
-    // }
-
     return (
         <div ref={chatContainerRef} className='bg-light page'>
             <Container>
@@ -141,7 +140,12 @@ function Chat() {
                                                 {msg.sender?.name || 'Unknown'}
                                             </span>
 
+
                                             <div className={s.messageContent}>
+                                                {currentGroup?.getOwner() === user?.getUid() && (
+                                                    <button className="btn btn-sm btn-danger">Mute</button>
+                                                )}
+                                                
                                                 <span className={s.messageText}>
                                                     {msg.text}
                                                 </span>

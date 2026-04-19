@@ -148,7 +148,6 @@ const ChatBoxes = () => {
                                             <>
                                                 <div>Вы являетесь создателем данной комнаты</div>
                                                 <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
-
                                             </>
                                         )}
                                     </Card.Text>
