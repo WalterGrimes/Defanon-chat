@@ -31,6 +31,39 @@ export const useChatActionsForChat = () => {
         );
     };
 
+    useEffect(() => {
+        const mutedUntil = localStorage.getItem('chat_muted_until'); 
+        if (mutedUntil) {
+            const timeLeft = Number(mutedUntil) - Date.now();
+            if (timeLeft > 0) {
+                setMuteUser(true);
+                setTimeout(() => {
+                    setMuteUser(false);
+                    localStorage.removeItem('chat_muted_until');
+                }, timeLeft);
+            } else {
+                localStorage.removeItem('chat_muted_until');
+            }
+        }
+    }, []);
+
+ const muteUserWithPreloader = (e?: React.BaseSyntheticEvent) => {
+        if (e) e.preventDefault();
+        
+        console.log('Мут'); 
+        const duration = 300000; 
+        const unviewDate = Date.now() + duration;
+
+        localStorage.setItem('chat_muted_until', unviewDate.toString());
+
+        setMuteUser(true);
+
+        setTimeout(() => {
+            setMuteUser(false);
+            localStorage.removeItem('chat_muted_until');
+        }, duration);
+    };
+
 
     useEffect(() => {
         const el = chatContainerRef.current;
@@ -107,13 +140,6 @@ export const useChatActionsForChat = () => {
             });
     };
 
-    const muteUserWithPreloader = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        setTimeout(() => setMuteUser(true), 3000)
-
-    }
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setMessageText(e.target.value);
     }
@@ -126,6 +152,6 @@ export const useChatActionsForChat = () => {
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
         guid, isLeaving,
         isSendingMessage,
-        muteUserWithPreloader
+        muteUser, muteUserWithPreloader
     };
 };

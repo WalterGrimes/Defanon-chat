@@ -16,6 +16,7 @@ function Chat() {
         messageText, setMessageText,
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid,
+        muteUser, muteUserWithPreloader,
         isLeaving, isSendingMessage } = useChatActionsForChat();
 
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
@@ -82,6 +83,11 @@ function Chat() {
         return () => CometChat.removeMessageListener(listenerID);
     }, [guid])
 
+    if (muteUser) {
+        return <GreyLoader message="Вы были замучены на 5 минут" />
+    }
+
+
 
     if (redirect) return <Navigate to='/' />;
     if (!user && !localStorage.getItem('cometchat:authToken')) {
@@ -91,7 +97,7 @@ function Chat() {
     if (isLeaving) {
         return <GreenLoader message="Leaving this box,please wait..." />
     }
-
+    
     return (
         <div ref={chatContainerRef} className='bg-light page'>
             <Container>
@@ -143,9 +149,16 @@ function Chat() {
 
                                             <div className={s.messageContent}>
                                                 {currentGroup?.getOwner() === user?.getUid() && (
-                                                    <button className="btn btn-sm btn-danger">Mute</button>
+                                                    <Button
+                                                        onClick={muteUserWithPreloader}
+                                                        variant="danger"
+                                                        size="sm"
+                                                        className="me-2"
+                                                    >
+                                                        Mute
+                                                    </Button>
                                                 )}
-                                                
+
                                                 <span className={s.messageText}>
                                                     {msg.text}
                                                 </span>
