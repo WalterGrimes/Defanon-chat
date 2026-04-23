@@ -39,7 +39,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
             (res) => {
                 onGroupUpdate(res);
                 hide();
-                setIsUpdating(false);
+                setIsUpdating(false);   
             },
             (error) => {
                 console.error("Update failed:", error);

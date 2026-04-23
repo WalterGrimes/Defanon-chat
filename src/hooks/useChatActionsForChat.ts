@@ -32,17 +32,17 @@ export const useChatActionsForChat = () => {
     };
 
     useEffect(() => {
-        const mutedUntil = localStorage.getItem('chat_muted_until'); 
+        const mutedUntil = localStorage.getItem(`chat_muted_until${guid}`); 
         if (mutedUntil) {
             const timeLeft = Number(mutedUntil) - Date.now();
             if (timeLeft > 0) {
                 setMuteUser(true);
                 setTimeout(() => {
                     setMuteUser(false);
-                    localStorage.removeItem('chat_muted_until');
+                    localStorage.removeItem(`chat_muted_until${guid}`);
                 }, timeLeft);
             } else {
-                localStorage.removeItem('chat_muted_until');
+                localStorage.removeItem(`chat_muted_until${guid}`);
             }
         }
     }, []);
@@ -54,13 +54,13 @@ export const useChatActionsForChat = () => {
         const duration = 300000; 
         const unviewDate = Date.now() + duration;
 
-        localStorage.setItem('chat_muted_until', unviewDate.toString());
+        localStorage.setItem(`chat_muted_until${guid}`, unviewDate.toString());
 
         setMuteUser(true);
 
         setTimeout(() => {
             setMuteUser(false);
-            localStorage.removeItem('chat_muted_until');
+            localStorage.removeItem(`chat_muted_until${guid}`);
         }, duration);
     };
 
