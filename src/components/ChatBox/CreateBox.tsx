@@ -1,5 +1,5 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../PasswordField";
 import BoxStatus from "./BoxStatus";
@@ -13,8 +13,8 @@ interface CreateBoxProps {
 const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
     const [password, setPassword] = useState<string>('');
-    const {isVisible , show, hide} = useModal();
-    const [isCreatingGroup,setIsCreatingGroup] = useState(false);
+    const { isVisible, show, hide } = useModal();
+    const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
     const handleClose = () => {
         setBoxName("");
@@ -23,7 +23,11 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         hide();
     };
 
-    const handleCreateGroup = () => {       
+    const handleCreateGroup = (e: React.FormEvent) => {
+        if (e) e.preventDefault();
+
+        if (!boxName.trim()) return;
+
         setIsCreatingGroup(true);
 
         const GUID = `group_${Date.now()}`;
@@ -47,53 +51,56 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
         );
     };
 
-    if(isCreatingGroup){
-        return <CreatingGroupLoader message="Создание вашей коробка..."/>
+    if (isCreatingGroup) {
+        return <CreatingGroupLoader message="Создание вашей коробка..." />
     }
 
     return (
         <div>
-            <Button variant="success" onClick={show}>
+            <Button variant="success" type='submit' onClick={show}>
                 Create Box
             </Button>
 
             <Modal show={isVisible} onHide={hide} centered>
-                <Modal.Header closeButton>
-                    <Modal.Title>Create New Box</Modal.Title>
-                </Modal.Header>
+                <Form onSubmit={handleCreateGroup}>
+                    <button type="submit" style={{ display: 'none' }}></button>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Create New Box</Modal.Title>
+                    </Modal.Header>
 
-                <Modal.Body>
-                    <div className="mb-3">
-                        <BoxStatus type={password.trim() ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC} />
-                    </div>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Box Name</Form.Label>
-                        <Form.Control
-                            type="text"
-                            placeholder="Enter a name for your box"
-                            value={boxName}
-                            onChange={(e) => setBoxName(e.target.value)}
-                        />
-                    </Form.Group>
+                    <Modal.Body>
+                        <div className="mb-3">
+                            <BoxStatus type={password.trim() ? CometChat.GROUP_TYPE.PASSWORD : CometChat.GROUP_TYPE.PUBLIC} />
+                        </div>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Box Name</Form.Label>
+                            <Form.Control
+                                type="text"
+                                placeholder="Enter a name for your box"
+                                value={boxName}
+                                onChange={(e) => setBoxName(e.target.value)}
+                            />
+                        </Form.Group>
 
-                    <Form.Group className="mb-3">
-                        <Form.Label>Password</Form.Label>
-                        <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
-                    </Form.Group>
-                </Modal.Body>
+                        <Form.Group className="mb-3">
+                            <Form.Label>Password</Form.Label>
+                            <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
+                        </Form.Group>
+                    </Modal.Body>
 
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cancel
-                    </Button>
-                    <Button
-                        variant="primary"
-                        onClick={handleCreateGroup}
-                        disabled={!boxName.trim()}
-                    >
-                        Create
-                    </Button>
-                </Modal.Footer>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose} type="button">
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="primary"
+                            type="submit"
+                            disabled={!boxName.trim()}
+                        >
+                            Create
+                        </Button>
+                    </Modal.Footer>
+                </Form>
             </Modal>
         </div>
     );

@@ -19,7 +19,7 @@ const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => 
                 placeholder={placeholder || "Password for private mode (optional)"} value={value}
                 onChange={onChange}
             />
-            <Button variant="outline-secondary" onClick={toggle}>
+            <Button variant="outline-secondary" onClick={toggle} type="button">
                 {isVisiblePassword ? <FaEyeSlash /> : <FaEye />}
             </Button>
         </InputGroup>
