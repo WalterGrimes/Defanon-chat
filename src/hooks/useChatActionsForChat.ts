@@ -14,6 +14,8 @@ export const useChatActionsForChat = () => {
     const [isSendingMessage, setIsSendingMessage] = useState(false);
 
     const [muteUser, setMuteUser] = useState(false);
+    const inputRef = useRef<HTMLInputElement>(null);
+
 
 
     const leaveRoom = () => {
@@ -135,6 +137,9 @@ export const useChatActionsForChat = () => {
             })
             .finally(() => {
                 setIsSendingMessage(false);
+                setTimeout(() => {
+                    inputRef.current?.focus();
+                }, 0);
             });
     };
 
@@ -150,6 +155,7 @@ export const useChatActionsForChat = () => {
         sendMessage, joinGroup, leaveRoom, fetchMessages, handleChange, chatContainerRef,
         guid, isLeaving,
         isSendingMessage,
-        muteUser, muteUserWithPreloader
+        muteUser, muteUserWithPreloader,
+        inputRef
     };
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
@@ -17,8 +17,9 @@ function Chat() {
         messageText, setMessageText,
         sendMessage, leaveRoom, handleChange, chatContainerRef, fetchMessages,
         guid,
-        muteUser, muteUserWithPreloader,
-        isLeaving, isSendingMessage } = useChatActionsForChat();
+        muteUserWithPreloader,
+        isLeaving, isSendingMessage,
+        inputRef } = useChatActionsForChat();
 
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
     const [currentGroup, setCurrentGroup] = useState<CometChat.Group | null>(null);
@@ -35,6 +36,7 @@ function Chat() {
     const mutedUserUID = localStorage.getItem(`last_muted_uid_${guid}`);
     const mutedTIme5 = localStorage.getItem(`chat_muted_until${guid}`);
     const isMeMuted = mutedTIme5 && Number(mutedTIme5) > Date.now() && mutedUserUID === user?.getUid();
+
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -94,7 +96,7 @@ function Chat() {
         return (
             <MutedTimer
                 until={Number(mutedTIme5)}
-                message="Вы были замучены. Осталось:"/>
+                message="Вы были замучены. Осталось:" />
         )
     }
 
@@ -196,6 +198,7 @@ function Chat() {
                     <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
                         <Form.Control
                             value={messageText}
+                            ref={inputRef}
                             required
                             disabled={isSendingMessage}
                             placeholder='Type Message here...'
