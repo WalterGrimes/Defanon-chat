@@ -8,6 +8,7 @@ import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
 import { GreenLoader, GreyLoader } from "../features/Loaders";
 import { getUserColor } from "../utilits/ColorHelper";
 import s from './Chat.module.css';
+import { MutedTimer } from "./MutedTimer";
 
 function Chat() {
     const location = useLocation();
@@ -33,7 +34,7 @@ function Chat() {
     const UserUID = user?.getUid();
     const mutedUserUID = localStorage.getItem(`last_muted_uid_${guid}`);
     const mutedTIme5 = localStorage.getItem(`chat_muted_until${guid}`);
-    const isMeMuted = mutedTIme5 && Number(mutedTIme5) > Date.now() &&  mutedUserUID === user?.getUid();
+    const isMeMuted = mutedTIme5 && Number(mutedTIme5) > Date.now() && mutedUserUID === user?.getUid();
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -90,7 +91,11 @@ function Chat() {
     }, [guid])
 
     if (isMeMuted) {
-        return <GreyLoader message="Вы были замучены на 5 минут" />
+        return (
+            <MutedTimer
+                until={Number(mutedTIme5)}
+                message="Вы были замучены. Осталось:"/>
+        )
     }
 
 
@@ -103,7 +108,7 @@ function Chat() {
     if (isLeaving) {
         return <GreenLoader message="Leaving this box,please wait..." />
     }
-    
+
     return (
         <div ref={chatContainerRef} className='bg-light page'>
             <Container>
@@ -154,12 +159,12 @@ function Chat() {
 
 
                                             <div className={s.messageContent}>
-                                                {isOwner === UserUID && msg.sender.uid !== UserUID &&(
+                                                {isOwner === UserUID && msg.sender.uid !== UserUID && (
                                                     <Button
                                                         onClick={() => muteUserWithPreloader(msg.sender.uid)}
                                                         variant="danger"
                                                         size="sm"
-                                                        className="me-2"    
+                                                        className="me-2"
                                                     >
                                                         Mute
                                                     </Button>
