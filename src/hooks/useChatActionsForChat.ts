@@ -32,7 +32,7 @@ export const useChatActionsForChat = () => {
     };
 
     useEffect(() => {
-        const mutedUntil = localStorage.getItem(`chat_muted_until${guid}`); 
+        const mutedUntil = localStorage.getItem(`chat_muted_until${guid}`);
         if (mutedUntil) {
             const timeLeft = Number(mutedUntil) - Date.now();
             if (timeLeft > 0) {
@@ -47,14 +47,12 @@ export const useChatActionsForChat = () => {
         }
     }, []);
 
- const muteUserWithPreloader = (e?: React.BaseSyntheticEvent) => {
-        if (e) e.preventDefault();
-        
-        console.log('Мут'); 
-        const duration = 300000; 
+    const muteUserWithPreloader = (targetUID: string) => {
+        const duration = 300000;
         const unviewDate = Date.now() + duration;
 
         localStorage.setItem(`chat_muted_until${guid}`, unviewDate.toString());
+        localStorage.setItem(`last_muted_uid_${guid}`, targetUID);
 
         setMuteUser(true);
 

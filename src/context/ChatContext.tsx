@@ -11,6 +11,7 @@ const ChatContext = createContext<ChatContextType | undefined>(undefined);
 
 export const ChatProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<CometChat.User | null>(null);
+    
 
    useEffect(() => {
         const token = localStorage.getItem('cometchat:authToken');

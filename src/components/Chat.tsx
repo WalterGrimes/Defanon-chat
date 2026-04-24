@@ -29,6 +29,12 @@ function Chat() {
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(true);
     const [hasFetched, setHasFetched] = useState(false);
 
+    const isOwner = currentGroup?.getOwner();
+    const UserUID = user?.getUid();
+    const mutedUserUID = localStorage.getItem(`last_muted_uid_${guid}`);
+    const mutedTIme5 = localStorage.getItem(`chat_muted_until${guid}`);
+    const isMeMuted = mutedTIme5 && Number(mutedTIme5) > Date.now() &&  mutedUserUID === user?.getUid();
+
     if (!guid) {
         return <Navigate to='/chatboxes' />
     }
@@ -83,7 +89,7 @@ function Chat() {
         return () => CometChat.removeMessageListener(listenerID);
     }, [guid])
 
-    if (muteUser) {
+    if (isMeMuted) {
         return <GreyLoader message="Вы были замучены на 5 минут" />
     }
 
@@ -148,12 +154,12 @@ function Chat() {
 
 
                                             <div className={s.messageContent}>
-                                                {currentGroup?.getOwner() === user?.getUid() && (
+                                                {isOwner === UserUID && msg.sender.uid !== UserUID &&(
                                                     <Button
-                                                        onClick={muteUserWithPreloader}
+                                                        onClick={() => muteUserWithPreloader(msg.sender.uid)}
                                                         variant="danger"
                                                         size="sm"
-                                                        className="me-2"
+                                                        className="me-2"    
                                                     >
                                                         Mute
                                                     </Button>
