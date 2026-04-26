@@ -200,13 +200,13 @@ function Chat() {
                             value={messageText}
                             ref={inputRef}
                             required
-                            disabled={isSendingMessage}
+                            // disabled={isSendingMessage}
                             placeholder='Type Message here...'
                             onChange={handleChange}
                         />
                         <Button variant='primary'
                             type='submit'
-                            disabled={isSendingMessage}
+                            // disabled={isSendingMessage}
                         >
                             {isSendingMessage ? (
                                 <GreyLoader message="отправка..." />

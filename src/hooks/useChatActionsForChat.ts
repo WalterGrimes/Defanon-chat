@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-
+import { useSpamSound } from "./PlaySpamSound";
 
 export const useChatActionsForChat = () => {
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
@@ -16,7 +16,7 @@ export const useChatActionsForChat = () => {
     const [muteUser, setMuteUser] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-
+    const playSpamSound = useSpamSound();
 
     const leaveRoom = () => {
         if (!guid) return;
@@ -118,6 +118,10 @@ export const useChatActionsForChat = () => {
     const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
         if (!messageText.trim() || !guid) return;
+
+        playSpamSound();
+
+
 
         setIsSendingMessage(true);
 
