@@ -1,0 +1,79 @@
+.spamCombo {
+    position: fixed;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    pointer-events: none;
+    font-family: 'Impact', 'Arial Black', sans-serif;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    text-shadow:
+        2px 2px 0 #000,
+        -2px -2px 0 #000,
+        2px -2px 0 #000,
+        -2px 2px 0 #000;
+    animation: comboPopIn 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               comboFadeOut 0.3s ease-in 0.9s forwards;
+    will-change: transform, opacity;
+}
+
+.comboNormal {
+    font-size: 2rem;
+    color: #00e5ff;
+}
+
+.comboHot {
+    font-size: 2.4rem;
+    color: #ff9800;
+}
+
+.comboEpic {
+    font-size: 2.8rem;
+    color: #ff3d00;
+    animation: comboPopIn 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               comboPulse 0.2s ease-in-out 0.15s 3,
+               comboFadeOut 0.3s ease-in 0.9s forwards;
+}
+
+.comboInsane {
+    font-size: 3.2rem;
+    color: #e040fb;
+    animation: comboPopIn 0.15s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               comboPulse 0.15s ease-in-out 0.15s 4,
+               comboFadeOut 0.3s ease-in 0.9s forwards;
+}
+
+.comboMega {
+    font-size: 3.8rem;
+    color: #ffeb3b;
+    animation: comboPopIn 0.12s cubic-bezier(0.34, 1.56, 0.64, 1) forwards,
+               comboShake 0.4s ease-in-out 0.12s,
+               comboFadeOut 0.3s ease-in 0.9s forwards;
+    filter: drop-shadow(0 0 16px #ff6f00);
+}
+
+@keyframes comboPopIn {
+    from { opacity: 0; transform: translateX(-50%) scale(0.3); }
+    to { opacity: 1; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes comboFadeOut {
+    from { opacity: 1; transform: translateX(-50%) scale(1) translateY(0); }
+    to { opacity: 0; transform: translateX(-50%) scale(0.8) translateY(-20px); }
+}
+
+@keyframes comboPulse {
+    0%   { transform: translateX(-50%) scale(1); }
+    50%  { transform: translateX(-50%) scale(1.12); }
+    100% { transform: translateX(-50%) scale(1); }
+}
+
+@keyframes comboShake {
+    0%   { transform: translateX(calc(-50% - 4px)) rotate(-1deg); }
+    25%  { transform: translateX(calc(-50% + 4px)) rotate(1deg); }
+    50%  { transform: translateX(calc(-50% - 3px)) rotate(-1deg); }
+    75%  { transform: translateX(calc(-50% + 3px)) rotate(1deg); }
+    100% { transform: translateX(-50%) rotate(0); }
+}

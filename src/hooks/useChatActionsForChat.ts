@@ -16,7 +16,11 @@ export const useChatActionsForChat = () => {
     const [muteUser, setMuteUser] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const [spamCount, setSpamCount] = useState(0);
+    const spamResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const playSpamSound = useSpamSound();
+    const lastClickRef = useRef(0);
+
 
     const leaveRoom = () => {
         if (!guid) return;
@@ -117,14 +121,34 @@ export const useChatActionsForChat = () => {
 
     const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
+
         if (!messageText.trim() || !guid) return;
 
+        const now = Date.now();
+        const diff = now - lastClickRef.current;
+
+       
+        if (diff < 1500) {
+            setSpamCount(prev => prev + 1);
+        } else {
+            setSpamCount(1);
+        }
+
+        lastClickRef.current = now;
         playSpamSound();
 
+        if (spamResetTimer.current) clearTimeout(spamResetTimer.current);
+        spamResetTimer.current = setTimeout(() => {
+            setSpamCount(0);
+        }, 2000); 
 
+        
+        if (diff < 150) {
+            console.warn("Слишком быстрая отправка, пропускаем запрос");
+            return;
+        }
 
         setIsSendingMessage(true);
-
         const textMessage = new CometChat.TextMessage(
             guid,
             messageText,
@@ -136,14 +160,10 @@ export const useChatActionsForChat = () => {
                 setMessageText('');
                 setMessages(prev => [...prev, message]);
             })
-            .catch(error => {
-                console.log('Message sending failed:', error);
-            })
+            .catch(error => console.log('Message sending failed:', error))
             .finally(() => {
                 setIsSendingMessage(false);
-                setTimeout(() => {
-                    inputRef.current?.focus();
-                }, 0);
+                setTimeout(() => inputRef.current?.focus(), 0);
             });
     };
 
@@ -160,6 +180,6 @@ export const useChatActionsForChat = () => {
         guid, isLeaving,
         isSendingMessage,
         muteUser, muteUserWithPreloader,
-        inputRef
+        inputRef, spamCount
     };
 };

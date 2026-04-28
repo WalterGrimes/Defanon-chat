@@ -9,6 +9,7 @@ import { GreenLoader, GreyLoader } from "../features/Loaders";
 import { getUserColor } from "../utilits/ColorHelper";
 import s from './Chat.module.css';
 import { MutedTimer } from "./MutedTimer";
+import { SpamTry } from "./SpamFishka/SpamTry";
 
 function Chat() {
     const location = useLocation();
@@ -19,7 +20,7 @@ function Chat() {
         guid,
         muteUserWithPreloader,
         isLeaving, isSendingMessage,
-        inputRef } = useChatActionsForChat();
+        inputRef, spamCount } = useChatActionsForChat();
 
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
     const [currentGroup, setCurrentGroup] = useState<CometChat.Group | null>(null);
@@ -195,6 +196,7 @@ function Chat() {
 
             <Navbar fixed='bottom' className="bg-white border-top">
                 <Container>
+                    <SpamTry count={spamCount} />
                     <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
                         <Form.Control
                             value={messageText}
@@ -206,7 +208,7 @@ function Chat() {
                         />
                         <Button variant='primary'
                             type='submit'
-                            // disabled={isSendingMessage}
+                        // disabled={isSendingMessage}
                         >
                             {isSendingMessage ? (
                                 <GreyLoader message="отправка..." />
