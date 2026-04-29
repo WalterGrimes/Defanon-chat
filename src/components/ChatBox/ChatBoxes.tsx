@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "./BoxStatus";
 import CreateBox from "./CreateBox";
@@ -11,6 +11,7 @@ import EditBox from "./EditBox";
 import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
 import { GroupInfoModal } from "../GroupInfoModal/GroupInfioModal";
 import './ChatBoxes.css';
+import { getUserColor } from "../../utilits/ColorHelper";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -38,6 +39,8 @@ const ChatBoxes = () => {
 
     const [infoGroup, setInfoGroup] = useState<CometChat.Group | null>(null);
     const [isInfoVisible, setIsInfoVisible] = useState(false);
+
+    const userColor = getUserColor(user?.getUid() || "unknown");
 
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
@@ -125,7 +128,10 @@ const ChatBoxes = () => {
     return (
         <>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
-                {`Welcome,${user?.getName()}`}
+                Welcome,
+                <span style={{ color: userColor}}>
+                    {`${user?.getName()}`}
+                </span>
             </div>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
                 <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
