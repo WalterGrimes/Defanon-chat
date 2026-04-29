@@ -1,6 +1,8 @@
 import { Modal, Button } from 'react-bootstrap';
 import s from './GroupInfoModal.module.css';
 import { getUserColor } from '../../utilits/ColorHelper';
+import { useEffect, useState } from 'react';
+import { CometChat } from "@cometchat/chat-sdk-javascript";
 
 interface GroupInfoModalProps {
     show: boolean;
@@ -9,6 +11,24 @@ interface GroupInfoModalProps {
 }
 
 export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => {
+    const [ownerName,setOwnerName] = useState<string>('Загрузка...');
+
+    useEffect(() => {
+        if(show && group){
+            const ownerUid = group.getOwner();
+
+            CometChat.getUser(ownerUid).then(
+                user => {
+                    setOwnerName(user.getName());
+                },
+                error => {
+                    console.log('Ошибка',error);
+                    setOwnerName('AnOnYm:)')
+                }
+            )
+        }
+    }, [show,group]);
+
     if (!group) return null;
 
     const ownerUid = group.getOwner();
@@ -36,7 +56,7 @@ export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => 
 
                     <InfoItem
                         label="Создатель"
-                        value={group.getOwner()}
+                        value={ownerName}
                         customColor={getUserColor(ownerUid)}
                     />
 
