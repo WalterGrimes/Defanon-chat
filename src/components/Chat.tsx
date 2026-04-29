@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
@@ -31,6 +31,7 @@ function Chat() {
     const [groupName, setGroupName] = useState<string>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(true);
     const [hasFetched, setHasFetched] = useState(false);
+
 
     const isOwner = currentGroup?.getOwner();
     const UserUID = user?.getUid();

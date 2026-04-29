@@ -9,6 +9,7 @@ import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat
 import { useAuth } from "../../context/ChatContext";
 import EditBox from "./EditBox";
 import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
+import { GroupInfoModal } from "../GroupInfoModal/GroupInfioModal";
 import './ChatBoxes.css';
 
 const ChatBoxes = () => {
@@ -34,6 +35,14 @@ const ChatBoxes = () => {
     const [onlineRightNow, setOnlineRightNow] = useState<number>(0);
 
     const { user } = useAuth();
+
+    const [infoGroup, setInfoGroup] = useState<CometChat.Group | null>(null);
+    const [isInfoVisible, setIsInfoVisible] = useState(false);
+
+    const openInfo = (group: CometChat.Group) => {
+        setInfoGroup(group);
+        setIsInfoVisible(true)
+    }
 
     useEffect(() => {
         if (guid) {
@@ -112,6 +121,7 @@ const ChatBoxes = () => {
     }
 
 
+
     return (
         <>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
@@ -128,6 +138,12 @@ const ChatBoxes = () => {
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>
+
+                <GroupInfoModal
+                    show={isInfoVisible}
+                    onHide={() => setIsInfoVisible(false)}
+                    group={infoGroup}
+                />
                 <Row xs={1} md={2} lg={3} className="g-4">
                     {groups.map((group) => (
                         <Col key={group.getGuid()}>
@@ -136,13 +152,20 @@ const ChatBoxes = () => {
                                     <div className="new-box-badge">your new box is here (◣_◢)</div>
                                 </div>
                             )}
-                            <Card className="h-100 shadow-sm border-0 bg-dark text-white">
+                            <Card className="h-100 shadow-sm border-0 bg-dark text-white group-card-relative">
+                                <button
+                                    className="info-icon-btn"
+                                    onClick={() => openInfo(group)}
+                                    title="Подробнее о коробке"
+                                >
+                                    ℹ
+                                </button>
                                 <Card.Body className="d-flex flex-column text-center">
                                     <Card.Title className="mb-3">{group.getName()}</Card.Title>
                                     <Card.Text className="small text-muted mb-4">
-                                        ID: {group.getGuid()} <br />
+                                        {/* ID: {group.getGuid()} <br /> */}
                                         Участников: {group.getMembersCount()} <br />
-                                        Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()} <br />
+                                        {/* Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()} <br /> */}
                                         Users online: {onlineRightNow} <br />
                                         {group.getOwner() === loggedInUid && (
                                             <>

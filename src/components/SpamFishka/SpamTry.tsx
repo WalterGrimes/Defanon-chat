@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import s from "./SpamTry.module.css";
 
 interface SpamComboProps {
-    count: number; 
+    count: number;
 }
 
 const getComboLabel = (count: number): string => {
@@ -13,6 +13,8 @@ const getComboLabel = (count: number): string => {
 };
 
 const getComboClassName = (count: number): string => {
+    if (count >= 50) return s.comboGodlike; 
+    if (count >= 25) return s.comboCyber;   
     if (count >= 10) return s.comboMega;
     if (count >= 7) return s.comboInsane;
     if (count >= 5) return s.comboEpic;
@@ -35,7 +37,7 @@ export const SpamTry = ({ count }: SpamComboProps) => {
 
         setLabel(getComboLabel(count));
         setCurrentClass(getComboClassName(count));
-        setAnimKey(prev => prev + 1); 
+        setAnimKey(prev => prev + 1);
         setVisible(true);
 
         if (timerRef.current) clearTimeout(timerRef.current);

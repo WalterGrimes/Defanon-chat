@@ -1,0 +1,61 @@
+.modalContent {
+    background-color: #1a1a1a !important; 
+    color: #ffffff !important;
+    border: 1px solid #00e5ff !important; 
+    box-shadow: 0 0 15px rgba(0, 229, 255, 0.2);
+}
+
+.header {
+    border-bottom: 1px solid #333 !important;
+}
+
+.header :global(.btn-close) {
+    background-color: transparent !important; 
+    filter: invert(1) brightness(200%); 
+    opacity: 0.8;
+    box-shadow: none !important;
+}
+
+.header :global(.btn-close:hover) {
+    opacity: 1;
+    filter: invert(70%) sepia(100%) saturate(1000%) hue-rotate(160deg);
+}
+
+.footer {
+    border-top: 1px solid #333 !important;
+}
+
+.label {
+    color: #00e5ff; 
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.value {
+    color: #ffffff;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.uidCode {
+    background: #0b0b0b;
+    color: #00e5ff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    border: 1px dashed #00e5ff; 
+    word-break: break-all;
+    text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+}
+
+.modalPop {
+    transform: scale(0.9);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+:global(.modal.show) .modalPop {
+    transform: scale(1);
+}
