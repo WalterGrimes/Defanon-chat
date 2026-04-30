@@ -1,17 +1,18 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
-import BoxStatus from "./BoxStatus";
-import CreateBox from "./CreateBox";
-import PasswordField from "../PasswordField";
-import { useChatActionsForChatBoxes } from "../../hooks/useChatActionForChatBoxes";
-import { GreenLoader, RedLoader } from "../../features/Loaders";
-import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
-import { useAuth } from "../../context/ChatContext";
-import EditBox from "./EditBox";
-import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
-import { GroupInfoModal } from "../GroupInfoModal/GroupInfioModal";
-import './ChatBoxes.css';
-import { getUserColor } from "../../utilits/ColorHelper";
+import BoxStatus from "../BoxStatus";
+import CreateBox from "../CreateBox";
+import PasswordField from "../../PasswordField";
+import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";
+import { GreenLoader, RedLoader } from "../../../features/Loaders";
+import { useChatActionsForSignChat } from "../../../hooks/useChatActionsForSignChat";
+import { useAuth } from "../../../context/ChatContext";
+import EditBox from "../EditBox";
+import { useChatActionsForChat } from "../../../hooks/useChatActionsForChat";
+import { GroupInfoModal } from "../../GroupInfoModal/GroupInfioModal";
+import '../ChatBoxes.css';
+import { getUserColor } from "../../../utilits/ColorHelper";
+import { FavoriteBox } from "../../FavoriteBox";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -46,6 +47,21 @@ const ChatBoxes = () => {
         setInfoGroup(group);
         setIsInfoVisible(true)
     }
+
+    const [activeFilter, setActiveFilter] = useState<'all' | 'fav'>('all');
+    const [refreshFavs, setRefreshFavs] = useState(0);
+
+    useEffect(() => {
+        const handleUpdate = () => setRefreshFavs(prev => prev + 1);
+        window.addEventListener('favUpdated', handleUpdate);
+        return () => window.removeEventListener('favUpdated', handleUpdate);
+    }, []);
+
+    const displayedGroups = groups.filter(group => {
+        if (activeFilter === 'all') return true;
+        const favs = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
+        return favs.includes(group.getGuid());
+    });
 
     useEffect(() => {
         if (guid) {
@@ -129,7 +145,7 @@ const ChatBoxes = () => {
         <>
             <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
                 Welcome,
-                <span style={{ color: userColor}}>
+                <span style={{ color: userColor }}>
                     {`${user?.getName()}`}
                 </span>
             </div>
@@ -144,6 +160,22 @@ const ChatBoxes = () => {
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>
+                <div className="d-flex gap-2 mb-4">
+                    <Button
+                        variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
+                        onClick={() => setActiveFilter('all')}
+                    >
+                        Все коробки
+                    </Button>
+                    <Button
+                        variant={activeFilter === 'fav' ? 'warning' : 'outline-warning'}
+                        onClick={() => setActiveFilter('fav')}
+                    >
+                        Избранное
+                    </Button>
+                </div>
+
+
 
                 <GroupInfoModal
                     show={isInfoVisible}
@@ -151,7 +183,7 @@ const ChatBoxes = () => {
                     group={infoGroup}
                 />
                 <Row xs={1} md={2} lg={3} className="g-4">
-                    {groups.map((group) => (
+                    {displayedGroups.map((group) => (
                         <Col key={group.getGuid()}>
                             {group.getGuid() === showingOwnerHisGroup && (
                                 <div className="new-box-pointer-container">
@@ -159,6 +191,7 @@ const ChatBoxes = () => {
                                 </div>
                             )}
                             <Card className="h-100 shadow-sm border-0 bg-dark text-white group-card-relative">
+                                <FavoriteBox guid={group.getGuid()} />
                                 <button
                                     className="info-icon-btn"
                                     onClick={() => openInfo(group)}

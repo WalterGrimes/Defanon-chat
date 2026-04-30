@@ -7,7 +7,7 @@ import Signup from './components/EnterChat';
 import Chat from './components/Chat';
 import './App.css';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
-import ChatBoxes from './components/ChatBox/ChatBoxes';
+import ChatBoxes from './components/ChatBoxLogic/ChatBoxes/ChatBoxes';
 import { ChatProvider } from './context/ChatContext';
 
 const APP_ID = import.meta.env.VITE_COMETCHAT_APPID;
