@@ -13,6 +13,7 @@ import { GroupInfoModal } from "../../GroupInfoModal/GroupInfioModal";
 import '../ChatBoxes.css';
 import { getUserColor } from "../../../utilits/ColorHelper";
 import { FavoriteBox } from "../../FavoriteBox";
+import { Pagination } from "../../Pagination/Pagination";
 
 const ChatBoxes = () => {
     const { groups, setGroups,
@@ -43,6 +44,9 @@ const ChatBoxes = () => {
 
     const userColor = getUserColor(user?.getUid() || "unknown");
 
+    const [currentPage, setCurrentPage] = useState(1);
+    const pageSize = 6;
+
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
         setIsInfoVisible(true)
@@ -57,11 +61,15 @@ const ChatBoxes = () => {
         return () => window.removeEventListener('favUpdated', handleUpdate);
     }, []);
 
-    const displayedGroups = groups.filter(group => {
+    const filtered = groups.filter(group => {
         if (activeFilter === 'all') return true;
-        const favs = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
+
+        const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
         return favs.includes(group.getGuid());
-    });
+    })
+
+    const startPagination = (currentPage - 1) * pageSize;
+    const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
 
     useEffect(() => {
         if (guid) {
@@ -183,7 +191,7 @@ const ChatBoxes = () => {
                     group={infoGroup}
                 />
                 <Row xs={1} md={2} lg={3} className="g-4">
-                    {displayedGroups.map((group) => (
+                    {paginationGroups.map((group) => (
                         <Col key={group.getGuid()}>
                             {group.getGuid() === showingOwnerHisGroup && (
                                 <div className="new-box-pointer-container">
@@ -234,6 +242,14 @@ const ChatBoxes = () => {
                         </Col>
                     ))}
                 </Row>
+                <div className="d-flex justify-content-center mt-5 mb-4">
+                    <Pagination
+                        currentPage={currentPage}
+                        totalGroups={filtered.length}
+                        pageSize={pageSize}
+                        onPageChange={(page: number) => setCurrentPage(page)}
+                    />
+                </div>
             </Container>
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>

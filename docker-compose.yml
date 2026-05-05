@@ -1,0 +1,27 @@
+services:
+  # Бэкенд (Node.js)
+  server:
+    image: node:24-alpine
+    container_name: baha-server
+    restart: unless-stopped
+    working_dir: /app
+    volumes:
+      - ./server:/app
+    # Прокидываем переменные напрямую или через файл
+    env_file:
+      - ./server/.env.local
+    command: node index.js
+    ports:
+      - "5000:5000"
+
+  # Фронтенд (Nginx)
+  nginx:
+    image: nginx:alpine
+    container_name: baha
+    restart: unless-stopped
+    ports:
+      - "8989:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html:ro
+    depends_on:
+      - server
