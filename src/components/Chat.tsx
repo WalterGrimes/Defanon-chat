@@ -10,6 +10,7 @@ import { getUserColor } from "../utilits/ColorHelper";
 import s from './Chat.module.css';
 import { MutedTimer } from "./MutedTimer";
 import { SpamTry } from "./SpamFishka/SpamTry";
+import { ThemeSwitcher } from "../ThemeChange/ThemeSwitcher";
 
 function Chat() {
     const location = useLocation();
@@ -114,16 +115,19 @@ function Chat() {
     }
 
     return (
-        <div ref={chatContainerRef} className='bg-light page'>
+        <div ref={chatContainerRef} className={s.chatWrapper}>
             <Container>
                 <Row>
                     <Col>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3 mb-0'>
                                 {groupName || <GreenLoader message="загрузка..." />} <br />
-                                Welcome to chat dear {welcomingUser}
+                                <small style={{ fontSize: '0.6em', color: 'var(--text-color)' }}>
+                                    Welcome to chat dear {welcomingUser}
+                                </small>
                             </h3>
                             <div className='d-flex gap-2 align-items-center ms-3'>
+                                <ThemeSwitcher />
                                 <Button onClick={leaveRoom} variant='outline-primary'>Leave</Button>
                             </div>
                         </div>
@@ -139,7 +143,7 @@ function Chat() {
 
                                     if (isAction) {
                                         return (
-                                            <li className='list-group-item text-center bg-light italic' key={msg.id || uuid()}>
+                                            <li className='list-group-item text-center italic' style={{ background: 'transparent', color: 'var(--text-color)', border: 'none' }}>
                                                 <small className="text-muted" style={{ fontStyle: 'italic' }}>
                                                     user {msg.message}
                                                 </small>
@@ -195,7 +199,7 @@ function Chat() {
                 </Row>
             </Container>
 
-            <Navbar fixed='bottom' className="bg-white border-top">
+            <Navbar fixed='bottom' className={s.bottomBar}>
                 <Container>
                     <SpamTry count={spamCount} />
                     <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
@@ -209,7 +213,7 @@ function Chat() {
                         />
                         <Button variant='primary'
                             type='submit'
-                        // disabled={isSendingMessage}
+                        // disabled={isSendingMessage}в
                         >
                             {isSendingMessage ? (
                                 <GreyLoader message="отправка..." />

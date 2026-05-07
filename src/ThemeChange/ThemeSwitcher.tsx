@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 
-export const ThemeToggle = () => {
+export const ThemeSwitcher = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   useEffect(() => {
@@ -9,11 +9,9 @@ export const ThemeToggle = () => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const toggleTheme = () => {
-    setTheme(theme === "light" ? "dark" : "dark"); 
-    
-    setTheme((prev) => (prev === "light" ? "dark" : "light"));
-  };
+ const toggleTheme = () => {
+  setTheme((prev) => (prev === "light" ? "dark" : "light"));
+};
 
   return (
     <Button 

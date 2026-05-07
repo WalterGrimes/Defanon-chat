@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { CometChat } from "@cometchat/chat-sdk-javascript"; import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
+import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "../BoxStatus";
 import CreateBox from "../CreateBox";
 import PasswordField from "../../PasswordField";
@@ -10,13 +11,15 @@ import { useAuth } from "../../../context/ChatContext";
 import EditBox from "../EditBox";
 import { useChatActionsForChat } from "../../../hooks/useChatActionsForChat";
 import { GroupInfoModal } from "../../GroupInfoModal/GroupInfioModal";
-import '../ChatBoxes.css';
 import { getUserColor } from "../../../utilits/ColorHelper";
-import { FavoriteBox } from "../../FavoriteBox";
 import { Pagination } from "../../Pagination/Pagination";
+import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
+import s from './ChatBoxes.module.css';
+import '../ChatBoxes.css';
 
 const ChatBoxes = () => {
-    const { groups, setGroups,
+    const {
+        groups, setGroups,
         selectedGroupId,
         password, setPassword,
         isVisible, hide,
@@ -26,12 +29,13 @@ const ChatBoxes = () => {
         showingOwnerHisGroup
     } = useChatActionsForChatBoxes();
 
-    const { logout,
+    const {
+        logout,
         isLoggingOut, isNuking,
-        nukeEverything } = useChatActionsForSignChat();
+        nukeEverything
+    } = useChatActionsForSignChat();
 
     const { guid, messages } = useChatActionsForChat();
-
 
     const [isLoading, setIsLoading] = useState(true);
     const [loggedInUid, setLoggedInUid] = useState<string>("");
@@ -49,8 +53,8 @@ const ChatBoxes = () => {
 
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
-        setIsInfoVisible(true)
-    }
+        setIsInfoVisible(true);
+    };
 
     const [activeFilter, setActiveFilter] = useState<'all' | 'fav'>('all');
     const [refreshFavs, setRefreshFavs] = useState(0);
@@ -63,17 +67,15 @@ const ChatBoxes = () => {
 
     const filtered = groups.filter(group => {
         if (activeFilter === 'all') return true;
-
         const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
         return favs.includes(group.getGuid());
-    })
+    });
 
     const startPagination = (currentPage - 1) * pageSize;
     const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
 
     useEffect(() => {
         if (guid) {
-
             CometChat.getOnlineGroupMemberCount([guid]).then(
                 (result: any) => {
                     const count = result[guid];
@@ -88,9 +90,9 @@ const ChatBoxes = () => {
 
     useEffect(() => {
         CometChat.getLoggedInUser().then((user) => {
-            if (user) setLoggedInUid(user.getUid())
-        })
-    }, [])
+            if (user) setLoggedInUid(user.getUid());
+        });
+    }, []);
 
     useEffect(() => {
         const limit = 30;
@@ -126,48 +128,31 @@ const ChatBoxes = () => {
         return () => CometChat.removeGroupListener(listenerId);
     }, []);
 
-
-    if (isLoading) {
-        return <GreenLoader message="Loading boxes, please wait..." />
-    }
-
-    if (isLoggingOut) {
-        return <RedLoader message="Logging out, please wait..." />
-    }
-
-    if (isJoining) {
-        return <GreenLoader message="Joining the chat, please wait..." />
-    }
-
-    if (isDeletingGroup) {
-        return <RedLoader message="Deleting the group, please wait..." />
-    }
-
-    if (isNuking) {
-        return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />
-    }
-
-
+    if (isLoading) return <GreenLoader message="Loading boxes, please wait..." />;
+    if (isLoggingOut) return <RedLoader message="Logging out, please wait..." />;
+    if (isJoining) return <GreenLoader message="Joining the chat, please wait..." />;
+    if (isDeletingGroup) return <RedLoader message="Deleting the group, please wait..." />;
+    if (isNuking) return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />;
 
     return (
-        <>
-            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
-                Welcome,
-                <span style={{ color: userColor }}>
-                    {`${user?.getName()}`}
-                </span>
-            </div>
-            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
-                <Button onClick={logout} variant='outline-primary' style={{ marginRight: '12px' }}> Logout</Button>
-            </div>
-            <div className='d-flex gap-2 align-items-center ms-3 ' style={{ height: '5vh', overflowY: 'auto' }}>
-                <Button onClick={() => nukeEverything(loggedInUid)} variant='danger' style={{ marginRight: '12px' }}>Delete</Button>
+        <div className={s.chatWrapper}>
+            <div className={s.header}>
+                <div className={s.headerLeft}>
+                    <span>Welcome, </span>
+                    <span style={{ color: userColor }}>{user?.getName()}</span>
+                </div>
+                <div className={s.headerRight}>
+                    <ThemeSwitcher />
+                    <Button onClick={logout} variant='outline-primary'>Logout</Button>
+                    <Button onClick={() => nukeEverything(loggedInUid)} variant='danger'>Delete</Button>
+                </div>
             </div>
 
             <Container className="mt-4">
                 <div className="d-flex justify-content-end mb-4">
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>
+
                 <div className="d-flex gap-2 mb-4">
                     <Button
                         variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
@@ -183,13 +168,12 @@ const ChatBoxes = () => {
                     </Button>
                 </div>
 
-
-
                 <GroupInfoModal
                     show={isInfoVisible}
                     onHide={() => setIsInfoVisible(false)}
                     group={infoGroup}
                 />
+
                 <Row xs={1} md={2} lg={3} className="g-4">
                     {paginationGroups.map((group) => (
                         <Col key={group.getGuid()}>
@@ -198,8 +182,7 @@ const ChatBoxes = () => {
                                     <div className="new-box-badge">your new box is here (◣_◢)</div>
                                 </div>
                             )}
-                            <Card className="h-100 shadow-sm border-0 bg-dark text-white group-card-relative">
-                                <FavoriteBox guid={group.getGuid()} />
+                            <Card className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}>
                                 <button
                                     className="info-icon-btn"
                                     onClick={() => openInfo(group)}
@@ -210,9 +193,7 @@ const ChatBoxes = () => {
                                 <Card.Body className="d-flex flex-column text-center">
                                     <Card.Title className="mb-3">{group.getName()}</Card.Title>
                                     <Card.Text className="small text-muted mb-4">
-                                        {/* ID: {group.getGuid()} <br /> */}
                                         Участников: {group.getMembersCount()} <br />
-                                        {/* Дата создания: {new Date(group.getCreatedAt() * 1000).toLocaleDateString()} <br /> */}
                                         Users online: {onlineRightNow} <br />
                                         {group.getOwner() === loggedInUid && (
                                             <>
@@ -221,18 +202,21 @@ const ChatBoxes = () => {
                                             </>
                                         )}
                                     </Card.Text>
-                                    <Button variant="outline-light"
+                                    <Button
+                                        variant="outline-light"
                                         className="mt-auto"
-                                        onClick={() => enterChat(group)}>
+                                        onClick={() => enterChat(group)}
+                                    >
                                         Войти в коробку
                                     </Button>
                                     {group.getOwner() === loggedInUid && (
-                                        <>
-                                            <Button variant="danger" className="mt-2" onClick={() => handleDeleteGroup(group.getGuid())}>
-                                                Удалить коробку
-                                            </Button>
-
-                                        </>
+                                        <Button
+                                            variant="danger"
+                                            className="mt-2"
+                                            onClick={() => handleDeleteGroup(group.getGuid())}
+                                        >
+                                            Удалить коробку
+                                        </Button>
                                     )}
                                     <div className="mt-2 d-flex justify-content-center">
                                         <BoxStatus type={group.getType()} />
@@ -242,6 +226,7 @@ const ChatBoxes = () => {
                         </Col>
                     ))}
                 </Row>
+
                 <div className="d-flex justify-content-center mt-5 mb-4">
                     <Pagination
                         currentPage={currentPage}
@@ -251,11 +236,11 @@ const ChatBoxes = () => {
                     />
                 </div>
             </Container>
+
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>
                     <Modal.Title>Write a password</Modal.Title>
                 </Modal.Header>
-
                 <Form onSubmit={(e) => {
                     e.preventDefault();
                     if (selectedGroupId) {
@@ -271,17 +256,13 @@ const ChatBoxes = () => {
                                 placeholder="Введите пароль"
                             />
                         </Form.Group>
-
-                        <Button
-                            variant="primary"
-                            className="w-100"
-                            type="submit">
+                        <Button variant="primary" className="w-100" type="submit">
                             Enter
                         </Button>
                     </Modal.Body>
                 </Form>
             </Modal>
-        </>
+        </div>
     );
 };
 

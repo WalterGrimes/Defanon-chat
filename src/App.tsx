@@ -16,6 +16,12 @@ const REGION = "us";
 function App() {
   const [isInitialized, setIsInitialized] = useState(false);
 
+
+  useEffect(() => {
+  const saved = localStorage.getItem("theme") || "light";
+  document.documentElement.setAttribute("data-theme", saved);
+}, []);
+
   useEffect(() => {
     if (APP_ID) {
       const appSetting = new CometChat.AppSettingsBuilder()
