@@ -16,6 +16,7 @@ import { Pagination } from "../../Pagination/Pagination";
 import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
 import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
+import { FavoriteBox } from "../../FavoriteBox";
 
 const ChatBoxes = () => {
     const {
@@ -49,7 +50,7 @@ const ChatBoxes = () => {
     const userColor = getUserColor(user?.getUid() || "unknown");
 
     const [currentPage, setCurrentPage] = useState(1);
-    const pageSize = 6;
+    const pageSize = 8;
 
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
@@ -183,6 +184,7 @@ const ChatBoxes = () => {
                                 </div>
                             )}
                             <Card className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}>
+                                <FavoriteBox guid={group.getGuid()} />
                                 <button
                                     className="info-icon-btn"
                                     onClick={() => openInfo(group)}
