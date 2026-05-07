@@ -62,3 +62,12 @@
   color: var(--text-color) !important;
   border-color: var(--border-color) !important;
 }
+
+.ownerBadge {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.72rem;
+    color: #ffc107;
+    opacity: 0.85;
+    letter-spacing: 0.03em;
+}

@@ -175,7 +175,7 @@ const ChatBoxes = () => {
                     group={infoGroup}
                 />
 
-                <Row xs={1} md={2} lg={3} className="g-4">
+                <Row xs={1} md={2} lg={4} className="g-5 gy-5">
                     {paginationGroups.map((group) => (
                         <Col key={group.getGuid()}>
                             {group.getGuid() === showingOwnerHisGroup && (
@@ -186,23 +186,22 @@ const ChatBoxes = () => {
                             <Card className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}>
                                 <FavoriteBox guid={group.getGuid()} />
                                 <button
-                                    className="info-icon-btn"
+                                    className={`info-icon-btn ${group.getOwner() === loggedInUid ? 'info-icon-center' : ''}`}
                                     onClick={() => openInfo(group)}
                                     title="Подробнее о коробке"
                                 >
-                                    ℹ
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
+                                    </svg>
                                 </button>
+                                {group.getOwner() === loggedInUid && (
+                                    <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
+                                )}
                                 <Card.Body className="d-flex flex-column text-center">
                                     <Card.Title className="mb-3">{group.getName()}</Card.Title>
                                     <Card.Text className="small text-muted mb-4">
                                         Участников: {group.getMembersCount()} <br />
-                                        Users online: {onlineRightNow} <br />
-                                        {group.getOwner() === loggedInUid && (
-                                            <>
-                                                <div>Вы являетесь создателем данной комнаты</div>
-                                                <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
-                                            </>
-                                        )}
+                                        Users online: {onlineRightNow}
                                     </Card.Text>
                                     <Button
                                         variant="outline-light"
@@ -212,17 +211,22 @@ const ChatBoxes = () => {
                                         Войти в коробку
                                     </Button>
                                     {group.getOwner() === loggedInUid && (
-                                        <Button
-                                            variant="danger"
-                                            className="mt-2"
+                                        <button
+                                            className="delete-icon-btn"
                                             onClick={() => handleDeleteGroup(group.getGuid())}
+                                            title="Удалить коробку"
                                         >
-                                            Удалить коробку
-                                        </Button>
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                                                <path d="M3 6h18v2H3zm2 3h14l-1.5 12h-11zm5-6h4v2h-4z" />
+                                            </svg>
+                                        </button>
                                     )}
                                     <div className="mt-2 d-flex justify-content-center">
                                         <BoxStatus type={group.getType()} />
                                     </div>
+                                    {group.getOwner() === loggedInUid && (
+                                        <small className={s.ownerBadge}> Вы владелец</small>
+                                    )}
                                 </Card.Body>
                             </Card>
                         </Col>

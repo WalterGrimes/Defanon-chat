@@ -1,7 +1,10 @@
 @keyframes bounce-arrow {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0);
   }
+
   50% {
     transform: translateY(-15px);
   }
@@ -33,4 +36,82 @@
   font-weight: bold;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   border: 1px solid white;
+}
+
+.settings-icon-btn {
+  position: absolute;
+  top: 10px;
+  right: 1px;
+  background: transparent;
+  border: none;
+  color: var(--text-color);
+  font-size: 1.1rem;
+  cursor: pointer;
+  z-index: 10;
+  padding: 2px 6px;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+.settings-icon-btn:hover {
+  opacity: 1;
+}
+
+.info-icon-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 1rem;
+  cursor: pointer;
+  z-index: 10;
+  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.info-icon-btn:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.info-icon-center {
+  right: 50%;
+  transform: translateX(50%);
+}
+.delete-icon-btn {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background: transparent;
+    border: none;
+    color: rgba(255, 80, 80, 0.6);
+    cursor: pointer;
+    z-index: 10;
+    padding: 4px;
+    transition: color 0.2s;
+}
+
+.delete-icon-btn:hover {
+    color: rgba(255, 80, 80, 1);
+}
+
+.card {
+  border-radius: 16px !important;
+}
+
+.group-card-relative {
+  border-radius: 16px !important;
+}
+
+.row.g-5 {
+  --bs-gutter-y: 2.5rem;
+}
+.row {
+  row-gap: 2rem !important;
 }

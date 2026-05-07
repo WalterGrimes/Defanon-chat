@@ -7,7 +7,7 @@ import { useModal } from "../../hooks/useModal";
 import { CreatingGroupLoader } from "../../features/Loaders";
 
 interface EditBoxProps {
-    group: CometChat.Group; 
+    group: CometChat.Group;
     onGroupUpdate: (newGroup: CometChat.Group) => void;
 }
 
@@ -26,7 +26,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
     const handleUpdateGroup = () => {
         setIsUpdating(true);
 
-        const GUID = group.getGuid(); 
+        const GUID = group.getGuid();
         const trimmedPassword = password.trim();
 
         const boxType = trimmedPassword !== ""
@@ -39,7 +39,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
             (res) => {
                 onGroupUpdate(res);
                 hide();
-                setIsUpdating(false);   
+                setIsUpdating(false);
             },
             (error) => {
                 console.error("Update failed:", error);
@@ -53,9 +53,9 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
 
     return (
         <div>
-            <Button variant="success" onClick={show}>
-                Settings
-            </Button>
+            <button className="settings-icon-btn" onClick={show} title="Настройки коробки">
+                ⚙
+            </button>
 
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>
