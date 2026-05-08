@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { store } from './app/store';
 import Home from './components/RegisterChat';
 import Signup from './components/EnterChat';
-import Chat from './components/Chat';
+import Chat from './components/Chat/Chat';
 import './App.css';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
 import ChatBoxes from './components/ChatBoxLogic/ChatBoxes/ChatBoxes';

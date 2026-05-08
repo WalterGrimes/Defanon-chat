@@ -3,14 +3,14 @@ import { v4 as uuid } from 'uuid';
 import { Navigate, useLocation } from "react-router-dom";
 import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { useChatActionsForChat } from "../hooks/useChatActionsForChat";
-import { useChatActionsForSignChat } from "../hooks/useChatActionsForSignChat";
-import { GreenLoader, GreyLoader } from "../features/Loaders";
-import { getUserColor } from "../utilits/ColorHelper";
+import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
+import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
+import { GreenLoader, GreyLoader } from "../../features/Loaders";
+import { getUserColor } from "../../utilits/ColorHelper";
 import s from './Chat.module.css';
-import { MutedTimer } from "./MutedTimer";
-import { SpamTry } from "./SpamFishka/SpamTry";
-import { ThemeSwitcher } from "../ThemeChange/ThemeSwitcher";
+import { MutedTimer } from "../MutedTimer";
+import { SpamTry } from "../SpamFishka/SpamTry";
+import { ThemeSwitcher } from "../../ThemeChange/ThemeSwitcher";
 
 function Chat() {
     const location = useLocation();
@@ -118,8 +118,8 @@ function Chat() {
     return (
         <div ref={chatContainerRef} className={s.chatWrapper}>
             <Container>
-                <Row>
-                    <Col>
+                <Row className="justify-content-center">
+                    <Col xs={12} md={8} lg={6}>
                         <div className='d-flex align-items-center justify-content-between'>
                             <h3 className='py-3 mb-0'>
                                 {groupName || <GreenLoader message="загрузка..." />} <br />
@@ -165,7 +165,6 @@ function Chat() {
                                             <span className={s.messageSender} style={{ color: userColor }}>
                                                 {msg.sender?.name || 'Unknown'}
                                             </span>
-
                                             <div className={s.messageContent}>
                                                 {isOwner === UserUID && msg.sender.uid !== UserUID && (
                                                     <Button
@@ -177,15 +176,9 @@ function Chat() {
                                                         Mute
                                                     </Button>
                                                 )}
-
-                                                <span className={s.messageText}>
-                                                    {msg.text}
-                                                </span>
-
-                                                <small className={s.messageTime}>
-                                                    {time}
-                                                </small>
+                                                <span className={s.messageText}>{msg.text}</span>
                                             </div>
+                                            <small className={s.messageTime}>{time}</small>
                                         </li>
                                     );
                                 })
@@ -202,34 +195,37 @@ function Chat() {
             <Navbar fixed='bottom' className={s.bottomBar}>
                 <Container fluid>
                     <SpamTry count={spamCount} />
-                    <Form className='w-100 d-flex gap-2 align-items-end' onSubmit={sendMessage}>
-                        <textarea
-                            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
-                            value={messageText}
-                            required
-                            placeholder='Type Message here...'
-                            onChange={handleChange}
-                            className={s.textarea}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    sendMessage(e as any);
-                                }
-                            }}
-                            rows={1}
-                            onInput={(e) => {
-                                const el = e.currentTarget;
-                                el.style.height = 'auto';
-                                el.style.height = Math.min(el.scrollHeight, 150) + 'px';
-                            }}
-                        />
-                        <Button variant='primary' type='submit'>
-                            {isSendingMessage ? (
-                                <GreyLoader message="отправка..." />
-                            ) : (
-                                'Send'
-                            )}
-                        </Button>
+                    <Form className='w-100 d-flex' onSubmit={sendMessage}>
+                        <div className={s.inputWrapper}>
+                            <textarea
+                                ref={inputRef as React.RefObject<HTMLTextAreaElement>}
+                                value={messageText}
+                                placeholder='Type Message here...'
+                                onChange={handleChange}
+                                className={s.textarea}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        sendMessage(e as any);
+                                    }
+                                }}
+                                rows={1}
+                                onInput={(e) => {
+                                    const el = e.currentTarget;
+                                    el.style.height = 'auto';
+                                    el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+                                }}
+                            />
+                            <Button variant='primary' type='submit' className={s.sendBtn}>
+                                {isSendingMessage ? (
+                                    <GreyLoader message="" />
+                                ) : (
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                                        <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" />
+                                    </svg>
+                                )}
+                            </Button>
+                        </div>
                     </Form>
                 </Container>
             </Navbar>

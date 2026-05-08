@@ -70,16 +70,13 @@ export const useChatActionsForChat = () => {
 
 
     useEffect(() => {
-        const el = chatContainerRef.current;
-        if (el) {
-            el.scrollTo({
-                top: el.scrollHeight,
-                behavior: 'smooth'
-            })
-        }
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
     }, [messages])
 
-    
+
 
     const fetchMessages = async () => {
         const limit = 20;
