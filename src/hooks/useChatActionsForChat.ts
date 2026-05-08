@@ -14,7 +14,7 @@ export const useChatActionsForChat = () => {
     const [isSendingMessage, setIsSendingMessage] = useState(false);
 
     const [muteUser, setMuteUser] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
+    const inputRef = useRef<HTMLTextAreaElement>(null);
 
     const [spamCount, setSpamCount] = useState(0);
     const spamResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -79,6 +79,7 @@ export const useChatActionsForChat = () => {
         }
     }, [messages])
 
+    
 
     const fetchMessages = async () => {
         const limit = 20;
@@ -127,7 +128,7 @@ export const useChatActionsForChat = () => {
         const now = Date.now();
         const diff = now - lastClickRef.current;
 
-       
+
         if (diff < 1500) {
             setSpamCount(prev => prev + 1);
         } else {
@@ -140,9 +141,9 @@ export const useChatActionsForChat = () => {
         if (spamResetTimer.current) clearTimeout(spamResetTimer.current);
         spamResetTimer.current = setTimeout(() => {
             setSpamCount(0);
-        }, 2000); 
+        }, 2000);
 
-        
+
         if (diff < 150) {
             console.warn("Слишком быстрая отправка, пропускаем запрос");
             return;
@@ -167,7 +168,7 @@ export const useChatActionsForChat = () => {
             });
     };
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setMessageText(e.target.value);
     }
 

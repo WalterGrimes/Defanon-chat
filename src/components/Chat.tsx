@@ -26,20 +26,17 @@ function Chat() {
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
     const [currentGroup, setCurrentGroup] = useState<CometChat.Group | null>(null);
 
-
     const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
     const [groupName, setGroupName] = useState<string>();
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(true);
     const [hasFetched, setHasFetched] = useState(false);
 
-
     const isOwner = currentGroup?.getOwner();
     const UserUID = user?.getUid();
     const mutedUserUID = localStorage.getItem(`last_muted_uid_${guid}`);
     const mutedTIme5 = localStorage.getItem(`chat_muted_until${guid}`);
     const isMeMuted = mutedTIme5 && Number(mutedTIme5) > Date.now() && mutedUserUID === user?.getUid();
-
 
     if (!guid) {
         return <Navigate to='/chatboxes' />
@@ -51,7 +48,6 @@ function Chat() {
                 (group) => {
                     setGroupName(group.getName());
                     setCurrentGroup(group);
-                    console.log("Зашло,данные группы:", group)
                 },
                 (error) => {
                     console.log("Ошибка при получении данных группы", error)
@@ -95,6 +91,13 @@ function Chat() {
         return () => CometChat.removeMessageListener(listenerID);
     }, [guid])
 
+    useEffect(() => {
+        if (hasFetched) {
+            setTimeout(() => inputRef.current?.focus(), 100);
+        }
+    }, [hasFetched])
+
+
     if (isMeMuted) {
         return (
             <MutedTimer
@@ -102,8 +105,6 @@ function Chat() {
                 message="Вы были замучены. Осталось:" />
         )
     }
-
-
 
     if (redirect) return <Navigate to='/' />;
     if (!user && !localStorage.getItem('cometchat:authToken')) {
@@ -132,7 +133,7 @@ function Chat() {
                             </div>
                         </div>
 
-                        <ul className='list-group' style={{ marginBottom: '80px' }}>
+                        <ul className='list-group' style={{ marginBottom: '100px' }}>
                             {isLoadingMessages ? (
                                 <div className='text-center mt-5'>
                                     <GreenLoader message="Fetching Messages..." />
@@ -164,7 +165,6 @@ function Chat() {
                                             <span className={s.messageSender} style={{ color: userColor }}>
                                                 {msg.sender?.name || 'Unknown'}
                                             </span>
-
 
                                             <div className={s.messageContent}>
                                                 {isOwner === UserUID && msg.sender.uid !== UserUID && (
@@ -200,21 +200,30 @@ function Chat() {
             </Container>
 
             <Navbar fixed='bottom' className={s.bottomBar}>
-                <Container>
+                <Container fluid>
                     <SpamTry count={spamCount} />
-                    <Form className='w-100 d-flex gap-2' onSubmit={sendMessage}>
-                        <Form.Control
+                    <Form className='w-100 d-flex gap-2 align-items-end' onSubmit={sendMessage}>
+                        <textarea
+                            ref={inputRef as React.RefObject<HTMLTextAreaElement>}
                             value={messageText}
-                            ref={inputRef}
                             required
-                            // disabled={isSendingMessage}
                             placeholder='Type Message here...'
                             onChange={handleChange}
+                            className={s.textarea}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    sendMessage(e as any);
+                                }
+                            }}
+                            rows={1}
+                            onInput={(e) => {
+                                const el = e.currentTarget;
+                                el.style.height = 'auto';
+                                el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+                            }}
                         />
-                        <Button variant='primary'
-                            type='submit'
-                        // disabled={isSendingMessage}в
-                        >
+                        <Button variant='primary' type='submit'>
                             {isSendingMessage ? (
                                 <GreyLoader message="отправка..." />
                             ) : (

@@ -18,3 +18,35 @@
   background-color: var(--bg-color);
   min-height: 100vh;
 }
+
+.modal-content {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--border-color) !important;
+}
+
+.modal .form-control {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+  border-color: var(--border-color) !important;
+}
+
+.modal .form-control::placeholder {
+  color: var(--text-color) !important;
+  opacity: 0.4;
+}
+
+.modal .form-control:focus {
+  background-color: var(--bg-color) !important;
+  color: var(--text-color) !important;
+}
+
+.modal .input-group .btn-outline-secondary {
+  border-color: var(--border-color) !important;
+  color: var(--text-color) !important;
+  background-color: var(--bg-color) !important;
+}
