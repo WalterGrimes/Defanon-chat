@@ -154,3 +154,13 @@
     align-items: center !important;
     justify-content: center !important;
 }
+
+.leaveBtn {
+    width: 38px;
+    height: 38px;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+}

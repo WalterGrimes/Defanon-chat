@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
+import { BsSunFill, BsMoonFill } from "react-icons/bs";
+import styles from './ThemeSwitcher.module.css';
 
 export const ThemeSwitcher = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -9,17 +11,21 @@ export const ThemeSwitcher = () => {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
- const toggleTheme = () => {
-  setTheme((prev) => (prev === "light" ? "dark" : "light"));
-};
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
 
   return (
-    <Button 
-      variant={theme === "light" ? "outline-dark" : "outline-light"} 
+    <Button
+      variant={theme === "light" ? "outline-dark" : "outline-light"}
       onClick={toggleTheme}
-      className="ms-2"
+      className={styles.themeBtn}
     >
-      {theme === "light" ? "Dark Mode" : " Light Mode"}
+      {theme === "light" ? (
+        <BsMoonFill size={16} color="#000000" />
+      ) : (
+        <BsSunFill size={18} color="#ffffff" />
+      )}
     </Button>
   );
 };
