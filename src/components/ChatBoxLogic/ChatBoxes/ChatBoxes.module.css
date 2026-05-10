@@ -63,10 +63,36 @@
 }
 
 .card {
-    background-color: var(--card-bg) !important;
-    color: var(--text-color) !important;
-    border-color: var(--border-color) !important;
-    min-height: 280px;
+  background-color: var(--card-bg) !important;
+  color: var(--text-color) !important;
+  border: 1.5px solid var(--border-color) !important;
+  min-height: 280px;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+}
+
+.card:hover {
+  border-color: var(--hover-color) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--hover-color) 20%, transparent), 0 8px 24px rgba(0, 0, 0, 0.4) !important;
+  transform: translateY(-3px);
+}
+
+.card:hover .cardTitle {
+  color: var(--hover-color);
+}
+
+.doorWrapper {
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.6;
+  margin: 8px auto 0;
+  display: inline-flex;
+  transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease;
+}
+
+.doorWrapper:hover {
+  transform: scale(1.18);
+  opacity: 1;
+  color: var(--hover-color);
 }
 
 .ownerBadge {
@@ -90,49 +116,49 @@
 }
 
 .enterBtn {
-    background: transparent !important;
-    border: none !important;
-    padding: 8px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    margin: 0 auto;
-    color: #fff !important;
-    transition: transform 0.2s ease !important;
+  background: transparent !important;
+  border: none !important;
+  padding: 8px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto;
+  color: #fff !important;
+  transition: transform 0.2s ease !important;
 }
 
 .enterBtn:hover {
-    transform: scale(1.15);
-    background: transparent !important;
+  transform: scale(1.15);
+  background: transparent !important;
 }
 
 .cardTitle {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    margin-bottom: 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
 }
 
 .doorWrapper {
-    cursor: pointer;
-    color: #fff;
-    opacity: 0.7;
-    margin: 8px auto 0;
-    display: inline-flex;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+  cursor: pointer;
+  color: #fff;
+  opacity: 0.7;
+  margin: 8px auto 0;
+  display: inline-flex;
+  transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
 .doorWrapper:hover {
-    transform: scale(1.2);
-    opacity: 1;
+  transform: scale(1.2);
+  opacity: 1;
 }
 
 .cardStats {
-    font-size: 0.78rem;
-    color: var(--muted-color) !important;
-    margin-top: 10px;
-    margin-bottom: 12px;
-    font-style: italic;
-    letter-spacing: 0.02em;
+  font-size: 0.78rem;
+  color: var(--muted-color) !important;
+  margin-top: 10px;
+  margin-bottom: 12px;
+  font-style: italic;
+  letter-spacing: 0.02em;
 }

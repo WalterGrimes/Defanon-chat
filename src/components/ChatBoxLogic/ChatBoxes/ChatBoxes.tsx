@@ -17,8 +17,9 @@ import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
 import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
 import { FavoriteBox } from "../../FavoriteBox";
-import { BsBoxArrowRight } from "react-icons/bs";
-import { BsDoorOpen } from "react-icons/bs";
+import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash } from "react-icons/bs";
+
+const HOVER_COLORS = ['#7ba8f5', '#4ade80', '#f472b6', '#fb923c', '#a78bfa', '#34d399', '#f87171', '#facc15'];
 
 const ChatBoxes = () => {
     const {
@@ -61,23 +62,19 @@ const ChatBoxes = () => {
 
     const [activeFilter, setActiveFilter] = useState<'all' | 'fav'>('all');
     const [refreshFavs, setRefreshFavs] = useState(0);
+    const [hoveredGuid, setHoveredGuid] = useState<string | null>(null);
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+    const getHoverColor = (guid: string) => {
+        const index = groups.findIndex(g => g.getGuid() === guid);
+        return HOVER_COLORS[index % HOVER_COLORS.length];
+    };
 
     useEffect(() => {
         const handleUpdate = () => setRefreshFavs(prev => prev + 1);
         window.addEventListener('favUpdated', handleUpdate);
         return () => window.removeEventListener('favUpdated', handleUpdate);
     }, []);
-
-    const filtered = groups.filter(group => {
-        if (activeFilter === 'all') return true;
-        const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
-        return favs.includes(group.getGuid());
-    });
-
-    const startPagination = (currentPage - 1) * pageSize;
-    const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
-
-    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
     useEffect(() => {
         const observer = new MutationObserver(() => {
@@ -147,6 +144,15 @@ const ChatBoxes = () => {
     if (isDeletingGroup) return <RedLoader message="Deleting the group, please wait..." />;
     if (isNuking) return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />;
 
+    const filtered = groups.filter(group => {
+        if (activeFilter === 'all') return true;
+        const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
+        return favs.includes(group.getGuid());
+    });
+
+    const startPagination = (currentPage - 1) * pageSize;
+    const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
+
     return (
         <div className={s.chatWrapper}>
             <div className={s.header}>
@@ -201,7 +207,10 @@ const ChatBoxes = () => {
                                     <div className="new-box-badge">your new box is here (◣_◢)</div>
                                 </div>
                             )}
-                            <Card className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}>
+                            <Card
+                                className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}
+                                style={{ '--hover-color': getHoverColor(group.getGuid()) } as React.CSSProperties}
+                            >
                                 <FavoriteBox guid={group.getGuid()} />
                                 <button
                                     className={`info-icon-btn ${group.getOwner() === loggedInUid ? 'info-icon-center' : ''}`}
@@ -215,11 +224,30 @@ const ChatBoxes = () => {
                                 {group.getOwner() === loggedInUid && (
                                     <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
                                 )}
+                                {group.getOwner() === loggedInUid && (
+                                    <button
+                                        className="delete-icon-btn"
+                                        onClick={() => handleDeleteGroup(group.getGuid())}
+                                        title="Удалить коробку"
+                                    >
+                                        <BsTrash size={16} />
+                                    </button>
+                                )}
                                 <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
                                     <Card.Title className={s.cardTitle}>{group.getName()}</Card.Title>
 
-                                    <div className={s.doorWrapper} onClick={() => enterChat(group)} title="Войти в коробку">
-                                        <BsDoorOpen size={36} />
+                                    <div
+                                        className={s.doorWrapper}
+                                        onClick={() => enterChat(group)}
+                                        onMouseEnter={() => setHoveredGuid(group.getGuid())}
+                                        onMouseLeave={() => setHoveredGuid(null)}
+                                        title="Войти в коробку"
+                                    >
+                                        {hoveredGuid === group.getGuid() ? (
+                                            <BsDoorOpen size={36} />
+                                        ) : (
+                                            <BsDoorClosed size={36} />
+                                        )}
                                     </div>
 
                                     <Card.Text className={s.cardStats}>
