@@ -17,6 +17,8 @@ import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
 import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
 import { FavoriteBox } from "../../FavoriteBox";
+import { BsBoxArrowRight } from "react-icons/bs";
+import { BsDoorOpen } from "react-icons/bs";
 
 const ChatBoxes = () => {
     const {
@@ -74,6 +76,16 @@ const ChatBoxes = () => {
 
     const startPagination = (currentPage - 1) * pageSize;
     const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
+
+    const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+    useEffect(() => {
+        const observer = new MutationObserver(() => {
+            setTheme(document.documentElement.getAttribute("data-theme") || "light");
+        });
+        observer.observe(document.documentElement, { attributes: true });
+        return () => observer.disconnect();
+    }, []);
 
     useEffect(() => {
         if (guid) {
@@ -144,7 +156,13 @@ const ChatBoxes = () => {
                 </div>
                 <div className={s.headerRight}>
                     <ThemeSwitcher />
-                    <Button onClick={logout} variant='outline-primary'>Logout</Button>
+                    <Button
+                        onClick={logout}
+                        variant={theme === 'light' ? 'outline-dark' : 'outline-light'}
+                        className={s.logoutBtn}
+                    >
+                        <BsBoxArrowRight size={16} />
+                    </Button>
                     <Button onClick={() => nukeEverything(loggedInUid)} variant='danger'>Delete</Button>
                 </div>
             </div>
@@ -197,36 +215,25 @@ const ChatBoxes = () => {
                                 {group.getOwner() === loggedInUid && (
                                     <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
                                 )}
-                                <Card.Body className="d-flex flex-column text-center">
-                                    <Card.Title className="mb-3">{group.getName()}</Card.Title>
-                                    <Card.Text className="small text-muted mb-4">
+                                <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
+                                    <Card.Title className={s.cardTitle}>{group.getName()}</Card.Title>
+
+                                    <div className={s.doorWrapper} onClick={() => enterChat(group)} title="Войти в коробку">
+                                        <BsDoorOpen size={36} />
+                                    </div>
+
+                                    <Card.Text className={s.cardStats}>
                                         Участников: {group.getMembersCount()} <br />
                                         Users online: {onlineRightNow}
                                     </Card.Text>
-                                    <Button
-                                        variant="outline-light"
-                                        className="mt-auto"
-                                        onClick={() => enterChat(group)}
-                                    >
-                                        Войти в коробку
-                                    </Button>
+
                                     {group.getOwner() === loggedInUid && (
-                                        <button
-                                            className="delete-icon-btn"
-                                            onClick={() => handleDeleteGroup(group.getGuid())}
-                                            title="Удалить коробку"
-                                        >
-                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                                <path d="M3 6h18v2H3zm2 3h14l-1.5 12h-11zm5-6h4v2h-4z" />
-                                            </svg>
-                                        </button>
+                                        <small className={s.ownerBadge}>Вы владелец</small>
                                     )}
-                                    <div className="mt-2 d-flex justify-content-center">
+
+                                    <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
                                         <BoxStatus type={group.getType()} />
                                     </div>
-                                    {group.getOwner() === loggedInUid && (
-                                        <small className={s.ownerBadge}> Вы владелец</small>
-                                    )}
                                 </Card.Body>
                             </Card>
                         </Col>

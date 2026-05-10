@@ -14,13 +14,25 @@
   background-color: var(--accent-color) !important;
   border-color: var(--accent-color) !important;
 }
+
 .themeBtn {
-    width: 38px;
-    height: 38px;
-    padding: 0 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    border-radius: 50% !important;
-    margin-right: 12px;
+  width: 38px;
+  height: 38px;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 50% !important;
+  border-width: 2px !important;
+  margin-right: 12px;
+}
+
+.themeBtn svg {
+  fill: currentColor !important;
+  opacity: 1 !important;
+}
+
+.themeBtn:hover svg {
+  fill: currentColor !important;
+  opacity: 1 !important;
 }

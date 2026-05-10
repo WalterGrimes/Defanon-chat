@@ -22,9 +22,9 @@ export const ThemeSwitcher = () => {
       className={styles.themeBtn}
     >
       {theme === "light" ? (
-        <BsMoonFill size={16} color="#000000" />
+        <BsMoonFill size={16} />
       ) : (
-        <BsSunFill size={18} color="#ffffff" />
+        <BsSunFill size={18} />
       )}
     </Button>
   );

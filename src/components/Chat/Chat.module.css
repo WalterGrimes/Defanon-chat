@@ -4,11 +4,12 @@
     padding: 4px 16px !important;
     border-bottom: none !important;
     display: flex !important;
-    flex-direction: column !important; 
+    flex-direction: column !important;
     align-items: flex-start !important;
 }
+
 .messageSender {
-    display: block !important; 
+    display: block !important;
     font-size: 0.85rem;
     font-weight: 700;
     margin-bottom: 2px;
@@ -27,7 +28,7 @@
     color: var(--text-color);
     word-break: break-word;
     text-align: left;
-    flex: 1; 
+    flex: 1;
 }
 
 .messageTime {
@@ -110,6 +111,7 @@
     box-shadow: none !important;
     border-color: var(--border-color) !important;
 }
+
 .textarea::-webkit-scrollbar {
     display: none;
 }
@@ -163,4 +165,5 @@
     align-items: center !important;
     justify-content: center !important;
     border-radius: 50% !important;
+    border-width: 2px !important;
 }
