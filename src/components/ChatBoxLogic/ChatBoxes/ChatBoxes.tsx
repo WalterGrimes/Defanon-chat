@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
-import BoxStatus from "../BoxStatus";
+import BoxStatus from "../BoxStatus/BoxStatus";
 import CreateBox from "../CreateBox";
 import PasswordField from "../../PasswordField";
 import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";

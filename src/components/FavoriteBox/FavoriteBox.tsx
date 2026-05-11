@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button } from "react-bootstrap";
+import styles from "./FavoriteBox.module.css";
 
 interface FavoriteBoxProps {
     guid: string;
@@ -14,8 +14,8 @@ export const FavoriteBox = ({ guid }: FavoriteBoxProps) => {
     }, [guid]);
 
     const toggleFavorite = (e: React.MouseEvent) => {
-        e.stopPropagation(); 
-        
+        e.stopPropagation();
+
         const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
         let updatedFavs;
 
@@ -28,27 +28,18 @@ export const FavoriteBox = ({ guid }: FavoriteBoxProps) => {
         }
 
         localStorage.setItem('fav_boxes', JSON.stringify(updatedFavs));
-        
         window.dispatchEvent(new Event('favUpdated'));
     };
 
+    const buttonClass = `${styles.favButton} ${isFav ? styles.isFav : ""}`;
+
     return (
-        <Button 
-            variant="link" 
+        <button
             onClick={toggleFavorite}
-            style={{ 
-                color: isFav ? '#ffc107' : '#555', 
-                fontSize: '1.5rem',
-                padding: 0,
-                lineHeight: 1,
-                textDecoration: 'none',
-                position: 'absolute',
-                top: '10px',
-                left: '10px',
-                zIndex: 10
-            }}
+            className={buttonClass}
+            aria-label={isFav ? "Remove from favorites" : "Add to favorites"}
         >
             {isFav ? '★' : '☆'}
-        </Button>
+        </button>
     );
 };
