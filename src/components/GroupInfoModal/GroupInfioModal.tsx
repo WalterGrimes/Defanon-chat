@@ -10,11 +10,13 @@ interface GroupInfoModalProps {
     group: CometChat.Group | null;
 }
 
+const DEFAULT_DESCRIPTION = "Welcome to chat dear - Gold";
+
 export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => {
-    const [ownerName,setOwnerName] = useState<string>('Загрузка...');
+    const [ownerName, setOwnerName] = useState<string>('Загрузка...');
 
     useEffect(() => {
-        if(show && group){
+        if (show && group) {
             const ownerUid = group.getOwner();
 
             CometChat.getUser(ownerUid).then(
@@ -22,16 +24,17 @@ export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => 
                     setOwnerName(user.getName());
                 },
                 error => {
-                    console.log('Ошибка',error);
+                    console.log('Ошибка', error);
                     setOwnerName('AnOnYm:)')
                 }
-            )
+            );
         }
-    }, [show,group]);
+    }, [show, group]);
 
     if (!group) return null;
 
     const ownerUid = group.getOwner();
+    const description = (group.getMetadata() as any)?.description || DEFAULT_DESCRIPTION;
 
     return (
         <Modal
@@ -47,6 +50,12 @@ export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => 
             <Modal.Body>
                 <div className="d-flex flex-column gap-3">
                     <InfoItem label="Название" value={group.getName()} />
+
+                    <InfoItem
+                        label="Описание"
+                        value={description}
+                        isDescription
+                    />
 
                     <InfoItem
                         label="GUID (UID)"
@@ -73,12 +82,14 @@ export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => 
     );
 };
 
-const InfoItem = ({ label, value, isCode, customColor }: 
-    { label: string, value: string | undefined, isCode?: boolean, customColor?: string }) => (
+const InfoItem = ({ label, value, isCode, isDescription, customColor }:
+    { label: string, value: string | undefined, isCode?: boolean, isDescription?: boolean, customColor?: string }) => (
     <div>
         <div className={s.label}>{label}</div>
         {isCode ? (
             <div className={s.uidCode}>{value}</div>
+        ) : isDescription ? (
+            <div className={s.description}>{value || DEFAULT_DESCRIPTION}</div>
         ) : (
             <div className={s.value}
                 style={customColor ? { color: customColor, fontWeight: 'bold' } : {}}
@@ -86,3 +97,4 @@ const InfoItem = ({ label, value, isCode, customColor }:
         )}
     </div>
 );
+

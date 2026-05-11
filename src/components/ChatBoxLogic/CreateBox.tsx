@@ -10,22 +10,25 @@ interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
 }
 
+const DEFAULT_DESCRIPTION = "Welcome to chat dear - Gold";
+
 const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
     const [boxName, setBoxName] = useState("");
     const [password, setPassword] = useState<string>('');
+    const [description, setDescription] = useState("");
     const { isVisible, show, hide } = useModal();
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
 
     const handleClose = () => {
         setBoxName("");
         setPassword("");
+        setDescription("");
         setIsCreatingGroup(false);
         hide();
     };
 
     const handleCreateGroup = (e: React.FormEvent) => {
         if (e) e.preventDefault();
-
         if (!boxName.trim()) return;
 
         setIsCreatingGroup(true);
@@ -38,21 +41,22 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             : CometChat.GROUP_TYPE.PUBLIC;
 
         const group = new CometChat.Group(GUID, boxName, boxType, trimmedPassword);
+        group.setMetadata({ description: description.trim() || DEFAULT_DESCRIPTION });
 
         CometChat.createGroup(group).then(
             (createdGroup) => {
-                console.log("Group created successfully:", createdGroup);
                 onGroupCreate(createdGroup);
                 handleClose();
             },
             (error) => {
                 console.error("Group creation failed:", error);
+                setIsCreatingGroup(false);
             }
         );
     };
 
     if (isCreatingGroup) {
-        return <CreatingGroupLoader message="Создание вашей коробка..." />
+        return <CreatingGroupLoader message="Создание вашей коробки..." />;
     }
 
     return (
@@ -83,6 +87,21 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
+                            <Form.Label>Description <small className="text-muted">(optional)</small></Form.Label>
+                            <Form.Control
+                                as="textarea"
+                                rows={2}
+                                placeholder={DEFAULT_DESCRIPTION}
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                maxLength={150}
+                            />
+                            <Form.Text className="text-muted">
+                                {description.length}/150
+                            </Form.Text>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
                             <Form.Label>Password</Form.Label>
                             <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Form.Group>
@@ -92,11 +111,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                         <Button variant="secondary" onClick={handleClose} type="button">
                             Cancel
                         </Button>
-                        <Button
-                            variant="primary"
-                            type="submit"
-                            disabled={!boxName.trim()}
-                        >
+                        <Button variant="primary" type="submit" disabled={!boxName.trim()}>
                             Create
                         </Button>
                     </Modal.Footer>

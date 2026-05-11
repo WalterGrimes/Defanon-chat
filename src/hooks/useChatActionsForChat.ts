@@ -58,7 +58,7 @@ export const useChatActionsForChat = () => {
         const unviewDate = Date.now() + duration;
 
         localStorage.setItem(`chat_muted_until${guid}`, unviewDate.toString());
-        localStorage.setItem(`last_muted_uid_${guid}`, targetUID);
+        localStorage.setItem(`last_muted_uid_${guid}`, targetUID);  
 
         setMuteUser(true);
 

@@ -290,7 +290,7 @@ const ChatBoxes = () => {
                 }}>
                     <Modal.Body>
                         <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label>Password(op)</Form.Label>
                             <PasswordField
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}

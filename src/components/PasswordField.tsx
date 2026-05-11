@@ -16,8 +16,7 @@ const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => 
         <InputGroup>
             <Form.Control
                 type={type}
-                placeholder={placeholder || "Password for private mode (optional)"} value={value}
-                onChange={onChange}
+                placeholder={placeholder || "Password for private mode"} onChange={onChange}
             />
             <Button variant="outline-secondary" onClick={toggle} type="button">
                 {isVisiblePassword ? <FaEyeSlash /> : <FaEye />}

@@ -59,3 +59,21 @@
 :global(.modal.show) .modalPop {
     transform: scale(1);
 }
+
+.description {
+    font-size: 0.9rem;
+    color: #ffffff;
+    font-style: italic;
+    opacity: 1;
+    padding: 8px 12px;  
+    border-left: 3px solid #5b8dee;
+    background: rgba(91, 141, 238, 0.15);
+    border-radius: 0 6px 6px 0;
+    line-height: 1.5;
+}
+
+:global([data-theme="light"]) .description {
+    color: #1a1a1a;
+    background: rgba(91, 141, 238, 0.1);
+    border-left-color: #3a6fd8;
+}
