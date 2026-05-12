@@ -1,10 +1,11 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import PasswordField from "../PasswordField";
-import BoxStatus from "./BoxStatus/BoxStatus";
-import { useModal } from "../../hooks/useModal";
-import { CreatingGroupLoader } from "../../features/Loaders";
+import PasswordField from "../../PasswordField";
+import BoxStatus from "../BoxStatus/BoxStatus";
+import { useModal } from "../../../hooks/useModal";
+import { CreatingGroupLoader } from "../../../features/Loaders";
+import styles from "./CreateBox.module.css";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
@@ -61,9 +62,14 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
 
     return (
         <div>
-            <Button variant="success" type='submit' onClick={show}>
-                Create Box
-            </Button>
+            <button
+                onClick={show}
+                title="Create Box"
+                className={styles.addButton}
+            >
+                <span className={styles.iconHorizontal} />
+                <span className={styles.iconVertical} />
+            </button>
 
             <Modal show={isVisible} onHide={hide} centered>
                 <Form onSubmit={handleCreateGroup}>

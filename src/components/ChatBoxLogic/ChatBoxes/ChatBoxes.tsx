@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "../BoxStatus/BoxStatus";
-import CreateBox from "../CreateBox";
+import CreateBox from "../CreateBox/CreateBox";
 import PasswordField from "../../PasswordField";
 import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";
 import { GreenLoader, RedLoader } from "../../../features/Loaders";
@@ -16,7 +16,7 @@ import { Pagination } from "../../Pagination/Pagination";
 import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
 import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
-import { FavoriteBox } from "../../FavoriteBox";
+import { FavoriteBox } from "../../FavoriteBox/FavoriteBox";
 import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash } from "react-icons/bs";
 
 const HOVER_COLORS = ['#7ba8f5', '#4ade80', '#f472b6', '#fb923c', '#a78bfa', '#34d399', '#f87171', '#facc15'];
@@ -174,23 +174,22 @@ const ChatBoxes = () => {
             </div>
 
             <Container className="mt-4">
-                <div className="d-flex justify-content-end mb-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                    <div className="d-flex gap-2">
+                        <Button
+                            variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
+                            onClick={() => setActiveFilter('all')}
+                        >
+                            Все коробки
+                        </Button>
+                        <Button
+                            variant={activeFilter === 'fav' ? 'warning' : 'outline-warning'}
+                            onClick={() => setActiveFilter('fav')}
+                        >
+                            Избранное
+                        </Button>
+                    </div>
                     <CreateBox onGroupCreate={handleNewGroup} />
-                </div>
-
-                <div className="d-flex gap-2 mb-4">
-                    <Button
-                        variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
-                        onClick={() => setActiveFilter('all')}
-                    >
-                        Все коробки
-                    </Button>
-                    <Button
-                        variant={activeFilter === 'fav' ? 'warning' : 'outline-warning'}
-                        onClick={() => setActiveFilter('fav')}
-                    >
-                        Избранное
-                    </Button>
                 </div>
 
                 <GroupInfoModal
