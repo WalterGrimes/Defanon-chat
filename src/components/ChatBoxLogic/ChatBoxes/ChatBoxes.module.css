@@ -67,6 +67,9 @@
   color: var(--text-color) !important;
   border: 1.5px solid var(--border-color) !important;
   min-height: 280px;
+  max-width: 320px;
+  width: 100%;
+  margin: 0 auto;
   transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
 }
 
