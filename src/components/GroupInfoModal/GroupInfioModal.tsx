@@ -44,8 +44,12 @@ export const GroupInfoModal = ({ show, onHide, group }: GroupInfoModalProps) => 
             contentClassName={s.modalContent}
             dialogClassName={s.modalPop}
         >
-            <Modal.Header closeButton className={s.header}>
+            <Modal.Header className={s.header}>  {/* убери closeButton */}
                 <Modal.Title>Информация о коробке</Modal.Title>
+                <button className={s.closeBtn} onClick={onHide} type="button" title="Закрыть">
+                    <span className={s.closeIconA} />
+                    <span className={s.closeIconB} />
+                </button>
             </Modal.Header>
             <Modal.Body>
                 <div className="d-flex flex-column gap-3">

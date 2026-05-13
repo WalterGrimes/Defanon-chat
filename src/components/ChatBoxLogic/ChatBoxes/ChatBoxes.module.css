@@ -83,7 +83,7 @@
 .doorWrapper {
   cursor: pointer;
   color: #fff;
-  opacity: 0.6;
+  opacity: 0.7;
   margin: 8px auto 0;
   display: inline-flex;
   transition: transform 0.2s ease, opacity 0.2s ease, color 0.2s ease;
@@ -140,20 +140,6 @@
   margin-bottom: 16px;
 }
 
-.doorWrapper {
-  cursor: pointer;
-  color: #fff;
-  opacity: 0.7;
-  margin: 8px auto 0;
-  display: inline-flex;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.doorWrapper:hover {
-  transform: scale(1.2);
-  opacity: 1;
-}
-
 .cardStats {
   font-size: 0.78rem;
   color: var(--muted-color) !important;
@@ -161,4 +147,55 @@
   margin-bottom: 12px;
   font-style: italic;
   letter-spacing: 0.02em;
+}
+
+.filterGroup {
+  display: flex;
+  gap: 12px;
+}
+
+.filterBtn {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.filterBtn:hover {
+  transform: scale(1.1);
+  color: rgba(255, 255, 255, 0.8);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.filterBtnActive {
+  color: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.filterBtnActive:hover {
+  color: rgba(255, 255, 255, 1);
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.filterBtnFav {
+  color: #00e5ff;
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+}
+
+.filterBtnFav:hover {
+  color: #00e5ff;
+  border-color: rgba(255, 255, 255, 1);
 }

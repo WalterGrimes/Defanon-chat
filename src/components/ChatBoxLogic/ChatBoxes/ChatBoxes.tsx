@@ -17,7 +17,7 @@ import { ThemeSwitcher } from "../../../ThemeChange/ThemeSwitcher";
 import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
 import { FavoriteBox } from "../../FavoriteBox/FavoriteBox";
-import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash } from "react-icons/bs";
+import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash, BsStarFill, BsStar, BsGrid3X3Gap } from "react-icons/bs";
 
 const HOVER_COLORS = ['#7ba8f5', '#4ade80', '#f472b6', '#fb923c', '#a78bfa', '#34d399', '#f87171', '#facc15'];
 
@@ -175,19 +175,21 @@ const ChatBoxes = () => {
 
             <Container className="mt-4">
                 <div className="d-flex justify-content-between align-items-center mb-4">
-                    <div className="d-flex gap-2">
-                        <Button
-                            variant={activeFilter === 'all' ? 'primary' : 'outline-primary'}
+                    <div className={s.filterGroup}>
+                        <button
+                            className={`${s.filterBtn} ${activeFilter === 'all' ? s.filterBtnActive : ''}`}
                             onClick={() => setActiveFilter('all')}
+                            title="Все коробки"
                         >
-                            Все коробки
-                        </Button>
-                        <Button
-                            variant={activeFilter === 'fav' ? 'warning' : 'outline-warning'}
+                            <BsGrid3X3Gap size={18} />
+                        </button>
+                        <button
+                            className={`${s.filterBtn} ${activeFilter === 'fav' ? s.filterBtnFav : ''}`}
                             onClick={() => setActiveFilter('fav')}
+                            title="Избранное"
                         >
-                            Избранное
-                        </Button>
+                            {activeFilter === 'fav' ? <BsStarFill size={18} /> : <BsStar size={18} />}
+                        </button>
                     </div>
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>

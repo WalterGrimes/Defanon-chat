@@ -74,8 +74,12 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             <Modal show={isVisible} onHide={hide} centered>
                 <Form onSubmit={handleCreateGroup}>
                     <button type="submit" style={{ display: 'none' }}></button>
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>Create New Box</Modal.Title>
+                        <button className={styles.closeBtn} onClick={handleClose} type="button" title="Закрыть">
+                            <span className={styles.closeIconA} />
+                            <span className={styles.closeIconB} />
+                        </button>
                     </Modal.Header>
 
                     <Modal.Body>
