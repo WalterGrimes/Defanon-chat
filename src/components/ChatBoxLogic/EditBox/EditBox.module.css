@@ -1,38 +1,40 @@
-.addButton {
-    width: 42px;
-    height: 42px;
+.closeBtn {
+    width: 28px;
+    height: 28px;
     padding: 0;
-    border-radius: 10px;
-    margin-top: 8px;
+    border-radius: 7px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: #ffffff;
     border: 2px solid #1a1a1a;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    transition:x
+    transition:
         transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
         box-shadow 0.2s ease;
     position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
-.addButton:hover {
+.closeBtn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
 }
 
-.iconHorizontal {
+.closeIconA,
+.closeIconB {
     position: absolute;
-    width: 16px;
-    height: 3px;
+    width: 10px;
+    height: 2px;
     background: #1a1a1a;
     border-radius: 3px;
 }
 
-.iconVertical {
-    position: absolute;
-    width: 3px;
-    height: 16px;
-    background: #1a1a1a;
-    border-radius: 3px;
+.closeIconA {
+    transform: rotate(45deg);
+}
+
+.closeIconB {
+    transform: rotate(-45deg);
 }

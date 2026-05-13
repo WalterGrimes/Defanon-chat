@@ -1,10 +1,11 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import PasswordField from "../PasswordField";
-import BoxStatus from "./BoxStatus/BoxStatus";
-import { useModal } from "../../hooks/useModal";
-import { CreatingGroupLoader } from "../../features/Loaders";
+import PasswordField from "../../PasswordField";
+import BoxStatus from "../BoxStatus/BoxStatus";
+import { useModal } from "../../../hooks/useModal";
+import { CreatingGroupLoader } from "../../../features/Loaders";
+import s from './EditBox.module.css';
 
 interface EditBoxProps {
     group: CometChat.Group;
@@ -20,7 +21,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
     const [description, setDescription] = useState(existingDescription);
     const { isVisible, show, hide } = useModal();
     const [isUpdating, setIsUpdating] = useState(false);
-
+    
     const handleClose = () => {
         setBoxName(group.getName());
         setPassword("");
@@ -67,8 +68,12 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
                     e.preventDefault();
                     if (boxName.trim()) handleUpdateGroup();
                 }}>
-                    <Modal.Header closeButton>
+                    <Modal.Header>
                         <Modal.Title>Current box settings</Modal.Title>
+                        <button className={s.closeBtn} onClick={handleClose} type="button" title="Закрыть">
+                            <span className={s.closeIconA} />
+                            <span className={s.closeIconB} />
+                        </button>
                     </Modal.Header>
 
                     <Modal.Body>

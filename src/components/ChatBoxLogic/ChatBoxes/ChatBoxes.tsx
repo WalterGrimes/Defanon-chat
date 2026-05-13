@@ -8,7 +8,7 @@ import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatB
 import { GreenLoader, RedLoader } from "../../../features/Loaders";
 import { useChatActionsForSignChat } from "../../../hooks/useChatActionsForSignChat";
 import { useAuth } from "../../../context/ChatContext";
-import EditBox from "../EditBox";
+import EditBox from "../EditBox/EditBox";
 import { useChatActionsForChat } from "../../../hooks/useChatActionsForChat";
 import { GroupInfoModal } from "../../GroupInfoModal/GroupInfioModal";
 import { getUserColor } from "../../../utilits/ColorHelper";
