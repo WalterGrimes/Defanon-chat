@@ -266,3 +266,14 @@
     right: 16px;
     z-index: 1000;
 }
+
+.welcomeText {
+    font-size: 0.85rem;
+    opacity: 0.45;
+    font-weight: 400;
+}
+
+.welcomeName {
+    font-size: 1rem;
+    font-weight: 600;
+}

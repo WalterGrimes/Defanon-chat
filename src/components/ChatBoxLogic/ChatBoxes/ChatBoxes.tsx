@@ -162,8 +162,8 @@ const ChatBoxes = () => {
         <div className={s.chatWrapper}>
             <div className={s.header}>
                 <div className={s.headerLeft}>
-                    <span>Welcome, </span>
-                    <span style={{ color: userColor }}>{user?.getName()}</span>
+                    <span className={s.welcomeText}>Welcome, </span>
+                    <span className={s.welcomeName} style={{ color: userColor }}>{user?.getName()}</span>
                 </div>
                 <div className={s.headerRight}>
                     <ThemeSwitcher />

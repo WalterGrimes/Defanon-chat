@@ -143,7 +143,7 @@ export const useChatActionsForChat = () => {
         }, 2000);
 
         if (spamCountRef.current > 10) return;
-        if (diff < 50) return;
+        // if (diff < 50) return;
 
         setIsSendingMessage(true);
 

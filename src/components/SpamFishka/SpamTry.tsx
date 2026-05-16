@@ -8,7 +8,7 @@ interface SpamComboProps {
 const getComboLabel = (count: number): string => {
     if (count <= 1) return "";
     if (count > 10) return `10 MAX`;
-    if (count < 5) return `x${count}!`;
+    if (count < 5) return `x${count}`;
     if (count < 10) return `x${count} !`;
     return `x${count} !`;
 };
