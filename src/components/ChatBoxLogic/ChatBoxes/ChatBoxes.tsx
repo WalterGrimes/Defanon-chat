@@ -18,6 +18,8 @@ import s from './ChatBoxes.module.css';
 import '../ChatBoxes.css';
 import { FavoriteBox } from "../../FavoriteBox/FavoriteBox";
 import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash, BsStarFill, BsStar, BsGrid3X3Gap } from "react-icons/bs";
+import { DiagonalLines, InfoIcon } from "../../../utilits/SomeStuff";
+import { NukeBtn } from "../../../utilits/NukeBtn/NukeBtn";
 
 const HOVER_COLORS = ['#7ba8f5', '#4ade80', '#f472b6', '#fb923c', '#a78bfa', '#34d399', '#f87171', '#facc15'];
 
@@ -54,6 +56,9 @@ const ChatBoxes = () => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 8;
+
+    const [deleteGuid, setDeleteGuid] = useState<string | null>(null);
+
 
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
@@ -169,7 +174,9 @@ const ChatBoxes = () => {
                     >
                         <BsBoxArrowRight size={16} />
                     </Button>
-                    <Button onClick={() => nukeEverything(loggedInUid)} variant='danger'>Delete</Button>
+                </div>
+                <div className={s.nukeBtnWrapper}>
+                    <NukeBtn onClick={() => nukeEverything(loggedInUid)} />
                 </div>
             </div>
 
@@ -218,9 +225,7 @@ const ChatBoxes = () => {
                                     onClick={() => openInfo(group)}
                                     title="Подробнее о коробке"
                                 >
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
-                                    </svg>
+                                    <InfoIcon />
                                 </button>
                                 {group.getOwner() === loggedInUid && (
                                     <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
@@ -228,7 +233,7 @@ const ChatBoxes = () => {
                                 {group.getOwner() === loggedInUid && (
                                     <button
                                         className="delete-icon-btn"
-                                        onClick={() => handleDeleteGroup(group.getGuid())}
+                                        onClick={() => setDeleteGuid(group.getGuid())}
                                         title="Удалить коробку"
                                     >
                                         <BsTrash size={16} />
@@ -278,6 +283,23 @@ const ChatBoxes = () => {
                     />
                 </div>
             </Container>
+
+            <Modal show={!!deleteGuid} onHide={() => setDeleteGuid(null)} centered contentClassName={s.deleteModal}>
+                <DiagonalLines />
+                <div className={s.deleteHeader}>
+                    <h5>Удалить коробку?</h5>
+                </div>
+                <div className={s.deleteBody}>
+                    <p>Это действие нельзя отменить.</p>
+                </div>
+                <div className={s.deleteFooter}>
+                    <Button variant="secondary" onClick={() => setDeleteGuid(null)}>Отмена</Button>
+                    <Button variant="danger" onClick={() => {
+                        if (deleteGuid) handleDeleteGroup(deleteGuid);
+                        setDeleteGuid(null);
+                    }}>Удалить</Button>
+                </div>
+            </Modal>
 
             <Modal show={isVisible} onHide={hide} centered>
                 <Modal.Header closeButton>

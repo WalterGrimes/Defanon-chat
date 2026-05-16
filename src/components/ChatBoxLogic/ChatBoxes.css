@@ -119,3 +119,18 @@
 .row {
   row-gap: 2rem !important;
 }
+
+.delete-confirm-modal .modal-header {
+  border-bottom: 0 !important;
+}
+
+.delete-confirm-modal .modal-footer {
+  border-top: 0 !important;
+}
+
+.delete-confirm-modal {
+  --bs-modal-header-border-color: transparent;
+  --bs-modal-footer-border-color: transparent;
+  --bs-modal-footer-border-width: 0;
+  --bs-modal-header-border-width: 0;
+}

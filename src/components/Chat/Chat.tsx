@@ -12,6 +12,7 @@ import { MutedTimer } from "../MutedTimer";
 import { SpamTry } from "../SpamFishka/SpamTry";
 import { ThemeSwitcher } from "../../ThemeChange/ThemeSwitcher";
 import { BsBoxArrowRight } from "react-icons/bs";
+import { SendIcon } from "../../utilits/SomeStuff";
 
 function Chat() {
     const location = useLocation();
@@ -152,7 +153,7 @@ function Chat() {
                             </div>
                         </div>
 
-                        <ul className='list-group' style={{ marginBottom: '100px' }}>
+                        <ul className='list-group' style={{ marginBottom: '80px', minHeight: 'calc(100vh - 180px)' }}>
                             {isLoadingMessages ? (
                                 <div className='text-center mt-5'>
                                     <GreenLoader message="Fetching Messages..." />
@@ -174,10 +175,13 @@ function Chat() {
                                     const senderUid = msg.sender?.uid || 'unknown';
                                     const userColor = getUserColor(senderUid);
                                     const sentAt = msg.getSentAt();
-                                    const time = new Date(sentAt * 1000).toLocaleDateString([], {
+                                    const time = new Date(sentAt * 1000).toLocaleString([], {
+                                        day: '2-digit',
+                                        month: '2-digit',
+                                        year: 'numeric',
                                         hour: '2-digit',
                                         minute: '2-digit'
-                                    })
+                                    }).replace(',', '');
 
                                     return (
                                         <li className={s.messageItem} key={msg.id || uuid()}>
@@ -239,9 +243,7 @@ function Chat() {
                                 {isSendingMessage ? (
                                     <GreyLoader message="" />
                                 ) : (
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                                        <path d="M2 21L23 12L2 3V10L17 12L2 14V21Z" />
-                                    </svg>
+                                    <SendIcon />
                                 )}
                             </Button>
                         </div>

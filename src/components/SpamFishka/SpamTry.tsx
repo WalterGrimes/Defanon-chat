@@ -7,15 +7,14 @@ interface SpamComboProps {
 
 const getComboLabel = (count: number): string => {
     if (count <= 1) return "";
+    if (count > 10) return `10 MAX`;
     if (count < 5) return `x${count}!`;
-    if (count < 10) return `x${count} COMBO!`;
+    if (count < 10) return `x${count} !`;
     return `x${count} !`;
 };
 
 const getComboClassName = (count: number): string => {
-    if (count >= 50) return s.comboGodlike; 
-    if (count >= 25) return s.comboCyber;   
-    if (count >= 10) return s.comboMega;
+    if (count > 10) return s.comboBlocked;
     if (count >= 7) return s.comboInsane;
     if (count >= 5) return s.comboEpic;
     if (count >= 3) return s.comboHot;
@@ -41,9 +40,11 @@ export const SpamTry = ({ count }: SpamComboProps) => {
         setVisible(true);
 
         if (timerRef.current) clearTimeout(timerRef.current);
+
+        const duration = count > 10 ? 2000 : 1200;
         timerRef.current = setTimeout(() => {
             setVisible(false);
-        }, 1200);
+        }, duration);
     }, [count]);
 
     if (!visible) return null;

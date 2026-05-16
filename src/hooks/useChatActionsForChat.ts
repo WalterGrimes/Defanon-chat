@@ -20,6 +20,7 @@ export const useChatActionsForChat = () => {
     const spamResetTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
     const playSpamSound = useSpamSound();
     const lastClickRef = useRef(0);
+    const spamCountRef = useRef(0);
 
 
     const leaveRoom = () => {
@@ -58,7 +59,7 @@ export const useChatActionsForChat = () => {
         const unviewDate = Date.now() + duration;
 
         localStorage.setItem(`chat_muted_until${guid}`, unviewDate.toString());
-        localStorage.setItem(`last_muted_uid_${guid}`, targetUID);  
+        localStorage.setItem(`last_muted_uid_${guid}`, targetUID);
 
         setMuteUser(true);
 
@@ -119,16 +120,16 @@ export const useChatActionsForChat = () => {
 
     const sendMessage = (e: React.FormEvent) => {
         e.preventDefault();
-
         if (!messageText.trim() || !guid) return;
 
         const now = Date.now();
         const diff = now - lastClickRef.current;
 
-
         if (diff < 1500) {
-            setSpamCount(prev => prev + 1);
+            spamCountRef.current += 1;
+            setSpamCount(spamCountRef.current);
         } else {
+            spamCountRef.current = 1;
             setSpamCount(1);
         }
 
@@ -137,16 +138,15 @@ export const useChatActionsForChat = () => {
 
         if (spamResetTimer.current) clearTimeout(spamResetTimer.current);
         spamResetTimer.current = setTimeout(() => {
+            spamCountRef.current = 0;
             setSpamCount(0);
         }, 2000);
 
-
-        if (diff < 150) {
-            console.warn("Слишком быстрая отправка, пропускаем запрос");
-            return;
-        }
+        if (spamCountRef.current > 10) return;
+        if (diff < 50) return;
 
         setIsSendingMessage(true);
+
         const textMessage = new CometChat.TextMessage(
             guid,
             messageText,
@@ -158,7 +158,9 @@ export const useChatActionsForChat = () => {
                 setMessageText('');
                 setMessages(prev => [...prev, message]);
             })
-            .catch(error => console.log('Message sending failed:', error))
+            .catch(error => {
+                console.log('Message sending failed:', error);
+            })
             .finally(() => {
                 setIsSendingMessage(false);
                 setTimeout(() => inputRef.current?.focus(), 0);

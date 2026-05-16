@@ -80,8 +80,6 @@ export const useChatActionsForSignChat = () => {
     }
 
     const nukeEverything = async (guid: string) => {
-        if (!window.confirm('ЭТО УДАЛИТ ВСЕ: твой аккаунт и все что с ним связано изчезнет.Ты уверен?')) return;
-
         setIsNuking(true);
 
         try {
@@ -90,18 +88,13 @@ export const useChatActionsForSignChat = () => {
             });
 
             if (response.ok) {
-                console.log("Аккаунт был стерет");
-
                 localStorage.clear();
                 sessionStorage.clear();
                 setUser(null);
-
                 navigate('/');
-
             } else {
                 const errorData = await response.json();
                 alert(`Ошибка от сервера ${errorData.message || 'Не удалось удалить'}`);
-
             }
         } catch (error) {
             console.error('Ошибка:', error);

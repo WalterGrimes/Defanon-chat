@@ -54,18 +54,14 @@ export const useChatActionsForChatBoxes = () => {
 
 
     const handleDeleteGroup = (GUID: string) => {
-        if (!window.confirm("Are you sure you want to delete this box?")) return;
-
         setIsDeletingGroup(true);
 
         CometChat.deleteGroup(GUID)
             .then(() => {
                 setGroups(prev => prev.filter(item => item.getGuid() !== GUID));
-                console.log("Группа успешно удалена");
             })
             .catch((error: CometChat.CometChatException) => {
                 console.error("Delete failed:", error);
-                alert("Only the owner can delete this box!");
             })
             .finally(() => {
                 setIsDeletingGroup(false);

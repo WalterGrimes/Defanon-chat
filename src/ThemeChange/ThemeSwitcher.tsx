@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
 import { BsSunFill, BsMoonFill } from "react-icons/bs";
-import styles from './ThemeSwitcher.module.css';
+import s from './ThemeSwitcher.module.css';
 
 export const ThemeSwitcher = () => {
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
@@ -18,8 +18,8 @@ export const ThemeSwitcher = () => {
   return (
     <Button
       variant={theme === "light" ? "outline-dark" : "outline-light"}
-      onClick={toggleTheme}
-      className={styles.themeBtn}
+      onClick={toggleTheme} 
+      className={s.themeBtn}
     >
       {theme === "light" ? (
         <BsMoonFill size={16} />

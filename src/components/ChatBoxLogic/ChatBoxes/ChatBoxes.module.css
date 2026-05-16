@@ -166,8 +166,8 @@
   align-items: center;
   justify-content: center;
   background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  color: rgba(255, 255, 255, 0.4);
+  border: 2px solid var(--filter-btn-border);
+  color: var(--filter-btn-color);
   cursor: pointer;
   transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
     color 0.2s ease,
@@ -177,28 +177,92 @@
 
 .filterBtn:hover {
   transform: scale(1.1);
-  color: rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.4);
+  color: var(--filter-btn-color-hover);
+  border-color: var(--filter-btn-border-hover);
 }
 
 .filterBtnActive {
-  color: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  color: var(--filter-btn-color-active);
+  border-color: var(--filter-btn-color-active);
+  box-shadow: 0 0 10px var(--filter-btn-shadow);
 }
 
 .filterBtnActive:hover {
-  color: rgba(255, 255, 255, 1);
-  border-color: rgba(255, 255, 255, 1);
+  color: var(--filter-btn-color-active);
+  border-color: var(--filter-btn-color-active);
 }
 
 .filterBtnFav {
   color: #00e5ff;
-  border-color: rgba(255, 255, 255, 1);
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+  border-color: var(--filter-btn-color-active);
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.35);
 }
 
 .filterBtnFav:hover {
   color: #00e5ff;
-  border-color: rgba(255, 255, 255, 1);
+  border-color: var(--filter-btn-color-active);
+}
+
+.deleteModal :global(.modal-header),
+.deleteModal :global(.modal-footer) {
+  border: none !important;
+}
+
+.deleteHeader {
+  padding: 20px 20px 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.deleteHeader h5 {
+  color: #fff;
+  margin: 0;
+}
+
+.deleteBody {
+  padding: 8px 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.deleteBody p {
+  color: #aaa;
+  margin: 0;
+}
+
+.deleteFooter {
+  padding: 8px 20px 20px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+.nukeBtn {
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid #ef4444;
+  background: transparent;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nukeBtn:hover {
+  background: #ef4444;
+  color: #fff;
+  box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+}
+
+.nukeBtnWrapper {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    z-index: 1000;
 }
