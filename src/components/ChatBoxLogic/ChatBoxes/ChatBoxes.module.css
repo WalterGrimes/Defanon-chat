@@ -52,7 +52,7 @@
 .headerRight {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 1px;
 }
 
 .chatWrapper {
@@ -271,10 +271,10 @@
 }
 
 .nukeBtnWrapper {
-    position: fixed;
+    /* position: fixed; */
     top: 12px;
     right: 16px;
-    z-index: 1000;
+    /* z-index: 1000;  */
 }
 
 .welcomeText {
@@ -310,4 +310,33 @@
 .emptyFav small {
     font-size: 0.78rem;
     opacity: 0.6;
+}
+
+.cardOverlay {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(28, 28, 30, 0.85);
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.cardOverlayText {
+    font-size: 0.8rem;
+}
+
+.cardOverlayTextRed {
+    color: #f87171;
+}
+
+.cardOverlayTextGreen {
+    color: #4ade80;
+}
+
+.cardWrapper {
+    position: relative;
 }

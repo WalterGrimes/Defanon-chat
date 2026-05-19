@@ -1,0 +1,257 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap');
+
+.page {
+    min-height: 100vh;
+    background-color: #0d0d0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+}
+
+.page::before {
+    content: '';
+    position: absolute;
+    top: -30%;
+    left: -20%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.page::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    right: -10%;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(139, 92, 246, 0.05) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.themeSwitcher {
+    position: fixed;
+    top: 14px;
+    right: 18px;
+    z-index: 1000;
+}
+
+.card {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 20px;
+    padding: 2.5rem 2.25rem;
+    backdrop-filter: blur(8px);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease both;
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.45);
+    margin: 0;
+    line-height: 1;
+}
+
+.logoAccent {
+    color: rgba(129, 140, 248, 0.5);
+}
+
+.tagline {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.2);
+    letter-spacing: 0.03em;
+    margin: 0.2rem 0 0;
+}
+
+.divider {
+    width: 32px;
+    height: 1px;
+    background: rgba(129, 140, 248, 0.35);
+    margin: 0 0 2rem;
+}
+
+.label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    margin: 0 0 0.5rem;
+    display: block;
+}
+
+.input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 10px !important;
+    color: #ffffff !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.95rem !important;
+    padding: 0.65rem 0.9rem !important;
+    transition: border-color 0.2s, background 0.2s;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.input::placeholder {
+    color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.input:focus {
+    background: rgba(255, 255, 255, 0.07) !important;
+    border-color: rgba(129, 140, 248, 0.5) !important;
+    box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.12) !important;
+}
+
+.button {
+    width: 100%;
+    margin-top: 1.25rem;
+    padding: 0.7rem 1rem;
+    background: rgba(99, 102, 241, 0.45) !important;
+    border: 1px solid rgba(99, 102, 241, 0.3) !important;
+    border-radius: 10px !important;
+    color: rgba(255, 255, 255, 0.85) !important;
+    font-family: 'DM Sans', sans-serif !important;
+    font-size: 0.9rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    transition: background 0.2s, transform 0.15s;
+    cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.6) !important;
+    transform: translateY(-1px);
+}
+
+.button:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+.button:disabled {
+    opacity: 0.55 !important;
+    cursor: not-allowed;
+}
+
+.footer {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem;
+    color: rgba(255, 255, 255, 0.3);
+    text-align: center;
+    margin-top: 1.25rem;
+}
+
+.footer a {
+    color: #818cf8;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.footer a:hover {
+    color: #a5b4fc;
+    text-decoration: underline;
+}
+
+.alertBox {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.83rem;
+    background: rgba(239, 68, 68, 0.1) !important;
+    border: 1px solid rgba(239, 68, 68, 0.2) !important;
+    border-radius: 8px !important;
+    color: #fca5a5 !important;
+    padding: 0.6rem 0.85rem !important;
+    margin-bottom: 1rem;
+}
+
+.brand {
+    position: fixed;
+    top: 20px;
+    left: 24px;
+    z-index: 1000;
+}
+
+:global([data-theme="light"]) .page {
+  background-color: #eef0f5;
+}
+
+:global([data-theme="light"]) .card {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+:global([data-theme="light"]) .logo {
+  color: rgba(0, 0, 0, 0.7);
+}
+
+:global([data-theme="light"]) .logoAccent {
+  color: #6366f1;
+}
+
+:global([data-theme="light"]) .tagline {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="light"]) .label {
+  color: rgba(0, 0, 0, 0.55);
+}
+
+:global([data-theme="light"]) .input {
+  background: #f3f4f6 !important;
+  border-color: rgba(0, 0, 0, 0.18) !important;
+  color: #111111 !important;
+}
+
+:global([data-theme="light"]) .input::placeholder {
+  color: rgba(0, 0, 0, 0.35) !important;
+}
+
+:global([data-theme="light"]) .input:focus {
+  background: #ffffff !important;
+  border-color: #6366f1 !important;
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15) !important;
+}
+
+:global([data-theme="light"]) .button {
+  background: #6366f1 !important;
+  border-color: #6366f1 !important;
+  color: #ffffff !important;
+}
+
+:global([data-theme="light"]) .button:hover:not(:disabled) {
+  background: #4f46e5 !important;
+}
+
+:global([data-theme="light"]) .footer {
+  color: rgba(0, 0, 0, 0.45);
+}
+
+:global([data-theme="light"]) .footer a {
+  color: #6366f1;
+}

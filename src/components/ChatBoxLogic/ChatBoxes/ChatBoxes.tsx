@@ -3,7 +3,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Container, Row, Card, Col, Button, Modal, Form } from "react-bootstrap";
 import BoxStatus from "../BoxStatus/BoxStatus";
 import CreateBox from "../CreateBox/CreateBox";
-import PasswordField from "../../PasswordField";
+import PasswordField from "../../Login/PasswordField";
 import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";
 import { DeleteLoader, GreenLoader, RedLoader } from "../../../utilits/Preloader/Loaders";
 import { useChatActionsForSignChat } from "../../../hooks/useChatActionsForSignChat";
@@ -70,6 +70,8 @@ const ChatBoxes = () => {
     const [refreshFavs, setRefreshFavs] = useState(0);
     const [hoveredGuid, setHoveredGuid] = useState<string | null>(null);
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+    const [deletingGuid, setDeletingGuid] = useState<string | null>(null);
 
     const getHoverColor = (guid: string) => {
         const index = groups.findIndex(g => g.getGuid() === guid);
@@ -147,7 +149,7 @@ const ChatBoxes = () => {
     if (isLoading) return <GreenLoader message="Loading boxes, please wait..." />;
     if (isLoggingOut) return <RedLoader message="Logging out, please wait..." />;
     if (isJoining) return <GreenLoader message="Joining the chat, please wait..." />;
-    if (isDeletingGroup) return <DeleteLoader message="Deleting the group, please wait..." />;
+    // if (isDeletingGroup) return <DeleteLoader message="Deleting the group, please wait..." />;
     if (isNuking) return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />;
 
     const filtered = groups.filter(group => {
@@ -179,10 +181,13 @@ const ChatBoxes = () => {
                     >
                         <BsBoxArrowRight size={16} />
                     </Button>
+                    <div style={{ marginLeft: '16px' }}>
+                        <NukeBtn onClick={() => nukeEverything(loggedInUid)} />
+                    </div>
                 </div>
-                <div className={s.nukeBtnWrapper}>
+                {/* <div className={s.nukeBtnWrapper}>
                     <NukeBtn onClick={() => nukeEverything(loggedInUid)} />
-                </div>
+                </div> */}
             </div>
 
             <Container className="mt-4">
@@ -227,8 +232,13 @@ const ChatBoxes = () => {
                                         <div className="new-box-badge">Твоя новая коробка (◣_◢)</div>
                                     </div>
                                 )}
-                                <div style={{ position: 'relative' }}>
-
+                                <div className={s.cardWrapper}>
+                                    {deletingGuid === group.getGuid() && (
+                                        <div className={s.cardOverlay}>
+                                            <div className="spinner-border text-danger" role="status" style={{ width: '2rem', height: '2rem' }} />
+                                            <small className={`${s.cardOverlayText} ${s.cardOverlayTextRed}`}>Удаляем...</small>
+                                        </div>
+                                    )}
                                     <Card
                                         className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}
                                         style={{ '--hover-color': getHoverColor(group.getGuid()) } as React.CSSProperties}
@@ -256,8 +266,15 @@ const ChatBoxes = () => {
                                                 <BsTrash size={16} />
                                             </button>
                                         )}
+                                        
                                         <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
-                                            <Card.Title className={s.cardTitle}>{group.getName()}</Card.Title>
+                                            <Card.Title
+                                                className={s.cardTitle}
+                                                onClick={() => enterChat(group)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                {group.getName()}
+                                            </Card.Title>
 
                                             <div
                                                 className={s.doorWrapper}
@@ -314,7 +331,14 @@ const ChatBoxes = () => {
                 <div className={s.deleteFooter}>
                     <Button variant="secondary" onClick={() => setDeleteGuid(null)}>Отмена</Button>
                     <Button variant="danger" onClick={() => {
-                        if (deleteGuid) handleDeleteGroup(deleteGuid);
+                        if (deleteGuid) {
+                            setDeletingGuid(deleteGuid);
+                            handleDeleteGroup(
+                                deleteGuid,
+                                undefined,
+                                () => setDeletingGuid(null)
+                            );
+                        }
                         setDeleteGuid(null);
                     }}>Удалить</Button>
                 </div>
@@ -332,7 +356,7 @@ const ChatBoxes = () => {
                 }}>
                     <Modal.Body>
                         <Form.Group className="mb-3">
-                            <Form.Label>Password(op)</Form.Label>
+                            <Form.Label>Password</Form.Label>
                             <PasswordField
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}

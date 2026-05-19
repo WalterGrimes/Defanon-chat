@@ -1,7 +1,7 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import PasswordField from "../../PasswordField";
+import PasswordField from "../../Login/PasswordField";
 import BoxStatus from "../BoxStatus/BoxStatus";
 import { useModal } from "../../../hooks/useModal";
 import s from './EditBox.module.css';
@@ -59,20 +59,9 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
     return (
         <div>
             {isUpdating && (
-                <div style={{
-                    position: 'absolute',
-                    inset: 0,
-                    zIndex: 10,
-                    background: 'rgba(28, 28, 30, 0.85)',
-                    borderRadius: '16px',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: '12px',
-                }}>
+                <div className={s.cardOverlay}>
                     <div className="spinner-border text-success" role="status" style={{ width: '2rem', height: '2rem' }} />
-                    <small style={{ color: '#4ade80', fontSize: '0.8rem' }}>Сохраняем...</small>
+                    <small className={s.cardOverlayText}>Сохраняем...</small>
                 </div>
             )}
 

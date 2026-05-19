@@ -53,8 +53,8 @@ export const useChatActionsForChatBoxes = () => {
     };
 
 
-    const handleDeleteGroup = (GUID: string) => {
-        setIsDeletingGroup(true);
+    const handleDeleteGroup = (GUID: string, onStart?: () => void, onDone?: () => void) => {
+        onStart?.();
 
         CometChat.deleteGroup(GUID)
             .then(() => {
@@ -64,7 +64,7 @@ export const useChatActionsForChatBoxes = () => {
                 console.error("Delete failed:", error);
             })
             .finally(() => {
-                setIsDeletingGroup(false);
+                onDone?.();
             });
     };
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, InputGroup, Form } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { usePasswordToggle } from "../hooks/usePasswordToggle";
+import { usePasswordToggle } from "../../hooks/usePasswordToggle";
 
 interface PasswordFieldProps {
     value: string;

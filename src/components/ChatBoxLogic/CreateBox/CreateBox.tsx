@@ -1,7 +1,7 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import React, { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
-import PasswordField from "../../PasswordField";
+import PasswordField from "../../Login/PasswordField";
 import BoxStatus from "../BoxStatus/BoxStatus";
 import { useModal } from "../../../hooks/useModal";
 import { CreatingGroupLoader } from "../../../utilits/Preloader/Loaders";
