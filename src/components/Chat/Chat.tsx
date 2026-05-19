@@ -28,7 +28,6 @@ function Chat() {
     const { getUser, setUser, user, redirect } = useChatActionsForSignChat();
     const [currentGroup, setCurrentGroup] = useState<CometChat.Group | null>(null);
 
-    const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
     const [groupName, setGroupName] = useState<string>();
     const [groupDescription, setGroupDescription] = useState<string>("");

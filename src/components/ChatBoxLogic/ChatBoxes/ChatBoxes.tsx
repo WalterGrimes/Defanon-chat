@@ -5,7 +5,7 @@ import BoxStatus from "../BoxStatus/BoxStatus";
 import CreateBox from "../CreateBox/CreateBox";
 import PasswordField from "../../Login/PasswordField";
 import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";
-import { DeleteLoader, GreenLoader, RedLoader } from "../../../utilits/Preloader/Loaders";
+import { GreenLoader, RedLoader } from "../../../utilits/Preloader/Loaders";
 import { useChatActionsForSignChat } from "../../../hooks/useChatActionsForSignChat";
 import { useAuth } from "../../../context/ChatContext";
 import EditBox from "../EditBox/EditBox";
@@ -32,7 +32,7 @@ const ChatBoxes = () => {
         isVisible, hide,
         enterChat, handleDeleteGroup, handleJoin,
         handleNewGroup, handleGroupSettingsUpdate,
-        isJoining, isDeletingGroup,
+        isJoining, 
         showingOwnerHisGroup
     } = useChatActionsForChatBoxes();
 
