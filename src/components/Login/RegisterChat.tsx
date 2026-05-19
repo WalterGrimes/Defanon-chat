@@ -35,7 +35,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
     try {
       const savedUID = localStorage.getItem(`anon_uid_${name.toLowerCase()}`);
       if (!savedUID) {
-        throw new Error('No account found with that username.');
+        throw new Error('This account does not belong to this device or it has been deleted.');
       }
       const loggedInUser = await CometChat.login(savedUID, apiKey);
       setUser(loggedInUser);
@@ -43,7 +43,7 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
       setRedirect(true);
     } catch (err: any) {
       setError(err.message || 'An error occurred during login');
-    } finally {
+    } finally {``
       setIsLoading(false);
     }
   };

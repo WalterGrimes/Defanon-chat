@@ -11,7 +11,7 @@ export const useChatActionsForChatBoxes = () => {
     const [groups, setGroups] = useState<CometChat.Group[]>([]);
 
     const [isJoining, setIsJoining] = useState(false);
-    const [isDeletingGroup, setIsDeletingGroup] = useState(false);
+    const [isDeletingGroup] = useState(false);
     const [showingOwnerHisGroup, setshowingOwnerHisGroup] = useState<string | null>(null);
 
     const handleJoin = (guid: string, pass: string = "") => {

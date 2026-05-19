@@ -67,7 +67,7 @@ const ChatBoxes = () => {
     };
 
     const [activeFilter, setActiveFilter] = useState<'all' | 'fav'>('all');
-    const [refreshFavs, setRefreshFavs] = useState(0);
+    const [, setRefreshFavs] = useState(0);
     const [hoveredGuid, setHoveredGuid] = useState<string | null>(null);
     const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
