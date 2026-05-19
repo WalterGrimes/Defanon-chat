@@ -9,7 +9,7 @@ interface PasswordFieldProps {
     placeholder?: string;
 }
 
-const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => {
+const PasswordField = ({ onChange, placeholder }: PasswordFieldProps) => {
     const { type, isVisiblePassword, toggle } = usePasswordToggle();
 
     return (
