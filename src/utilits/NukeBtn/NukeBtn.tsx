@@ -51,16 +51,15 @@ export const NukeBtn = ({ onClick }: NukeBtnProps) => {
             <button
                 onClick={() => setShowConfirm(true)}
                 className={s.nukeBtn}
-                title="Опасная зона"
-                onMouseEnter={() => setIsHovered(true)}
+                title="Danger Zone" onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
                 <svg width="20" height="20" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="4">
-                    <circle cx="50" cy="50" r="46"/>
-                    <path d="M10 50 Q50 5 90 50" strokeLinecap="round"/>
-                    <path d="M10 50 Q50 95 90 50" strokeLinecap="round"/>
-                    <circle cx="50" cy="50" r="18"/>
-                    <circle cx={50 + pupilOffset.x} cy={50} r="7" fill="currentColor"/>
+                    <circle cx="50" cy="50" r="46" />
+                    <path d="M10 50 Q50 5 90 50" strokeLinecap="round" />
+                    <path d="M10 50 Q50 95 90 50" strokeLinecap="round" />
+                    <circle cx="50" cy="50" r="18" />
+                    <circle cx={50 + pupilOffset.x} cy={50} r="7" fill="currentColor" />
                 </svg>
             </button>
 
@@ -69,10 +68,10 @@ export const NukeBtn = ({ onClick }: NukeBtnProps) => {
                     <div className={s.modal}>
                         <div className={s.modalIcon}>
                             <svg width="64" height="64" viewBox="0 0 100 100" fill="none" stroke="#fff" strokeWidth="4">
-                                <circle cx="50" cy="50" r="46"/>
-                                <path d="M10 50 Q50 5 90 50" strokeLinecap="round"/>
-                                <path d="M10 50 Q50 95 90 50" strokeLinecap="round"/>
-                                <circle cx="50" cy="50" r="18"/>
+                                <circle cx="50" cy="50" r="46" />
+                                <path d="M10 50 Q50 5 90 50" strokeLinecap="round" />
+                                <path d="M10 50 Q50 95 90 50" strokeLinecap="round" />
+                                <circle cx="50" cy="50" r="18" />
                                 <circle
                                     cx={50 + modalPupil.x}
                                     cy={50}
@@ -82,16 +81,16 @@ export const NukeBtn = ({ onClick }: NukeBtnProps) => {
                                 />
                             </svg>
                         </div>
-                        <h4 className={s.modalTitle}>Опасная зона</h4>
+                        <h4 className={s.modalTitle}>Danger Zone</h4>
                         <p className={s.modalText}>
-                            Это удалит <strong>всё</strong>: твой аккаунт и всё что с ним связано исчезнет навсегда.
+                            This will delete <strong>everything</strong>: your account and all associated data will be gone forever.
                         </p>
                         <div className={s.modalBtns}>
                             <button className={s.cancelBtn} onClick={() => setShowConfirm(false)}>
-                                Отмена
+                                Cancel
                             </button>
                             <button className={s.confirmBtn} onClick={handleConfirm}>
-                                Удалить 
+                                Delete
                             </button>
                         </div>
                     </div>

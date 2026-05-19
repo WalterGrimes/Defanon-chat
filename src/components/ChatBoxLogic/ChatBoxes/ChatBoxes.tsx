@@ -196,14 +196,14 @@ const ChatBoxes = () => {
                         <button
                             className={`${s.filterBtn} ${activeFilter === 'all' ? s.filterBtnActive : ''}`}
                             onClick={() => setActiveFilter('all')}
-                            title="Все коробки"
+                            title="All boxes"
                         >
                             <BsGrid3X3Gap size={18} />
                         </button>
                         <button
                             className={`${s.filterBtn} ${activeFilter === 'fav' ? s.filterBtnFav : ''}`}
                             onClick={() => setActiveFilter('fav')}
-                            title="Избранное"
+                            title="Favourite"
                         >
                             {activeFilter === 'fav' ? <BsStarFill size={18} /> : <BsStar size={18} />}
                         </button>
@@ -220,8 +220,8 @@ const ChatBoxes = () => {
 
                 {activeFilter === 'fav' && filtered.length === 0 ? (
                     <div className={s.emptyFav}>
-                        <p>У вас нет избранных коробок</p>
-                        <small>Нажми ★ на коробке, чтобы добавить в избранное</small>
+                        <p>You have no favorite boxes</p>
+                        <small>Click ★ on a box to add it to favorites</small>
                     </div>
                 ) : (
                     <Row className="g-4">
@@ -229,14 +229,14 @@ const ChatBoxes = () => {
                             <Col key={group.getGuid()} xs={12} md={6} lg={3}>
                                 {group.getGuid() === showingOwnerHisGroup && (
                                     <div className="new-box-pointer-container">
-                                        <div className="new-box-badge">Твоя новая коробка (◣_◢)</div>
+                                        <div className="new-box-badge">Your new box (◣_◢)</div>
                                     </div>
                                 )}
                                 <div className={s.cardWrapper}>
                                     {deletingGuid === group.getGuid() && (
                                         <div className={s.cardOverlay}>
                                             <div className="spinner-border text-danger" role="status" style={{ width: '2rem', height: '2rem' }} />
-                                            <small className={`${s.cardOverlayText} ${s.cardOverlayTextRed}`}>Удаляем...</small>
+                                            <small className={`${s.cardOverlayText} ${s.cardOverlayTextRed}`}>Deleting...</small>
                                         </div>
                                     )}
                                     <Card
@@ -247,7 +247,7 @@ const ChatBoxes = () => {
                                         <button
                                             className={`info-icon-btn ${group.getOwner() === loggedInUid ? 'info-icon-center' : ''}`}
                                             onClick={() => openInfo(group)}
-                                            title="Подробнее о коробке"
+                                            title="More about the box"
                                         >
                                             <InfoIcon />
                                         </button>
@@ -261,12 +261,12 @@ const ChatBoxes = () => {
                                             <button
                                                 className="delete-icon-btn"
                                                 onClick={() => setDeleteGuid(group.getGuid())}
-                                                title="Удалить коробку"
+                                                title="Delete box"
                                             >
                                                 <BsTrash size={16} />
                                             </button>
                                         )}
-                                        
+
                                         <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
                                             <Card.Title
                                                 className={s.cardTitle}
@@ -281,7 +281,7 @@ const ChatBoxes = () => {
                                                 onClick={() => enterChat(group)}
                                                 onMouseEnter={() => setHoveredGuid(group.getGuid())}
                                                 onMouseLeave={() => setHoveredGuid(null)}
-                                                title="Войти в коробку"
+                                                title="Enter a box"
                                             >
                                                 {hoveredGuid === group.getGuid() ? (
                                                     <BsDoorOpen size={36} />
@@ -323,13 +323,13 @@ const ChatBoxes = () => {
             <Modal show={!!deleteGuid} onHide={() => setDeleteGuid(null)} centered contentClassName={s.deleteModal}>
                 <DiagonalLines />
                 <div className={s.deleteHeader}>
-                    <h5>Удалить коробку?</h5>
+                    <h5>Are you sure??</h5>
                 </div>
                 <div className={s.deleteBody}>
-                    <p>Это действие нельзя отменить.</p>
+                    <p>This action cannot be undone.</p>
                 </div>
                 <div className={s.deleteFooter}>
-                    <Button variant="secondary" onClick={() => setDeleteGuid(null)}>Отмена</Button>
+                    <Button variant="secondary" onClick={() => setDeleteGuid(null)}>Cancel</Button>
                     <Button variant="danger" onClick={() => {
                         if (deleteGuid) {
                             setDeletingGuid(deleteGuid);
@@ -340,7 +340,7 @@ const ChatBoxes = () => {
                             );
                         }
                         setDeleteGuid(null);
-                    }}>Удалить</Button>
+                    }}>Delete</Button>
                 </div>
             </Modal>
 

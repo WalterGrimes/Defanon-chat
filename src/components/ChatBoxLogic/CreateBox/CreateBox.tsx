@@ -117,7 +117,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Password</Form.Label>
+                            <Form.Label>Password<small className="text-muted">(optional)</small></Form.Label>
                             <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Form.Group>
                     </Modal.Body>

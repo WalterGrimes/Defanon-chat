@@ -61,7 +61,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
             {isUpdating && (
                 <div className={s.cardOverlay}>
                     <div className="spinner-border text-success" role="status" style={{ width: '2rem', height: '2rem' }} />
-                    <small className={s.cardOverlayText}>Сохраняем...</small>
+                    <small className={s.cardOverlayText}>Saving...</small>
                 </div>
             )}
 
@@ -119,7 +119,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Password <small className="text-muted">(optional)</small></Form.Label>
+                            <Form.Label>Password<small className="text-muted">(optional)</small></Form.Label>
                             <PasswordField value={password} onChange={(e) => setPassword(e.target.value)} />
                         </Form.Group>
                     </Modal.Body>

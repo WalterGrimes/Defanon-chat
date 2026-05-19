@@ -12,10 +12,10 @@ export const MutedTimer: React.FC<MutedTimerProps> = ({ until, message }) => {
     useEffect(() => {
         const timer = setInterval(() => {
             const left = Math.floor((until - Date.now()) / 1000);
-            
+
             if (left <= 0) {
                 clearInterval(timer);
-                window.location.reload(); 
+                window.location.reload();
             } else {
                 setSecondsLeft(left);
             }
@@ -24,7 +24,7 @@ export const MutedTimer: React.FC<MutedTimerProps> = ({ until, message }) => {
         return () => clearInterval(timer);
     }, [until]);
 
-    if (secondsLeft <= 0) return <GreyLoader message="Разблокировка..." />;
+    if (secondsLeft <= 0) return <GreyLoader message="Unblocking..." />;
 
     const minutes = Math.floor(secondsLeft / 60);
     const seconds = secondsLeft % 60;

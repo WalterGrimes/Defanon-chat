@@ -123,9 +123,9 @@ function Chat() {
 
     if (isMeMuted) {
         return (
-            <MutedTimer
-                until={Number(mutedTIme5)}
-                message="Вы были замучены. Осталось:" />
+            <MutedTimer until={Number(mutedTIme5)}
+                message="You are muted. Time left:" />
+
         )
     }
 
