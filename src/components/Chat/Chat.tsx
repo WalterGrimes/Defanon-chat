@@ -5,7 +5,7 @@ import { Row, Col, Container, Form, Button, Navbar } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useChatActionsForChat } from "../../hooks/useChatActionsForChat";
 import { useChatActionsForSignChat } from "../../hooks/useChatActionsForSignChat";
-import { GreenLoader, GreyLoader } from "../../features/Loaders";
+import { GreenLoader, SendLoader } from "../../utilits/Preloader/Loaders";
 import { getUserColor } from "../../utilits/ColorHelper";
 import s from './Chat.module.css';
 import { MutedTimer } from "../MutedTimer";
@@ -31,7 +31,7 @@ function Chat() {
     const welcomingUser = user ? `- ${(user as any).name || (user as any).uid || 'Guest'}` : '- Loading...';
 
     const [groupName, setGroupName] = useState<string>();
-    const [groupDescription, setGroupDescription] = useState<string>("Welcome to chat dear - Gold");
+    const [groupDescription, setGroupDescription] = useState<string>("");
     const [isLoadingMessages, setIsLoadingMessages] = useState<boolean>(true);
     const [hasFetched, setHasFetched] = useState(false);
 
@@ -54,14 +54,13 @@ function Chat() {
                     setGroupName(group.getName());
                     setCurrentGroup(group);
                     const meta = group.getMetadata() as any;
-                    setGroupDescription(meta?.description || `Welcome to chat dear ${welcomingUser}`);
+
+                    setGroupDescription(meta?.description || "");
                 },
-                (error) => {
-                    console.log("Ошибка при получении данных группы", error)
-                }
-            )
+                (error) => console.log("Ошибка при получении данных группы", error)
+            );
         }
-    }, [guid])
+    }, [guid]);
 
     useEffect(() => {
         setIsLoadingMessages(true);
@@ -111,6 +110,16 @@ function Chat() {
         observer.observe(document.documentElement, { attributes: true });
         return () => observer.disconnect();
     }, []);
+
+    useEffect(() => {
+        if (user && currentGroup) {
+            const meta = currentGroup.getMetadata() as any;
+
+            if (!meta?.description) {
+                setGroupDescription(`Welcome to chat dear - ${user.getName()}`);
+            }
+        }
+    }, [user, currentGroup]);
 
     if (isMeMuted) {
         return (
@@ -240,11 +249,7 @@ function Chat() {
                                 }}
                             />
                             <Button variant='primary' type='submit' className={s.sendBtn}>
-                                {isSendingMessage ? (
-                                    <GreyLoader message="" />
-                                ) : (
-                                    <SendIcon />
-                                )}
+                                {isSendingMessage ? <SendLoader /> : <SendIcon />}
                             </Button>
                         </div>
                     </Form>

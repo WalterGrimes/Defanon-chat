@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GreyLoader } from "../features/Loaders";
+import { GreyLoader } from "../utilits/Preloader/Loaders";
 
 interface MutedTimerProps {
     until: number;

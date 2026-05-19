@@ -5,7 +5,7 @@ import BoxStatus from "../BoxStatus/BoxStatus";
 import CreateBox from "../CreateBox/CreateBox";
 import PasswordField from "../../PasswordField";
 import { useChatActionsForChatBoxes } from "../../../hooks/useChatActionForChatBoxes";
-import { GreenLoader, RedLoader } from "../../../features/Loaders";
+import { DeleteLoader, GreenLoader, RedLoader } from "../../../utilits/Preloader/Loaders";
 import { useChatActionsForSignChat } from "../../../hooks/useChatActionsForSignChat";
 import { useAuth } from "../../../context/ChatContext";
 import EditBox from "../EditBox/EditBox";
@@ -20,6 +20,7 @@ import { FavoriteBox } from "../../FavoriteBox/FavoriteBox";
 import { BsBoxArrowRight, BsDoorOpen, BsDoorClosed, BsTrash, BsStarFill, BsStar, BsGrid3X3Gap } from "react-icons/bs";
 import { DiagonalLines, InfoIcon } from "../../../utilits/SomeStuff";
 import { NukeBtn } from "../../../utilits/NukeBtn/NukeBtn";
+import { SearchBox } from "../SearchBox/SearchBox";
 
 const HOVER_COLORS = ['#7ba8f5', '#4ade80', '#f472b6', '#fb923c', '#a78bfa', '#34d399', '#f87171', '#facc15'];
 
@@ -58,7 +59,7 @@ const ChatBoxes = () => {
     const pageSize = 8;
 
     const [deleteGuid, setDeleteGuid] = useState<string | null>(null);
-
+    const [searchQuery, setSearchQuery] = useState('');
 
     const openInfo = (group: CometChat.Group) => {
         setInfoGroup(group);
@@ -146,15 +147,19 @@ const ChatBoxes = () => {
     if (isLoading) return <GreenLoader message="Loading boxes, please wait..." />;
     if (isLoggingOut) return <RedLoader message="Logging out, please wait..." />;
     if (isJoining) return <GreenLoader message="Joining the chat, please wait..." />;
-    if (isDeletingGroup) return <RedLoader message="Deleting the group, please wait..." />;
+    if (isDeletingGroup) return <DeleteLoader message="Deleting the group, please wait..." />;
     if (isNuking) return <RedLoader message="Pls wait...Deleting your data,messages,everything..." />;
 
     const filtered = groups.filter(group => {
-        if (activeFilter === 'all') return true;
-        const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
-        return favs.includes(group.getGuid());
+        if (activeFilter === 'fav') {
+            const favs: string[] = JSON.parse(localStorage.getItem('fav_boxes') || '[]');
+            if (!favs.includes(group.getGuid())) return false;
+        }
+        if (searchQuery.trim()) {
+            return group.getName().toLowerCase().includes(searchQuery.toLowerCase());
+        }
+        return true;
     });
-
     const startPagination = (currentPage - 1) * pageSize;
     const paginationGroups = filtered.slice(startPagination, startPagination + pageSize);
 
@@ -197,6 +202,7 @@ const ChatBoxes = () => {
                         >
                             {activeFilter === 'fav' ? <BsStarFill size={18} /> : <BsStar size={18} />}
                         </button>
+                        <SearchBox value={searchQuery} onChange={setSearchQuery} theme={theme} />
                     </div>
                     <CreateBox onGroupCreate={handleNewGroup} />
                 </div>
@@ -207,72 +213,85 @@ const ChatBoxes = () => {
                     group={infoGroup}
                 />
 
-                <Row xs={1} md={2} lg={4} className="g-5 gy-5">
-                    {paginationGroups.map((group) => (
-                        <Col key={group.getGuid()}>
-                            {group.getGuid() === showingOwnerHisGroup && (
-                                <div className="new-box-pointer-container">
-                                    <div className="new-box-badge">your new box is here (◣_◢)</div>
-                                </div>
-                            )}
-                            <Card
-                                className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}
-                                style={{ '--hover-color': getHoverColor(group.getGuid()) } as React.CSSProperties}
-                            >
-                                <FavoriteBox guid={group.getGuid()} />
-                                <button
-                                    className={`info-icon-btn ${group.getOwner() === loggedInUid ? 'info-icon-center' : ''}`}
-                                    onClick={() => openInfo(group)}
-                                    title="Подробнее о коробке"
-                                >
-                                    <InfoIcon />
-                                </button>
-                                {group.getOwner() === loggedInUid && (
-                                    <EditBox group={group} onGroupUpdate={handleGroupSettingsUpdate} />
+                {activeFilter === 'fav' && filtered.length === 0 ? (
+                    <div className={s.emptyFav}>
+                        <p>У вас нет избранных коробок</p>
+                        <small>Нажми ★ на коробке, чтобы добавить в избранное</small>
+                    </div>
+                ) : (
+                    <Row className="g-4">
+                        {paginationGroups.map((group) => (
+                            <Col key={group.getGuid()} xs={12} md={6} lg={3}>
+                                {group.getGuid() === showingOwnerHisGroup && (
+                                    <div className="new-box-pointer-container">
+                                        <div className="new-box-badge">Твоя новая коробка (◣_◢)</div>
+                                    </div>
                                 )}
-                                {group.getOwner() === loggedInUid && (
-                                    <button
-                                        className="delete-icon-btn"
-                                        onClick={() => setDeleteGuid(group.getGuid())}
-                                        title="Удалить коробку"
-                                    >
-                                        <BsTrash size={16} />
-                                    </button>
-                                )}
-                                <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
-                                    <Card.Title className={s.cardTitle}>{group.getName()}</Card.Title>
+                                <div style={{ position: 'relative' }}>
 
-                                    <div
-                                        className={s.doorWrapper}
-                                        onClick={() => enterChat(group)}
-                                        onMouseEnter={() => setHoveredGuid(group.getGuid())}
-                                        onMouseLeave={() => setHoveredGuid(null)}
-                                        title="Войти в коробку"
+                                    <Card
+                                        className={`h-100 shadow-sm border-0 bg-dark text-white group-card-relative ${s.card}`}
+                                        style={{ '--hover-color': getHoverColor(group.getGuid()) } as React.CSSProperties}
                                     >
-                                        {hoveredGuid === group.getGuid() ? (
-                                            <BsDoorOpen size={36} />
-                                        ) : (
-                                            <BsDoorClosed size={36} />
+                                        <FavoriteBox guid={group.getGuid()} />
+                                        <button
+                                            className={`info-icon-btn ${group.getOwner() === loggedInUid ? 'info-icon-center' : ''}`}
+                                            onClick={() => openInfo(group)}
+                                            title="Подробнее о коробке"
+                                        >
+                                            <InfoIcon />
+                                        </button>
+                                        {group.getOwner() === loggedInUid && (
+                                            <EditBox
+                                                group={group}
+                                                onGroupUpdate={handleGroupSettingsUpdate}
+                                            />
                                         )}
-                                    </div>
+                                        {group.getOwner() === loggedInUid && (
+                                            <button
+                                                className="delete-icon-btn"
+                                                onClick={() => setDeleteGuid(group.getGuid())}
+                                                title="Удалить коробку"
+                                            >
+                                                <BsTrash size={16} />
+                                            </button>
+                                        )}
+                                        <Card.Body className="d-flex flex-column text-center p-3" style={{ paddingBottom: '60px' }}>
+                                            <Card.Title className={s.cardTitle}>{group.getName()}</Card.Title>
 
-                                    <Card.Text className={s.cardStats}>
-                                        Участников: {group.getMembersCount()} <br />
-                                        Users online: {onlineRightNow}
-                                    </Card.Text>
+                                            <div
+                                                className={s.doorWrapper}
+                                                onClick={() => enterChat(group)}
+                                                onMouseEnter={() => setHoveredGuid(group.getGuid())}
+                                                onMouseLeave={() => setHoveredGuid(null)}
+                                                title="Войти в коробку"
+                                            >
+                                                {hoveredGuid === group.getGuid() ? (
+                                                    <BsDoorOpen size={36} />
+                                                ) : (
+                                                    <BsDoorClosed size={36} />
+                                                )}
+                                            </div>
 
-                                    {group.getOwner() === loggedInUid && (
-                                        <small className={s.ownerBadge}>Вы владелец</small>
-                                    )}
+                                            <Card.Text className={s.cardStats}>
+                                                Участников: {group.getMembersCount()} <br />
+                                                Users online: {onlineRightNow}
+                                            </Card.Text>
 
-                                    <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
-                                        <BoxStatus type={group.getType()} />
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                    ))}
-                </Row>
+                                            {group.getOwner() === loggedInUid && (
+                                                <small className={s.ownerBadge}>Вы владелец</small>
+                                            )}
+
+                                            <div style={{ position: 'absolute', bottom: '16px', left: 0, right: 0, display: 'flex', justifyContent: 'center' }}>
+                                                <BoxStatus type={group.getType()} />
+                                            </div>
+                                        </Card.Body>
+                                    </Card>
+                                </div>
+                            </Col>
+                        ))}
+                    </Row>
+                )}
 
                 <div className="d-flex justify-content-center mt-5 mb-4">
                     <Pagination
@@ -328,6 +347,5 @@ const ChatBoxes = () => {
             </Modal>
         </div>
     );
-};
-
+}
 export default ChatBoxes;

@@ -3,6 +3,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { Button, Row, Col, Form, Alert, Spinner } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useChatActionsForSignChat } from '../hooks/useChatActionsForSignChat';
+import { ThemeSwitcher } from '../ThemeChange/ThemeSwitcher';
 
 interface EnterChatProps {
     initialName?: string;
@@ -39,6 +40,10 @@ const EnterChat = ({ initialName = '' }: EnterChatProps) => {
 
     return (
         <React.Fragment>
+            <div style={{ position: 'fixed', top: '12px', right: '16px', zIndex: 1000 }}>
+                <ThemeSwitcher />
+            </div>
+
             <Row
                 className='d-flex justify-content-center align-items-center w-100 mt-5'
                 style={{ minHeight: '100%' }}
@@ -62,6 +67,7 @@ const EnterChat = ({ initialName = '' }: EnterChatProps) => {
                                 value={name}
                                 placeholder='Choose a username'
                                 onChange={handleNameChange}
+                                maxLength={15}
                             />
                         </Form.Group>
 

@@ -15,6 +15,7 @@ const PasswordField = ({ value, onChange, placeholder }: PasswordFieldProps) => 
     return (
         <InputGroup>
             <Form.Control
+                maxLength={15}
                 type={type}
                 placeholder={placeholder || "Password for private mode"} onChange={onChange}
             />

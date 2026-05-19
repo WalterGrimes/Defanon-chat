@@ -63,14 +63,24 @@
 }
 
 .card {
-  background-color: var(--card-bg) !important;
-  color: var(--text-color) !important;
-  border: 1.5px solid var(--border-color) !important;
-  min-height: 280px;
-  max-width: 320px;
-  width: 100%;
-  margin: 0 auto;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+    background-color: var(--card-bg) !important;
+    color: var(--text-color) !important;
+    border: 1.5px solid var(--border-color) !important;
+    min-height: 280px;
+    width: 100%;
+    margin: 0 auto;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease !important;
+}
+
+.cardTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .card:hover {
@@ -227,7 +237,7 @@
 
 .deleteBody p {
   color: #aaa;
-  margin: 0;
+  margin: 0
 }
 
 .deleteFooter {
@@ -276,4 +286,28 @@
 .welcomeName {
     font-size: 1rem;
     font-weight: 600;
+}
+
+.emptyFav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 80px 20px;
+    color: var(--muted-color);
+    text-align: center;
+    opacity: 0.6;
+}
+
+.emptyFav p {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-color);
+}
+
+.emptyFav small {
+    font-size: 0.78rem;
+    opacity: 0.6;
 }

@@ -3,6 +3,7 @@ import { Button, Row, Col, Form, Alert, Spinner } from 'react-bootstrap';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/ChatContext';
+import { ThemeSwitcher } from '../ThemeChange/ThemeSwitcher';
 
 interface RegisterChatProps {
   initialName?: string;
@@ -57,54 +58,62 @@ const RegisterChat = ({ initialName = '' }: RegisterChatProps) => {
   }
 
   return (
-    <Row
-      className='d-flex justify-content-center align-items-center w-100 mt-5'
-      style={{ minHeight: '100vh' }}
-    >
-      <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
-        {error && <Alert variant='danger'>{error}</Alert>}
+    <>
+      <div style={{ position: 'fixed', top: '12px', right: '16px', zIndex: 1000 }}>
+        <ThemeSwitcher />
+      </div>
 
-        <Form onSubmit={handleSubmit}>
-          <Form.Group controlId='username' className="mb-3">
-            <Form.Label>Username</Form.Label>
-            <Form.Control
-              required
-              type='text'
-              value={name}
-              placeholder='Enter a Username'
-              onChange={handleChange}
-            />
-          </Form.Group>
+      <Row
+        className='d-flex justify-content-center align-items-center w-100 mt-5'
+        style={{ minHeight: '100vh' }}
+      >
+        <Col xs={10} sm={10} md={4} lg={4} className='mx-auto mt-5'>
+          {error && <Alert variant='danger'>{error}</Alert>}
 
-          <Button
-            disabled={isLoading}
-            variant='primary'
-            type='submit'
-            className='w-100'
-          >
-            {isLoading ? (
-              <>
-                <Spinner
-                  as='span'
-                  animation='border'
-                  size='sm'
-                  role='status'
-                  aria-hidden='true'
-                  className="me-2"
-                />
-                Loading...
-              </>
-            ) : (
-              'Login'
-            )}
-          </Button>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group controlId='username' className="mb-3">
+              <Form.Label>Username</Form.Label>
+              <Form.Control
+                required
+                type='text'
+                value={name}
+                placeholder='Enter a Username'
+                onChange={handleChange}
+                maxLength={15}
+              />
+            </Form.Group>
 
-          <p className='pt-3'>
-            Don't have an account? <Link to='/signup'>Create One</Link>
-          </p>
-        </Form>
-      </Col>
-    </Row>
+            <Button
+              disabled={isLoading}
+              variant='primary'
+              type='submit'
+              className='w-100'
+            >
+              {isLoading ? (
+                <>
+                  <Spinner
+                    as='span'
+                    animation='border'
+                    size='sm'
+                    role='status'
+                    aria-hidden='true'
+                    className="me-2"
+                  />
+                  Loading...
+                </>
+              ) : (
+                'Login'
+              )}
+            </Button>
+
+            <p className='pt-3'>
+              Don't have an account? <Link to='/signup'>Create One</Link>
+            </p>
+          </Form>
+        </Col>
+      </Row>
+    </>
+
   );
 };
 

@@ -4,24 +4,25 @@ import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../../PasswordField";
 import BoxStatus from "../BoxStatus/BoxStatus";
 import { useModal } from "../../../hooks/useModal";
-import { CreatingGroupLoader } from "../../../features/Loaders";
 import s from './EditBox.module.css';
+import { useAuth } from "../../../context/ChatContext";
 
 interface EditBoxProps {
     group: CometChat.Group;
     onGroupUpdate: (newGroup: CometChat.Group) => void;
 }
 
-const DEFAULT_DESCRIPTION = "Welcome to chat dear - (user name)";
-
 const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
+    const { user } = useAuth();
     const [boxName, setBoxName] = useState(group.getName());
     const [password, setPassword] = useState<string>('');
     const existingDescription = (group.getMetadata() as any)?.description || "";
     const [description, setDescription] = useState(existingDescription);
     const { isVisible, show, hide } = useModal();
     const [isUpdating, setIsUpdating] = useState(false);
-    
+
+    const defaultDesc = `Welcome to chat dear - ${user?.getName() || 'user'}`;
+
     const handleClose = () => {
         setBoxName(group.getName());
         setPassword("");
@@ -31,6 +32,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
 
     const handleUpdateGroup = () => {
         setIsUpdating(true);
+        hide();
 
         const GUID = group.getGuid();
         const trimmedPassword = password.trim();
@@ -40,12 +42,11 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
             : CometChat.GROUP_TYPE.PUBLIC;
 
         const updatedGroup = new CometChat.Group(GUID, boxName, boxType, trimmedPassword);
-        updatedGroup.setMetadata({ description: description.trim() || DEFAULT_DESCRIPTION });
+        updatedGroup.setMetadata({ description: description.trim() || defaultDesc });
 
         CometChat.updateGroup(updatedGroup).then(
             (res) => {
                 onGroupUpdate(res);
-                hide();
                 setIsUpdating(false);
             },
             (error) => {
@@ -55,10 +56,26 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
         );
     };
 
-    if (isUpdating) return <CreatingGroupLoader message="Сохраняем изменения..." />;
-
     return (
         <div>
+            {isUpdating && (
+                <div style={{
+                    position: 'absolute',
+                    inset: 0,
+                    zIndex: 10,
+                    background: 'rgba(28, 28, 30, 0.85)',
+                    borderRadius: '16px',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '12px',
+                }}>
+                    <div className="spinner-border text-success" role="status" style={{ width: '2rem', height: '2rem' }} />
+                    <small style={{ color: '#4ade80', fontSize: '0.8rem' }}>Сохраняем...</small>
+                </div>
+            )}
+
             <button className="settings-icon-btn" onClick={show} title="Настройки коробки">
                 ⚙
             </button>
@@ -87,6 +104,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
                                 placeholder="Enter a name for your box"
                                 value={boxName}
                                 onChange={(e) => setBoxName(e.target.value)}
+                                maxLength={15}
                             />
                         </Form.Group>
 
@@ -95,7 +113,7 @@ const EditBox = ({ group, onGroupUpdate }: EditBoxProps) => {
                             <Form.Control
                                 as="textarea"
                                 rows={2}
-                                placeholder={DEFAULT_DESCRIPTION}
+                                placeholder={defaultDesc}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 maxLength={150}

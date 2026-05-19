@@ -4,21 +4,25 @@ import { Button, Modal, Form } from "react-bootstrap";
 import PasswordField from "../../PasswordField";
 import BoxStatus from "../BoxStatus/BoxStatus";
 import { useModal } from "../../../hooks/useModal";
-import { CreatingGroupLoader } from "../../../features/Loaders";
+import { CreatingGroupLoader } from "../../../utilits/Preloader/Loaders";
 import styles from "./CreateBox.module.css";
+import { useAuth } from "../../../context/ChatContext";
 
 interface CreateBoxProps {
     onGroupCreate: (newGroup: CometChat.Group) => void;
 }
 
-const DEFAULT_DESCRIPTION = "Welcome to chat dear - Gold";
 
 const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
+    const { user } = useAuth();
     const [boxName, setBoxName] = useState("");
     const [password, setPassword] = useState<string>('');
     const [description, setDescription] = useState("");
     const { isVisible, show, hide } = useModal();
     const [isCreatingGroup, setIsCreatingGroup] = useState(false);
+
+    const defaultDesc = `Welcome to chat dear - ${user?.getName() || 'user'}`;
+
 
     const handleClose = () => {
         setBoxName("");
@@ -42,7 +46,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
             : CometChat.GROUP_TYPE.PUBLIC;
 
         const group = new CometChat.Group(GUID, boxName, boxType, trimmedPassword);
-        group.setMetadata({ description: description.trim() || DEFAULT_DESCRIPTION });
+        group.setMetadata({ description: description.trim() || defaultDesc });
 
         CometChat.createGroup(group).then(
             (createdGroup) => {
@@ -93,6 +97,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                                 placeholder="Enter a name for your box"
                                 value={boxName}
                                 onChange={(e) => setBoxName(e.target.value)}
+                                maxLength={15}
                             />
                         </Form.Group>
 
@@ -101,7 +106,7 @@ const CreateBox = ({ onGroupCreate }: CreateBoxProps) => {
                             <Form.Control
                                 as="textarea"
                                 rows={2}
-                                placeholder={DEFAULT_DESCRIPTION}
+                                placeholder={defaultDesc}
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 maxLength={150}
