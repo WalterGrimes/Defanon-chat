@@ -83,7 +83,9 @@ export const useChatActionsForSignChat = () => {
         setIsNuking(true);
 
         try {
-            const response = await fetch(`http://localhost:5000/nuke-user/${guid}`, {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+
+            const response = await fetch(`${apiUrl}/nuke-user/${guid}`, {
                 method: 'DELETE'
             });
 
@@ -94,10 +96,10 @@ export const useChatActionsForSignChat = () => {
                 navigate('/');
             } else {
                 const errorData = await response.json();
-                alert(`Ошибка от сервера ${errorData.message || 'Не удалось удалить'}`);
+                alert(`Ошибка от сервера: ${errorData.message || 'Не удалось удалить'}`);
             }
         } catch (error) {
-            console.error('Ошибка:', error);
+            console.error('Ошибка при удалении:', error);
             localStorage.clear();
             setUser(null);
             navigate('/');
@@ -105,7 +107,6 @@ export const useChatActionsForSignChat = () => {
             setIsNuking(false);
         }
     }
-
 
     return {
         user, setUser, redirect, logout, getUser, reAuthenticateUserWithToken, handleSignUp,
