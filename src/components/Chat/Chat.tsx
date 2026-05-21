@@ -81,19 +81,19 @@ function Chat() {
             })
         })
 
-        const listenerID = 'listener_id_' + uuid();
-        CometChat.addMessageListener(
-            listenerID,
-            new CometChat.MessageListener({
-                onTextMessageReceived: (textMessage: any) => {
-                    if (textMessage.getReceiverGuid() === guid) {
-                        setMessages(prev => [...prev, textMessage]);
-                    }
-                }
-            })
-        )
+        // const listenerID = 'listener_id_' + uuid();
+        // CometChat.addMessageListener(
+        //     listenerID,
+        //     new CometChat.MessageListener({
+        //         onTextMessageReceived: (textMessage: any) => {
+        //             if (textMessage.getReceiverGuid() === guid) {
+        //                 setMessages(prev => [...prev, textMessage]);
+        //             }
+        //         }
+        //     })
+        // )
 
-        return () => CometChat.removeMessageListener(listenerID);
+        // return () => CometChat.removeMessageListener(listenerID);
     }, [guid])
 
     useEffect(() => {

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useSpamSound } from "./PlaySpamSound";
+import { v4 as uuid } from 'uuid';
 
 export const useChatActionsForChat = () => {
     const [messages, setMessages] = useState<CometChat.BaseMessage[]>([]);
@@ -39,21 +40,30 @@ export const useChatActionsForChat = () => {
     };
 
     useEffect(() => {
-        const mutedUntil = localStorage.getItem(`chat_muted_until${guid}`);
-        if (mutedUntil) {
-            const timeLeft = Number(mutedUntil) - Date.now();
-            if (timeLeft > 0) {
-                setMuteUser(true);
-                setTimeout(() => {
-                    setMuteUser(false);
-                    localStorage.removeItem(`chat_muted_until${guid}`);
-                }, timeLeft);
-            } else {
-                localStorage.removeItem(`chat_muted_until${guid}`);
-            }
-        }
-    }, []);
+        if (!guid) return;
 
+        const listenerID = 'msg_listener_' + uuid();
+
+        CometChat.addMessageListener(
+            listenerID,
+            new CometChat.MessageListener({
+                onTextMessageReceived: (textMessage: CometChat.TextMessage) => {
+                    if (textMessage.getReceiverId() === guid) {
+                        setMessages(prev => [...prev, textMessage]);
+                    }
+                },
+                onCustomMessageReceived: (customMessage: CometChat.CustomMessage) => {
+                    if (customMessage.getReceiverId() === guid) {
+                        setMessages(prev => [...prev, customMessage]);
+                    }
+                }
+            })
+        );
+
+        return () => {
+            CometChat.removeMessageListener(listenerID);
+        };
+    }, [guid]);
     const muteUserWithPreloader = (targetUID: string) => {
         const duration = 300000;
         const unviewDate = Date.now() + duration;

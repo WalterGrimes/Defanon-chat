@@ -62,7 +62,7 @@ const EnterChat = ({ initialName = '' }: EnterChatProps) => {
                             type="text"
                             name="name"
                             value={name}
-                            placeholder="anonchik"
+                            placeholder="example: anonchik"
                             onChange={handleNameChange}
                             maxLength={15}
                             className={styles.input}
